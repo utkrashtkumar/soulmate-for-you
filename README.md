@@ -59,7 +59,7 @@ Restricted exclusively to authorized administrator email **`givekisstome@gmail.c
 | **📊 Overview** | Live Statistics | Total users count, active companions, and message queries. |
 | **👥 Users** | User Directory | Searchable list of registered users with mobile, age, and profile editors. Includes cascade deletion. |
 | **👩 Avatars** | Companion Registry | Edit mood, love meter, and personality parameters or delete avatars. |
-| **💬 Chats** | Transcript Logs | Inspect live chat transcript histories between any user and companion and clear history logs. |
+
 
 ---
 
