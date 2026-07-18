@@ -9,11 +9,21 @@ export default function MobileBottomNav() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const checkAdmin = (session) => {
+      setIsAdmin(session?.user?.email === 'givekisstome@gmail.com');
+    };
+
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user?.email === 'givekisstome@gmail.com') {
-        setIsAdmin(true);
-      }
+      checkAdmin(session);
     });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      checkAdmin(session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Don't show bottom nav on landing page or chat page (chat has its own bottom input)
