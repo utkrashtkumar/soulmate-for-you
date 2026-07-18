@@ -59,7 +59,7 @@ Restricted exclusively to authorized administrator email **`givekisstome@gmail.c
 | **📊 Overview** | Live Statistics | Total users count, active companions, and message queries. |
 | **👥 Users** | User Directory | Searchable list of registered users with mobile, age, and profile editors. Includes cascade deletion. |
 | **👩 Avatars** | Companion Registry | Edit mood, love meter, and personality parameters or delete avatars. |
-
+| **💬 Chats** | Transcript Logs | Inspect live chat transcript histories between any user and companion and clear history logs. |
 
 ---
 
@@ -109,6 +109,21 @@ npm run dev
 # Build the optimized production bundle
 npm run build
 ```
+
+---
+
+## 🌐 Deployment (Netlify)
+
+This application is fully compatible and configured for live hosting on [Netlify](https://www.netlify.com) using the custom domain:
+👉 **[soulmatelove.in](https://soulmatelove.in)**
+
+### Steps to Deploy on Netlify:
+1. Import the repository `utkrashtkumar/soulmate-for-you` into Netlify.
+2. Netlify automatically detects Next.js and provisions the Next.js Runtime:
+   - **Build Command**: `npm run build`
+   - **Publish Directory**: `.next`
+3. Configure the required environment variables (from `.env.local`) in the Netlify Dashboard under **Site configuration** -> **Environment variables**.
+4. Set up the custom domain **`soulmatelove.in`** under **Domain management**.
 
 ---
 
