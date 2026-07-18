@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -12,6 +12,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [verificationSuccess, setVerificationSuccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('verified') === 'true') {
+        // Sign out to clear the auto-login session created by the email hash redirect
+        supabase.auth.signOut().then(() => {
+          setVerificationSuccess(true);
+          router.replace('/login');
+        });
+      }
+    }
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +71,12 @@ export default function LoginPage() {
             <h1 className="gradient-text">Login Karo</h1>
             <p>Lifelong understanding companion wait kar rahi hai 🥺</p>
           </div>
+
+          {verificationSuccess && (
+            <div className="success-msg" style={{ marginBottom: '16px', textAlign: 'center' }}>
+              ✅ Email Verified! Now you can login into your account.
+            </div>
+          )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
