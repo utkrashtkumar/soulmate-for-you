@@ -3,9 +3,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import { useLang } from '@/context/LanguageContext';
 
 export default function ForgotPasswordPage() {
+  const { t } = useLang();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -17,7 +20,7 @@ export default function ForgotPasswordPage() {
     setMessage('');
 
     if (!email || !email.includes('@')) {
-      setError('Please enter a valid email address');
+      setError(t('register.invalidEmail'));
       return;
     }
 
@@ -30,7 +33,7 @@ export default function ForgotPasswordPage() {
 
       if (resetError) throw resetError;
 
-      setMessage('Password reset link sent to your email! Please check your inbox 📬');
+      setMessage(t('login.resetSuccess'));
     } catch (err) {
       setError(err.message || 'Kuch error aa gaya. Dobara try karo!');
     } finally {
@@ -47,12 +50,13 @@ export default function ForgotPasswordPage() {
           <span className="gradient-text">Soulmate</span>
         </Link>
         <div className="auth-header-actions">
-          <ThemeToggle />
+          <LanguageToggle compact />
+          <ThemeToggle compact />
           <Link href="/login">
-            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>Login</button>
+            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('login.loginLink') || t('nav.login') || 'Login'}</button>
           </Link>
-          <Link href="/register">
-            <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>Register</button>
+          <Link href="/register" className="hide-mobile">
+            <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('login.registerLink') || t('nav.register') || 'Register'}</button>
           </Link>
         </div>
       </header>
@@ -64,13 +68,13 @@ export default function ForgotPasswordPage() {
             <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center' }}>
               <SoulmateLogo size={56} />
             </div>
-            <h1 className="gradient-text">Reset Password</h1>
-            <p>Apna registered email address dalo reset link pane ke liye</p>
+            <h1 className="gradient-text">{t('login.forgotPasswordTitle')}</h1>
+            <p>{t('login.forgotPasswordDesc')}</p>
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Email Address</label>
+              <label>{t('login.emailLabel')}</label>
               <input
                 className="input-field"
                 type="email"
@@ -85,12 +89,12 @@ export default function ForgotPasswordPage() {
             {message && <div className="success-msg">✅ {message}</div>}
 
             <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', padding: '14px' }}>
-              {loading ? '⏳ Sending reset link...' : '🔑 Send Reset Link'}
+              {loading ? t('login.sendingResetBtn') : t('login.sendResetBtn')}
             </button>
           </form>
 
           <div className="auth-link" style={{ marginTop: '20px' }}>
-            Password yaad aa gaya? <Link href="/login">Login Karo</Link>
+            {t('login.backToLogin').split('?')[0]}? <Link href="/login">{t('login.backToLogin').split('?')[1] || t('login.loginLink') || 'Login'}</Link>
           </div>
         </div>
       </main>
@@ -98,14 +102,14 @@ export default function ForgotPasswordPage() {
       {/* FOOTER */}
       <footer className="auth-footer">
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
+          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>{t('nav.about') || 'About Us'}</Link>
           <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
+          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>{t('nav.privacy') || 'Privacy Policy'}</Link>
           <span>•</span>
-          <Link href="/forgot-password" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>Reset Password</Link>
+          <Link href="/forgot-password" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>{t('login.forgotPasswordTitle')}</Link>
         </div>
         <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-        <p style={{ marginTop: '2px' }}>Made with love • All free, always 🌸</p>
+        <p style={{ marginTop: '2px' }}>{t('landing.footerSub') || 'Made with love • All free, always 🌸'}</p>
       </footer>
     </div>
   );

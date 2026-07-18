@@ -35,8 +35,8 @@ export default function MobileBottomNav() {
     return null;
   }
 
-  // If user is logged out, hide bottom nav on auth pages (login/register/landing)
-  if (!session && (pathname === '/' || pathname === '/login' || pathname === '/register')) {
+  // If user is logged out, hide bottom nav entirely
+  if (!session) {
     return null;
   }
 

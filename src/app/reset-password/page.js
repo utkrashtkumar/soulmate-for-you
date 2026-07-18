@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import { useLang } from '@/context/LanguageContext';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const { t } = useLang();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,11 +23,11 @@ export default function ResetPasswordPage() {
     setSuccess('');
 
     if (password.length < 6) {
-      setError('Password minimum 6 characters ka hona chahiye');
+      setError(t('login.passwordLengthError'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Passwords match nahi kar rahe 😬');
+      setError(t('login.passwordMismatchError'));
       return;
     }
 
@@ -36,7 +39,7 @@ export default function ResetPasswordPage() {
 
       if (updateError) throw updateError;
 
-      setSuccess('Naya password set ho gaya! 🎉 Login page par bhej raha hoon...');
+      setSuccess(t('login.resetSuccessRedirect'));
       setTimeout(() => {
         router.push('/login');
       }, 2000);
@@ -56,9 +59,10 @@ export default function ResetPasswordPage() {
           <span className="gradient-text">Soulmate</span>
         </Link>
         <div className="auth-header-actions">
-          <ThemeToggle />
+          <LanguageToggle compact />
+          <ThemeToggle compact />
           <Link href="/login">
-            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>Login</button>
+            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('login.loginLink') || t('nav.login') || 'Login'}</button>
           </Link>
         </div>
       </header>
@@ -70,13 +74,13 @@ export default function ResetPasswordPage() {
             <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center' }}>
               <SoulmateLogo size={56} />
             </div>
-            <h1 className="gradient-text">Naya Password Set Karo</h1>
-            <p>Apna naya strong password enter karo</p>
+            <h1 className="gradient-text">{t('login.newPasswordTitle')}</h1>
+            <p>{t('login.newPasswordDesc')}</p>
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>Naya Password</label>
+              <label>{t('login.newPasswordLabel')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -88,7 +92,7 @@ export default function ResetPasswordPage() {
             </div>
 
             <div className="form-group">
-              <label>Confirm Naya Password</label>
+              <label>{t('login.confirmNewPasswordLabel')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -103,12 +107,12 @@ export default function ResetPasswordPage() {
             {success && <div className="success-msg">✅ {success}</div>}
 
             <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%', justifyContent: 'center', padding: '14px' }}>
-              {loading ? '⏳ Updating password...' : '🔒 Set New Password'}
+              {loading ? t('login.updatingPasswordBtn') : t('login.setNewPasswordBtn')}
             </button>
           </form>
 
           <div className="auth-link" style={{ marginTop: '20px' }}>
-            <Link href="/login">Return to Login</Link>
+            <Link href="/login">{t('login.backToLogin') || t('login.loginLink') || 'Login'}</Link>
           </div>
         </div>
       </main>
@@ -116,7 +120,7 @@ export default function ResetPasswordPage() {
       {/* FOOTER */}
       <footer className="auth-footer">
         <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-        <p style={{ marginTop: '2px' }}>Made with love • All free, always 🌸</p>
+        <p style={{ marginTop: '2px' }}>{t('landing.footerSub') || 'Made with love • All free, always 🌸'}</p>
       </footer>
     </div>
   );
