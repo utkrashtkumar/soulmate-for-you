@@ -27,6 +27,8 @@ const translations = {
       websiteHome: 'Website Home',
       login: 'Login',
       register: 'Get Started Free',
+      about: 'About Us',
+      privacy: 'Privacy Policy',
     },
 
     landing: {
@@ -338,6 +340,8 @@ const translations = {
       websiteHome: 'Website Home',
       login: 'Login Karo',
       register: 'Free Mein Shuru Karo',
+      about: 'About Us',
+      privacy: 'Privacy Policy',
     },
 
     landing: {

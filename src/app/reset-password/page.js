@@ -62,7 +62,7 @@ export default function ResetPasswordPage() {
           <LanguageToggle compact />
           <ThemeToggle compact />
           <Link href="/login">
-            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('login.loginLink') || t('nav.login') || 'Login'}</button>
+            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('nav.login')}</button>
           </Link>
         </div>
       </header>

@@ -53,10 +53,10 @@ export default function ForgotPasswordPage() {
           <LanguageToggle compact />
           <ThemeToggle compact />
           <Link href="/login">
-            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('login.loginLink') || t('nav.login') || 'Login'}</button>
+            <button className="btn-secondary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('nav.login')}</button>
           </Link>
           <Link href="/register" className="hide-mobile">
-            <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('login.registerLink') || t('nav.register') || 'Register'}</button>
+            <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>{t('nav.register')}</button>
           </Link>
         </div>
       </header>
@@ -94,7 +94,7 @@ export default function ForgotPasswordPage() {
           </form>
 
           <div className="auth-link" style={{ marginTop: '20px' }}>
-            {t('login.backToLogin').split('?')[0]}? <Link href="/login">{t('login.backToLogin').split('?')[1] || t('login.loginLink') || 'Login'}</Link>
+            <Link href="/login">{t('login.backToLogin')}</Link>
           </div>
         </div>
       </main>
@@ -102,9 +102,9 @@ export default function ForgotPasswordPage() {
       {/* FOOTER */}
       <footer className="auth-footer">
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>{t('nav.about') || 'About Us'}</Link>
+          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>{t('nav.about')}</Link>
           <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>{t('nav.privacy') || 'Privacy Policy'}</Link>
+          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>{t('nav.privacy')}</Link>
           <span>•</span>
           <Link href="/forgot-password" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>{t('login.forgotPasswordTitle')}</Link>
         </div>
