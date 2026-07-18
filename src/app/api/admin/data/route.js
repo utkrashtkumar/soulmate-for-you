@@ -67,16 +67,27 @@ export async function GET(request) {
       .select('*', { count: 'exact', head: true });
     if (countError) throw countError;
 
+    const calculateAge = (dobStr) => {
+      if (!dobStr) return null;
+      const dob = new Date(dobStr);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+      return age;
+    };
+
     // Merge users and profiles
     const mergedUsers = users.map(u => {
       const p = profiles?.find(prof => prof.id === u.id) || {};
+      const dobVal = p.dob || u.user_metadata?.dob || '';
       return {
         id: u.id,
         email: u.email,
         full_name: p.full_name || u.user_metadata?.full_name || 'N/A',
         mobile: p.mobile || u.user_metadata?.mobile || 'N/A',
-        dob: p.dob || u.user_metadata?.dob || '',
-        age: p.age || null,
+        dob: dobVal,
+        age: calculateAge(dobVal),
         created_at: u.created_at || p.created_at,
       };
     });

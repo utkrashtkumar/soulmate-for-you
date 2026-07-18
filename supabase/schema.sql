@@ -12,9 +12,6 @@ create table if not exists public.profiles (
   full_name text not null,
   mobile text not null,
   dob date not null,
-  age int generated always as (
-    date_part('year', age(dob))::int
-  ) stored,
   theme text default 'whatsapp',
   created_at timestamptz default now()
 );

@@ -13,6 +13,16 @@ export default function ProfilePage() {
   const [notifStatus, setNotifStatus] = useState('unknown');
   const [notifMsg, setNotifMsg] = useState('');
 
+  const calculateAge = (dobStr) => {
+    if (!dobStr) return null;
+    const dob = new Date(dobStr);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+    return age;
+  };
+
   useEffect(() => {
     const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -125,7 +135,7 @@ export default function ProfilePage() {
                 { label: 'Email', value: profile?.email },
                 { label: 'Mobile', value: profile?.mobile },
                 { label: 'Date of Birth', value: profile?.dob ? new Date(profile.dob).toLocaleDateString('en-IN') : '--' },
-                { label: 'Umar (Age)', value: profile?.age ? `${profile.age} saal` : '--' },
+                { label: 'Umar (Age)', value: profile?.dob ? `${calculateAge(profile.dob)} saal` : '--' },
                 { label: 'Member Since', value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN') : '--' },
               ].map(({ label, value }) => (
                 <div key={label} style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', padding: '12px 16px' }}>
