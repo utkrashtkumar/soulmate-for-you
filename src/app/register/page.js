@@ -249,45 +249,44 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>{t('register.emailLabel')}</label>
-                <input className="input-field" type="email" name="email" placeholder="example@gmail.com" value={form.email} onChange={handleChange} />
-              </div>
-              <div className="form-group">
-                <label>{t('register.mobileLabel')}</label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <select
-                    value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
-                    className="input-field"
-                    style={{
-                      width: '95px',
-                      flexShrink: 0,
-                      padding: '8px 4px',
-                      cursor: 'pointer',
-                      background: 'var(--bg-secondary)',
-                      borderColor: 'var(--border-color)',
-                      color: 'var(--text-primary)',
-                      borderRadius: 'var(--radius-md)'
-                    }}
-                  >
-                    {COUNTRY_CODES.map((cc, i) => (
-                      <option key={`${cc.country}-${cc.code}-${i}`} value={cc.code}>
-                        {cc.flag} {cc.code} {cc.country}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    className="input-field"
-                    type="tel"
-                    name="mobile"
-                    placeholder="9876543210"
-                    value={form.mobile}
-                    onChange={handleChange}
-                    style={{ flex: 1 }}
-                  />
-                </div>
+            <div className="form-group">
+              <label>{t('register.emailLabel')}</label>
+              <input className="input-field" type="email" name="email" placeholder="example@gmail.com" value={form.email} onChange={handleChange} />
+            </div>
+
+            <div className="form-group">
+              <label>{t('register.mobileLabel')}</label>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <select
+                  value={countryCode}
+                  onChange={(e) => setCountryCode(e.target.value)}
+                  className="input-field"
+                  style={{
+                    width: '95px',
+                    flexShrink: 0,
+                    padding: '8px 4px',
+                    cursor: 'pointer',
+                    background: 'var(--bg-secondary)',
+                    borderColor: 'var(--border-color)',
+                    color: 'var(--text-primary)',
+                    borderRadius: 'var(--radius-md)'
+                  }}
+                >
+                  {COUNTRY_CODES.map((cc, i) => (
+                    <option key={`${cc.country}-${cc.code}-${i}`} value={cc.code}>
+                      {cc.flag} {cc.code} {cc.country}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  className="input-field"
+                  type="tel"
+                  name="mobile"
+                  placeholder="9876543210"
+                  value={form.mobile}
+                  onChange={handleChange}
+                  style={{ flex: 1 }}
+                />
               </div>
             </div>
 
