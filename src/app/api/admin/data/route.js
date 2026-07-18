@@ -67,6 +67,16 @@ export async function GET(request) {
       .select('*', { count: 'exact', head: true });
     if (countError) throw countError;
 
+    // 5. Fetch site visits stats
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const [{ count: totalVisits }, { count: todayVisits }, { data: recentVisits }] = await Promise.all([
+      serviceClient.from('site_visits').select('*', { count: 'exact', head: true }),
+      serviceClient.from('site_visits').select('*', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString()),
+      serviceClient.from('site_visits').select('*').order('created_at', { ascending: false }).limit(20),
+    ]);
+
     const calculateAge = (dobStr) => {
       if (!dobStr) return null;
       const dob = new Date(dobStr);
@@ -96,10 +106,13 @@ export async function GET(request) {
       success: true,
       users: mergedUsers,
       avatars: avatars || [],
+      recentVisits: recentVisits || [],
       stats: {
         totalUsers: mergedUsers.length,
         totalAvatars: avatars?.length || 0,
         totalMessages: totalMessages || 0,
+        totalVisits: totalVisits || 0,
+        todayVisits: todayVisits || 0,
       }
     });
   } catch (err) {

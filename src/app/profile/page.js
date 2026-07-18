@@ -4,10 +4,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import { useLang } from '@/context/LanguageContext';
+
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { t } = useLang();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notifStatus, setNotifStatus] = useState('unknown');
@@ -41,7 +45,7 @@ export default function ProfilePage() {
 
   const requestNotifications = async () => {
     if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-      setNotifMsg('Tera browser notifications support nahi karta 😢');
+      setNotifMsg(t('profile.notifMsgSupport'));
       return;
     }
 
@@ -53,7 +57,7 @@ export default function ProfilePage() {
       if (permission === 'granted') {
         const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
         if (!vapidKey || vapidKey === 'your_vapid_public_key') {
-          setNotifMsg('✅ Notifications enable ho gayi! (VAPID key set karo .env mein push ke liye)');
+          setNotifMsg(`✅ ${t('profile.enabledStatus')} (VAPID key set karo .env mein push ke liye)`);
           return;
         }
 
@@ -77,12 +81,12 @@ export default function ProfilePage() {
           body: JSON.stringify({ subscription: sub, userId: session.user.id }),
         });
 
-        setNotifMsg('✅ Companion ke notifications enable ho gaye! Woh message karegi jab yaad karegi 💕');
+        setNotifMsg(t('profile.notifMsgGranted'));
       } else {
-        setNotifMsg('Notifications block hai. Browser settings mein allow karo 😔');
+        setNotifMsg(t('profile.notifMsgDenied'));
       }
     } catch (err) {
-      setNotifMsg('Notification setup mein problem: ' + err.message);
+      setNotifMsg(t('profile.notifMsgSetup') + err.message);
     }
   };
 
@@ -112,35 +116,50 @@ export default function ProfilePage() {
           )}
         </nav>
         <div className="sidebar-footer">
-          <div style={{ marginBottom: '10px' }}><ThemeToggle /></div>
+          <div style={{ marginBottom: '10px', display: 'flex', gap: '8px' }}>
+            <ThemeToggle />
+            <LanguageToggle compact />
+          </div>
           <button className="nav-item" onClick={handleLogout} style={{ width: '100%', color: '#ff6b6b', background: 'none', border: 'none' }}>
-            <span className="icon">🚪</span> Logout
+            <span className="icon">🚪</span> {t('profile.logoutBtn')}
           </button>
         </div>
       </aside>
 
       <main className="main-content">
+        <header className="app-header">
+          <div className="mobile-logo">
+            <SoulmateLogo size={28} />
+            <span className="gradient-text" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Soulmate</span>
+          </div>
+          <div className="hide-mobile" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <LanguageToggle compact />
+            <ThemeToggle compact />
+          </div>
+        </header>
+
         <div className="page-header">
-          <h1>👤 <span className="gradient-text">Mera Profile</span></h1>
-          <p>Apni account details aur settings</p>
+          <h1>👤 <span className="gradient-text">{t('profile.title')}</span></h1>
+          <p>{t('profile.subtitle')}</p>
         </div>
 
         <div className="settings-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
           {/* Profile Info */}
           <div className="settings-card" style={{ gridColumn: '1 / -1' }}>
-            <h3>📋 Account Details</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <h3>{t('profile.detailsTitle')}</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px' }}>
               {[
-                { label: 'Naam', value: profile?.full_name },
-                { label: 'Email', value: profile?.email },
-                { label: 'Mobile', value: profile?.mobile },
-                { label: 'Date of Birth', value: profile?.dob ? new Date(profile.dob).toLocaleDateString('en-IN') : '--' },
-                { label: 'Umar (Age)', value: profile?.dob ? `${calculateAge(profile.dob)} saal` : '--' },
-                { label: 'Member Since', value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN') : '--' },
+                { label: t('profile.fullNameLabel'), value: profile?.full_name },
+                { label: t('profile.emailLabel'), value: profile?.email },
+                { label: t('profile.mobileLabel'), value: profile?.mobile },
+                { label: t('profile.dobLabel'), value: profile?.dob ? new Date(profile.dob).toLocaleDateString('en-IN') : '--' },
+                { label: t('profile.ageLabel'), value: profile?.dob ? `${calculateAge(profile.dob)} ${t('profile.ageLabel').toLowerCase() === 'age' ? 'years' : 'saal'}` : '--' },
+                { label: t('profile.memberSince'), value: profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN') : '--' },
               ].map(({ label, value }) => (
-                <div key={label} style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', padding: '12px 16px' }}>
+                <div key={label} style={{ background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', padding: '12px 16px', minWidth: 0 }}>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>{label}</div>
-                  <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{value || '--'}</div>
+                  <div style={{ fontWeight: 600, fontSize: '0.88rem', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{value || '--'}</div>
                 </div>
               ))}
             </div>
@@ -148,9 +167,9 @@ export default function ProfilePage() {
 
           {/* Notifications */}
           <div className="settings-card">
-            <h3>🔔 Push Notifications</h3>
+            <h3>{t('profile.pushTitle')}</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: 1.6 }}>
-              Companion notifications enable karo — woh khud message karegi jab tum bahut der se chat nahi karte!
+              {t('profile.pushDesc')}
             </p>
             <div style={{ marginBottom: '12px' }}>
               <span style={{
@@ -158,12 +177,12 @@ export default function ProfilePage() {
                 fontSize: '0.82rem', fontWeight: 600,
                 color: notifStatus === 'granted' ? '#00e676' : notifStatus === 'denied' ? '#ff6b6b' : 'var(--text-secondary)',
               }}>
-                {notifStatus === 'granted' ? '✅ Enabled' : notifStatus === 'denied' ? '❌ Blocked' : '⏳ Not Set'}
+                {notifStatus === 'granted' ? t('profile.enabledStatus') : notifStatus === 'denied' ? t('profile.blockedStatus') : t('profile.notSetStatus')}
               </span>
             </div>
             {notifStatus !== 'granted' && (
               <button className="btn-primary" onClick={requestNotifications} style={{ width: '100%', justifyContent: 'center' }}>
-                🔔 Notifications Enable Karo
+                {t('profile.pushBtn')}
               </button>
             )}
             {notifMsg && <div className="success-msg" style={{ marginTop: '10px', fontSize: '0.82rem' }}>{notifMsg}</div>}
@@ -171,10 +190,10 @@ export default function ProfilePage() {
 
           {/* Danger Zone */}
           <div className="settings-card">
-            <h3>⚙️ Account Actions</h3>
+            <h3>{t('profile.actionsTitle')}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <button className="btn-secondary" onClick={handleLogout} style={{ width: '100%', justifyContent: 'center' }}>
-                🚪 Logout
+                {t('profile.logoutBtn')}
               </button>
             </div>
           </div>

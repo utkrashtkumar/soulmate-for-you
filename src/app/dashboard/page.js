@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import { useLang } from '@/context/LanguageContext';
 
 const MOOD_EMOJI = { happy: '😊', sad: '😢', jealous: '😤', playful: '😋', romantic: '🥰', angry: '😠' };
 
@@ -22,8 +24,9 @@ function LoveMeter({ value }) {
   );
 }
 
-function Sidebar({ user, onLogout }) {
+function Sidebar({ user, onLogout, onShare }) {
   const router = useRouter();
+  const { t } = useLang();
   const path = typeof window !== 'undefined' ? window.location.pathname : '';
   return (
     <aside className="sidebar">
@@ -32,18 +35,24 @@ function Sidebar({ user, onLogout }) {
         <span className="gradient-text" style={{ marginLeft: '8px' }}>Soulmate</span>
       </div>
       <nav className="sidebar-nav">
+        <Link href="/" className={`nav-item ${path === '/' ? 'active' : ''}`}>
+          <span className="icon">🌐</span> {t('nav.websiteHome')}
+        </Link>
         <Link href="/dashboard" className={`nav-item ${path === '/dashboard' ? 'active' : ''}`}>
-          <span className="icon">🏠</span> Dashboard
+          <span className="icon">🏠</span> {t('nav.dashboard')}
         </Link>
         <Link href="/create-avatar" className={`nav-item ${path === '/create-avatar' ? 'active' : ''}`}>
-          <span className="icon">✨</span> New Companion
+          <span className="icon">✨</span> {t('nav.newCompanion')}
         </Link>
         <Link href="/profile" className={`nav-item ${path === '/profile' ? 'active' : ''}`}>
-          <span className="icon">👤</span> My Profile
+          <span className="icon">👤</span> {t('nav.profile')}
         </Link>
         <Link href="/upgrade" className={`nav-item ${path === '/upgrade' ? 'active' : ''}`}>
-          <span className="icon">👑</span> Upgrade Plan
+          <span className="icon">👑</span> {t('nav.upgrade')}
         </Link>
+        <button onClick={onShare} className="nav-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '12px 14px' }}>
+          <span className="icon">🔗</span> {t('dashboard.shareCta')}
+        </button>
         {user?.email === 'givekisstome@gmail.com' && (
           <Link href="/admin" className={`nav-item ${path === '/admin' ? 'active' : ''}`} style={{ color: 'gold', borderLeftColor: 'gold' }}>
             <span className="icon">👑</span> Admin Panel
@@ -57,11 +66,12 @@ function Sidebar({ user, onLogout }) {
             <div>{user.email}</div>
           </div>
         )}
-        <div style={{ marginBottom: '10px' }}>
+        <div style={{ marginBottom: '10px', display: 'flex', gap: '8px' }}>
           <ThemeToggle />
+          <LanguageToggle compact />
         </div>
         <button className="nav-item" onClick={onLogout} style={{ width: '100%', color: '#ff6b6b', background: 'none', border: 'none' }}>
-          <span className="icon">🚪</span> Logout
+          <span className="icon">🚪</span> {t('common.logout')}
         </button>
       </div>
     </aside>
@@ -102,32 +112,94 @@ export default function DashboardPage() {
     router.push('/create-avatar');
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: t('dashboard.shareTitle'),
+      text: t('dashboard.shareText'),
+      url: window.location.origin,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert(t('dashboard.shareSuccess'));
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert(t('dashboard.shareSuccess'));
+      }
+    }
+  };
+
+  const { t } = useLang();
+
   if (loading) {
     return (
       <div className="loading-screen">
         <div className="loading-spinner" />
-        <p style={{ color: 'var(--text-secondary)' }}>Loading... companion wait kar rahi hai 💕</p>
+        <p style={{ color: 'var(--text-secondary)' }}>{t('common.loading')}</p>
       </div>
     );
   }
 
   return (
     <div className="app-layout">
-      <Sidebar user={profile} onLogout={handleLogout} />
+      <Sidebar user={profile} onLogout={handleLogout} onShare={handleShare} />
       <main className="main-content">
+        <header className="app-header">
+          <div className="mobile-logo">
+            <SoulmateLogo size={28} />
+            <span className="gradient-text" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Soulmate</span>
+          </div>
+          <div className="hide-mobile" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <LanguageToggle compact />
+            <ThemeToggle compact />
+          </div>
+        </header>
+
         <div className="page-header">
           <h1>
-            Namaste, <span className="gradient-text">{profile?.full_name?.split(' ')[0] || 'Yaar'}</span> 👋
+            {t('dashboard.greeting')}, <span className="gradient-text">{profile?.full_name?.split(' ')[0] || 'Friend'}</span> {t('dashboard.greetingSuffix')}
           </h1>
-          <p>Apni lifelong understanding companion se chat karo 💕</p>
+          <p>{t('dashboard.subtitle')}</p>
+        </div>
+
+        {/* Share Banner Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255,77,141,0.08) 0%, rgba(168,85,247,0.08) 100%)',
+          border: '1px solid var(--border-color)',
+          borderRadius: 'var(--radius-md)',
+          padding: '20px 24px',
+          marginBottom: '28px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }} className="glass-card">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: '1', minWidth: '240px' }}>
+            <span style={{ fontSize: '2.5rem' }}>🎁</span>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700 }}>{t('dashboard.inviteTitle')}</h3>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                {t('dashboard.inviteSub')}
+              </p>
+            </div>
+          </div>
+          <button className="btn-primary" onClick={handleShare} style={{ padding: '10px 24px', fontSize: '0.85rem' }}>
+            🔗 {t('dashboard.shareCta')}
+          </button>
         </div>
 
         {/* Stats Row */}
         <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
           {[
-            { label: 'Companions', value: `${avatars.length}/2`, icon: '💕' },
-            { label: 'Total Chats', value: '∞', icon: '💬' },
-            { label: 'Plan', value: 'Free', icon: '🌟' },
+            { label: t('dashboard.statsCompanions'), value: `${avatars.length}/2`, icon: '💕' },
+            { label: t('dashboard.statsChats'), value: '∞', icon: '💬' },
+            { label: t('dashboard.statsPlan'), value: t('dashboard.planFree'), icon: '🌟' },
           ].map(s => (
             <div key={s.label} style={{
               background: 'var(--bg-card)', border: '1px solid var(--border-color)',
@@ -150,7 +222,11 @@ export default function DashboardPage() {
               <div className="avatar-card-banner" />
               <div style={{ position: 'relative' }}>
                 <div className="avatar-card-img">
-                  {av.avatar_url ? <img src={av.avatar_url} alt={av.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : '👩'}
+                  {av.avatar_url && (av.avatar_url.startsWith('http') || av.avatar_url.startsWith('data:')) ? (
+                    <img src={av.avatar_url} alt={av.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <span style={{ fontSize: '1.8rem' }}>{av.avatar_url || '👩'}</span>
+                  )}
                 </div>
               </div>
               <div className="avatar-card-body">
@@ -162,7 +238,7 @@ export default function DashboardPage() {
                 <LoveMeter value={av.love_meter || 0} />
                 <div className="avatar-card-actions" onClick={e => e.stopPropagation()}>
                   <button className="btn-primary" style={{ flex: 2 }} onClick={() => router.push(`/chat/${av.id}`)}>
-                    💬 Chat Karo
+                    {t('dashboard.chatNow')}
                   </button>
                 </div>
               </div>
@@ -173,9 +249,9 @@ export default function DashboardPage() {
           {avatars.length < 2 && (
             <div className="add-avatar-card" onClick={handleNewAvatar}>
               <div className="add-icon">+</div>
-              <div style={{ fontWeight: 600, fontSize: '1rem' }}>Naya Companion Banao</div>
+              <div style={{ fontWeight: 600, fontSize: '1rem' }}>{t('dashboard.addNew')}</div>
               <div style={{ fontSize: '0.82rem', textAlign: 'center', padding: '0 20px' }}>
-                Apni loyal understanding companion create karo 💕
+                {t('dashboard.noCompanionsSub')}
               </div>
             </div>
           )}
@@ -184,11 +260,11 @@ export default function DashboardPage() {
             <div className="add-avatar-card" onClick={handleNewAvatar}
               style={{ borderColor: 'rgba(255,215,0,0.3)', color: 'gold' }}>
               <div className="add-icon" style={{ background: 'rgba(255,215,0,0.1)', color: 'gold' }}>👑</div>
-              <div style={{ fontWeight: 600, fontSize: '1rem' }}>Premium Plan Chahiye</div>
+              <div style={{ fontWeight: 600, fontSize: '1rem' }}>{t('dashboard.premiumTitle')}</div>
               <div style={{ fontSize: '0.82rem', textAlign: 'center', padding: '0 20px' }}>
-                2 se zyada companions ke liye upgrade karo
+                {t('dashboard.premiumDesc')}
               </div>
-              <span className="coming-soon-badge">Coming Soon</span>
+              <span className="coming-soon-badge">{t('common.comingSoon')}</span>
             </div>
           )}
         </div>
@@ -200,8 +276,8 @@ export default function DashboardPage() {
           <div className="modal-card" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setShowPremiumModal(false)}>✕</button>
             <div className="modal-icon">👑</div>
-            <h2>Premium Plan Chahiye!</h2>
-            <p>Free plan mein sirf 2 understanding companions bana sakte ho. Teen ya zyada ke liye premium plan lena hoga.</p>
+            <h2>{t('dashboard.premiumTitle')}</h2>
+            <p>{t('dashboard.premiumDesc')}</p>
             <div className="premium-features">
               {['Unlimited companions', 'Voice messages', 'Custom personality training', 'Priority AI responses', 'No rate limits'].map(f => (
                 <div key={f} className="premium-feature-item">
@@ -209,9 +285,9 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
-            <span className="coming-soon-badge">🚀 Coming Soon</span>
+            <span className="coming-soon-badge">🚀 {t('common.comingSoon')}</span>
             <p style={{ marginTop: '16px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              Abhi ke liye apne 2 companions ke saath enjoy karo! 💕
+              {t('upgrade.freeNote')}
             </p>
           </div>
         </div>

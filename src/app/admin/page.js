@@ -4,12 +4,17 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import { useLang } from '@/context/LanguageContext';
+
+
 
 const MOOD_EMOJI = { happy: '😊', sad: '😢', jealous: '😤', playful: '😋', romantic: '🥰', angry: '😠' };
 
 export default function AdminPage() {
   const router = useRouter();
+  const { t } = useLang();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -304,7 +309,7 @@ export default function AdminPage() {
     return (
       <div className="loading-screen">
         <div className="loading-spinner" />
-        <p style={{ color: 'var(--text-secondary)' }}>Admin settings load ho rahi hain... 👑</p>
+        <p style={{ color: 'var(--text-secondary)' }}>{t('common.loading')}</p>
       </div>
     );
   }
@@ -313,12 +318,12 @@ export default function AdminPage() {
     return (
       <div className="loading-screen" style={{ flexDirection: 'column', gap: '20px', padding: '40px', textAlign: 'center' }}>
         <span style={{ fontSize: '4rem' }}>🚫</span>
-        <h1 className="gradient-text" style={{ fontSize: '2rem' }}>Access Denied</h1>
+        <h1 className="gradient-text" style={{ fontSize: '2rem' }}>{t('admin.deniedTitle')}</h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '500px' }}>
-          Aap is page ko access nahi kar sakte. Ye page sirf admin user (<strong>givekisstome@gmail.com</strong>) ke liye hai.
+          {t('admin.deniedText')}
         </p>
         <Link href="/dashboard">
-          <button className="btn-primary" style={{ padding: '12px 30px' }}>Wapas Dashboard Chalo 💕</button>
+          <button className="btn-primary" style={{ padding: '12px 30px' }}>{t('admin.backBtn')}</button>
         </Link>
       </div>
     );
@@ -375,8 +380,9 @@ export default function AdminPage() {
             <div style={{ fontWeight: 600, color: 'gold', marginBottom: '2px' }}>👑 Administrator</div>
             <div style={{ wordBreak: 'break-all' }}>{adminUser?.email}</div>
           </div>
-          <div style={{ marginBottom: '10px' }}>
+          <div style={{ marginBottom: '10px', display: 'flex', gap: '8px' }}>
             <ThemeToggle />
+            <LanguageToggle compact />
           </div>
           <button className="nav-item" onClick={handleLogout} style={{ width: '100%', color: '#ff6b6b', background: 'none', border: 'none' }}>
             <span className="icon">🚪</span> Logout
@@ -386,6 +392,18 @@ export default function AdminPage() {
 
       {/* MAIN CONTENT CONTAINER */}
       <main className="main-content">
+        <header className="app-header">
+          <div className="mobile-logo">
+            <SoulmateLogo size={28} />
+            <span className="gradient-text" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Soulmate</span>
+          </div>
+          <div className="hide-mobile" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <LanguageToggle compact />
+            <ThemeToggle compact />
+          </div>
+        </header>
+
         <div className="page-header">
           <h1>
             👑 Admin <span className="gradient-text">Dashboard</span>
@@ -401,43 +419,45 @@ export default function AdminPage() {
         {activeTab === 'overview' && (
           <div>
             {/* Stats Panel */}
-            <div style={{ display: 'flex', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginBottom: '32px' }}>
               {[
                 { label: 'Total Users', value: stats.totalUsers, icon: '👥', color: '#a855f7' },
-                { label: 'Total Companions', value: stats.totalAvatars, icon: '👩', color: '#ff4d8d' },
-                { label: 'Total Messages', value: stats.totalMessages, icon: '💬', color: '#3b82f6' },
+                { label: 'Companions', value: stats.totalAvatars, icon: '👩', color: '#ff4d8d' },
+                { label: 'Messages', value: stats.totalMessages, icon: '💬', color: '#3b82f6' },
+                { label: 'Total Visitors', value: stats.totalVisits || 0, icon: '👀', color: '#10b981' },
+                { label: "Today's Visitors", value: stats.todayVisits || 0, icon: '🚀', color: '#f59e0b' },
               ].map(s => (
                 <div key={s.label} style={{
                   background: 'var(--bg-card)', border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-md)', padding: '24px',
-                  display: 'flex', alignItems: 'center', gap: '16px', flex: '1', minWidth: '200px',
+                  borderRadius: 'var(--radius-md)', padding: '20px 16px',
+                  display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0,
                   boxShadow: 'var(--shadow-card)'
                 }}>
-                  <span style={{ fontSize: '2.5rem', background: `rgba(${s.color === '#ff4d8d' ? '255,77,141' : s.color === '#a855f7' ? '168,85,247' : '59,130,246'}, 0.1)`, padding: '12px', borderRadius: '50%' }}>{s.icon}</span>
-                  <div>
-                    <div style={{ fontSize: '2.2rem', fontWeight: 800, lineHeight: 1.1 }}>{s.value}</div>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '4px' }}>{s.label}</div>
+                  <span style={{ fontSize: '2rem', background: `rgba(${s.color === '#ff4d8d' ? '255,77,141' : s.color === '#a855f7' ? '168,85,247' : s.color === '#10b981' ? '16,185,129' : s.color === '#f59e0b' ? '245,158,11' : '59,130,246'}, 0.1)`, padding: '10px', borderRadius: '50%', flexShrink: 0 }}>{s.icon}</span>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 800, lineHeight: 1.1 }}>{s.value}</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 500, marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.label}</div>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Quick Summary Tables */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
               {/* Recent Users */}
-              <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '20px' }}>
+              <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '20px', minWidth: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>🆕 Naye Users</h3>
                   <button className="btn-secondary" onClick={() => setActiveTab('users')} style={{ padding: '6px 12px', fontSize: '0.78rem' }}>View All</button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {users.slice(0, 5).map(u => (
-                    <div key={u.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)' }}>
-                      <div>
+                    <div key={u.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', minWidth: 0, gap: '10px' }}>
+                      <div style={{ minWidth: 0 }}>
                         <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{u.full_name}</div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{u.email}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{u.email}</div>
                       </div>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', flexShrink: 0 }}>
                         {new Date(u.created_at).toLocaleDateString('en-IN')}
                       </span>
                     </div>
@@ -458,7 +478,11 @@ export default function AdminPage() {
                     return (
                       <div key={av.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontSize: '1.5rem' }}>{av.avatar_url?.length === 2 ? av.avatar_url : '👩'}</span>
+                          {av.avatar_url && (av.avatar_url.startsWith('http') || av.avatar_url.startsWith('data:')) ? (
+                            <img src={av.avatar_url} alt={av.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                          ) : (
+                            <span style={{ fontSize: '1.5rem' }}>{av.avatar_url || '👩'}</span>
+                          )}
                           <div>
                             <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{av.name}</div>
                             <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Owner: {owner?.full_name || 'Unknown'}</div>
@@ -479,7 +503,7 @@ export default function AdminPage() {
 
         {/* Tab 2: User Management */}
         {activeTab === 'users' && (
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '24px' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '16px', width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>👥 Users Directory ({filteredUsers.length})</h3>
               <input
@@ -492,8 +516,8 @@ export default function AdminPage() {
               />
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+            <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', textAlign: 'left' }}>
                     <th style={{ padding: '12px 8px' }}>User Details</th>
@@ -507,9 +531,9 @@ export default function AdminPage() {
                 <tbody>
                   {filteredUsers.map(u => (
                     <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
-                      <td style={{ padding: '14px 8px' }}>
-                        <div style={{ fontWeight: 600 }}>{u.full_name}</div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{u.email}</div>
+                      <td style={{ padding: '14px 8px', maxWidth: '200px' }}>
+                        <div style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={u.full_name}>{u.full_name}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={u.email}>{u.email}</div>
                       </td>
                       <td style={{ padding: '14px 8px' }}>{u.mobile}</td>
                       <td style={{ padding: '14px 8px' }}>{u.dob ? new Date(u.dob).toLocaleDateString('en-IN') : '--'}</td>
@@ -542,7 +566,7 @@ export default function AdminPage() {
 
         {/* Tab 3: Avatar Management */}
         {activeTab === 'avatars' && (
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '24px' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '16px', width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>👩 Companions Directory ({filteredAvatars.length})</h3>
               <input
@@ -555,8 +579,8 @@ export default function AdminPage() {
               />
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+            <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', textAlign: 'left' }}>
                     <th style={{ padding: '12px 8px' }}>Companion</th>
@@ -585,9 +609,9 @@ export default function AdminPage() {
                             </div>
                           </div>
                         </td>
-                        <td style={{ padding: '14px 8px' }}>
-                          <div style={{ fontWeight: 500 }}>{owner?.full_name || 'Deleted User'}</div>
-                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{owner?.email || '--'}</div>
+                        <td style={{ padding: '14px 8px', maxWidth: '180px' }}>
+                          <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={owner?.full_name}>{owner?.full_name || 'Deleted User'}</div>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={owner?.email}>{owner?.email || '--'}</div>
                         </td>
                         <td style={{ padding: '14px 8px' }}>{av.personality}</td>
                         <td style={{ padding: '14px 8px' }}>
@@ -661,7 +685,11 @@ export default function AdminPage() {
                           transition: 'var(--transition)'
                         }}
                       >
-                        <span style={{ fontSize: '1.2rem' }}>{av.avatar_url?.length === 2 ? av.avatar_url : '👩'}</span>
+                        {av.avatar_url && (av.avatar_url.startsWith('http') || av.avatar_url.startsWith('data:')) ? (
+                          <img src={av.avatar_url} alt={av.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                          <span style={{ fontSize: '1.2rem' }}>{av.avatar_url || '👩'}</span>
+                        )}
                         <div style={{ overflow: 'hidden' }}>
                           <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{av.name}</div>
                           <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

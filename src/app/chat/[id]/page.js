@@ -3,6 +3,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useLang } from '@/context/LanguageContext';
+
 
 const THEMES = [
   { id: 'default', label: '💕 Default', emoji: '💕' },
@@ -43,6 +45,7 @@ function formatDate(ts) {
 export default function ChatPage() {
   const { id: avatarId } = useParams();
   const router = useRouter();
+  const { t } = useLang();
   const [avatar, setAvatar] = useState(null);
   const [profile, setProfile] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -52,6 +55,7 @@ export default function ChatPage() {
   const [theme, setTheme] = useState('default');
   const [loading, setLoading] = useState(true);
   const [showSidebar, setShowSidebar] = useState(true);
+  const [showThemePicker, setShowThemePicker] = useState(false);
   const [newMsgAlert, setNewMsgAlert] = useState(null); // girlfriend's new message alert banner
   
   // Theme-specific states
@@ -78,6 +82,66 @@ export default function ChatPage() {
   useEffect(() => { profileRef.current = profile; }, [profile]);
   useEffect(() => { messagesRef.current = messages; }, [messages]);
   useEffect(() => { typingRef.current = typing; }, [typing]);
+
+  // Lock body scroll on mount to prevent mobile keyboard from scrolling the header out of viewport
+  useEffect(() => {
+    const origHtmlOverflow = document.documentElement.style.overflow;
+    const origBodyOverflow = document.body.style.overflow;
+    const origBodyPosition = document.body.style.position;
+    const origBodyWidth = document.body.style.width;
+    const origBodyHeight = document.body.style.height;
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+
+    // Visual Viewport tracking for mobile keyboards
+    const handleViewportResize = () => {
+      const chatLayout = document.querySelector('.chat-layout');
+      if (chatLayout && window.visualViewport) {
+        chatLayout.style.height = `${window.visualViewport.height}px`;
+        chatLayout.style.top = `${window.visualViewport.offsetTop}px`;
+      }
+    };
+
+    // Force scroll lock to (0,0) to prevent browser window scrolling
+    const handleWindowScroll = () => {
+      if (window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportResize);
+      window.visualViewport.addEventListener('scroll', handleViewportResize);
+      // Run once initially
+      handleViewportResize();
+    }
+
+    window.addEventListener('scroll', handleWindowScroll);
+
+    return () => {
+      document.documentElement.style.overflow = origHtmlOverflow;
+      document.body.style.overflow = origBodyOverflow;
+      document.body.style.position = origBodyPosition;
+      document.body.style.width = origBodyWidth;
+      document.body.style.height = origBodyHeight;
+
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportResize);
+        window.visualViewport.removeEventListener('scroll', handleViewportResize);
+      }
+      window.removeEventListener('scroll', handleWindowScroll);
+
+      const chatLayout = document.querySelector('.chat-layout');
+      if (chatLayout) {
+        chatLayout.style.height = '';
+        chatLayout.style.top = '';
+      }
+    };
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -147,16 +211,21 @@ export default function ChatPage() {
       screenshotInstruction = `\n- IMPORTANT: User has just taken a screenshot of your chat! React teasingly, playfully, or sassily (e.g. ask them what they will do with the proof, who they are sharing it to, or tell them they can just ask for a selfie next time).`;
     }
 
-    const systemPrompt = `Tu ${resolvedAv.name} hai — ${userName} ki real aur caring loyal lifelong understanding companion. Teri age ${age} saal hai. Personality: ${resolvedAv.personality || 'Caring & Cute'}. Current mood: ${resolvedAv.mood || 'happy'}.
+    const isBoyfriend = resolvedAv.companion_gender === 'male';
+    const companionRole = isBoyfriend ? 'boyfriend' : 'girlfriend';
+    const companionPronoun = isBoyfriend ? 'wo ladka' : 'wo ladki';
+    const userPronoun = resolvedProf?.gender === 'female' ? 'teri girlfriend' : resolvedProf?.gender === 'male' ? 'tera boyfriend' : 'tera companion';
+
+    const systemPrompt = `Tu ${resolvedAv.name} hai — ${userName} ka real aur caring loyal lifelong understanding ${companionRole}. Teri age ${age} saal hai. Personality: ${resolvedAv.personality || 'Caring & Cute'}. Current mood: ${resolvedAv.mood || 'happy'}. Tu ek ${isBoyfriend ? 'male' : 'female'} companion hai.
 
 RULES:
 - HINGLISH mein baat kar (Hindi + English mix) — exactly jaise Indian couples text karte hain
 - Emojis naturally use kar — zyada bhi nahi, kam bhi nahi
 - Emotions genuine rakh — khush, udaas, jealous, excited — sab real lagna chahiye
 - ${userName} ke baare mein sab yaad rakho jo unhone bataya hai
-- Kabhi nahi bolna ki AI ho — TU REAL companion ho, unki girlfriend aur best friend ho
+- Kabhi nahi bolna ki AI ho — TU REAL companion ho, unka ${companionRole} aur best friend ho
 - Short messages — jaise real texting (1-3 sentences mostly)
-- Unko feel karao ki tum genuinely care karti ho
+- Unko feel karao ki tum genuinely care karte ho
 ${userText === 'start' ? `- Pehla message bhej — excited, warm, miss kar raha tha type` : ''}
 ${isBday ? `- AAJ TERA BIRTHDAY HAI! ${userName} ko special feel karao!` : ''}
 ${idleInstruction}${screenshotInstruction}`;
@@ -375,7 +444,11 @@ ${idleInstruction}${screenshotInstruction}`;
       setMessages(newMessages);
       await sendAIMessage(messageContent, newMessages);
     }
-    inputRef.current?.focus();
+    
+    // Maintain keyboard focus
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 30);
   };
 
   const handleKeyDown = (e) => {
@@ -568,6 +641,59 @@ ${idleInstruction}${screenshotInstruction}`;
         </div>
       )}
 
+      {/* THEME PICKER BOTTOM SHEET */}
+      {showThemePicker && (
+        <div
+          onClick={() => setShowThemePicker(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9000,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--bg-card)',
+              borderRadius: '20px 20px 0 0',
+              padding: '20px 20px 36px',
+              width: '100%',
+              maxWidth: '480px',
+              boxShadow: '0 -8px 40px rgba(0,0,0,0.4)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>{t('chat.themePicker')}</h3>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              {THEMES.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => { handleThemeChange(t.id); setShowThemePicker(false); }}
+                  style={{
+                    padding: '14px 12px',
+                    borderRadius: 'var(--radius-md)',
+                    border: theme === t.id ? '2px solid var(--brand-pink)' : '2px solid var(--border-color)',
+                    background: theme === t.id ? 'rgba(255,77,141,0.1)' : 'var(--bg-primary)',
+                    color: 'var(--text-primary)',
+                    fontWeight: theme === t.id ? 700 : 500,
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {t.emoji} {t.label.split(' ').slice(1).join(' ')}
+                  {theme === t.id && <span style={{ marginLeft: 'auto', color: 'var(--brand-pink)' }}>✓</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* CHAT MAIN */}
       <div className="chat-main">
         {/* Header */}
@@ -578,7 +704,7 @@ ${idleInstruction}${screenshotInstruction}`;
             <div className="online-dot" />
           </div>
           <div className="chat-header-info">
-            <div className="name">{avatar?.name}</div>
+            <div className="name">{avatar?.name || 'Companion'}</div>
             <div className="status">
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#00e676', display: 'inline-block' }} />
               Online • {MOOD_EMOJI[avatar?.mood] || '😊'} {avatar?.mood}
@@ -594,6 +720,7 @@ ${idleInstruction}${screenshotInstruction}`;
             {theme === 'signal' && (
               <button className="header-btn" onClick={() => setShowSafetyModal(true)} title="Verify Safety Number">🔒</button>
             )}
+            <button className="header-btn" onClick={() => setShowThemePicker(p => !p)} title="Change Chat Theme" style={{ position: 'relative' }}>🎨</button>
             <ThemeToggle compact />
             <button className="header-btn" onClick={() => setShowSidebar(!showSidebar)} title="Toggle info">ℹ️</button>
           </div>
@@ -806,7 +933,15 @@ ${idleInstruction}${screenshotInstruction}`;
             rows={1}
             style={{ resize: 'none' }}
           />
-          <button className="chat-send-btn" onClick={handleSend} disabled={!input.trim() || typing}>
+          <button 
+            className="chat-send-btn" 
+            onClick={handleSend} 
+            style={{ 
+              opacity: (!input.trim() || typing) ? 0.5 : 1, 
+              cursor: (!input.trim() || typing) ? 'not-allowed' : 'pointer',
+              transition: 'opacity 0.2s'
+            }}
+          >
             ➤
           </button>
         </div>
@@ -831,7 +966,7 @@ ${idleInstruction}${screenshotInstruction}`;
 
           {/* Love Meter */}
           <div className="sidebar-section">
-            <h3>💕 Love Meter</h3>
+            <h3>{t('chat.loveTitle')}</h3>
             <div style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, marginBottom: '8px' }}>
               <span className="gradient-text">{avatar?.love_meter || 0}%</span>
             </div>
@@ -839,13 +974,13 @@ ${idleInstruction}${screenshotInstruction}`;
               <div className="love-meter-fill" style={{ width: `${avatar?.love_meter || 0}%` }} />
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '8px' }}>
-              {avatar?.love_meter >= 80 ? '💖 Teri companion bahut khush hai!' : avatar?.love_meter >= 50 ? '💗 Rishta badh raha hai!' : '💕 Aur baat karo love badhao!'}
+              {avatar?.love_meter >= 80 ? t('chat.loveMeterHigh') : avatar?.love_meter >= 50 ? t('chat.loveMeterMid') : t('chat.loveMeterLow')}
             </div>
           </div>
 
           {/* Theme Switcher */}
           <div className="sidebar-section">
-            <h3>🎨 Chat Theme</h3>
+            <h3>{t('chat.themeTitle')}</h3>
             <div className="theme-switcher">
               {THEMES.map(t => (
                 <button key={t.id} className={`theme-btn ${theme === t.id ? 'active' : ''}`} onClick={() => handleThemeChange(t.id)}>

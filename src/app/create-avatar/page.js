@@ -3,24 +3,37 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import DatePicker from '@/components/DatePicker';
+import { useLang } from '@/context/LanguageContext';
 
-const PRESET_AVATARS = [
-  { id: 1, emoji: '👩‍🦰', label: 'Redhead', url: null },
-  { id: 2, emoji: '👩‍🦱', label: 'Curly', url: null },
-  { id: 3, emoji: '👩‍🦳', label: 'Silver', url: null },
-  { id: 4, emoji: '👩‍🦲', label: 'Bold', url: null },
-  { id: 5, emoji: '👱‍♀️', label: 'Blonde', url: null },
-  { id: 6, emoji: '🧕', label: 'Hijab', url: null },
-  { id: 7, emoji: '👩', label: 'Classic', url: null },
-  { id: 8, emoji: '🧝‍♀️', label: 'Mystical', url: null },
+const PRESET_AVATARS_FEMALE = [
+  { id: 1, emoji: '👩‍🦰', label: 'Redhead' },
+  { id: 2, emoji: '👩‍🦱', label: 'Curly' },
+  { id: 3, emoji: '👩‍🦳', label: 'Silver' },
+  { id: 4, emoji: '👩‍🦲', label: 'Bold' },
+  { id: 5, emoji: '👱‍♀️', label: 'Blonde' },
+  { id: 6, emoji: '🧕', label: 'Hijab' },
+  { id: 7, emoji: '👩', label: 'Classic' },
+  { id: 8, emoji: '🧝‍♀️', label: 'Mystical' },
+];
+
+const PRESET_AVATARS_MALE = [
+  { id: 1, emoji: '👨‍🦰', label: 'Redhead' },
+  { id: 2, emoji: '👨‍🦱', label: 'Curly' },
+  { id: 3, emoji: '👨‍🦳', label: 'Silver' },
+  { id: 4, emoji: '👨‍🦲', label: 'Bald' },
+  { id: 5, emoji: '👱‍♂️', label: 'Blonde' },
+  { id: 6, emoji: '🧔', label: 'Bearded' },
+  { id: 7, emoji: '👨', label: 'Classic' },
+  { id: 8, emoji: '🧝‍♂️', label: 'Mystical' },
 ];
 
 const PERSONALITIES = [
-  { id: 'Cute & Shy', emoji: '🥺', name: 'Cute & Shy', desc: 'Pyaari, sharmaati, teri har baat sunti hai' },
-  { id: 'Playful & Flirty', emoji: '😏', name: 'Playful & Flirty', desc: 'Mazedaar, thodi naughty, full of energy' },
-  { id: 'Caring & Mature', emoji: '🥰', name: 'Caring & Mature', desc: 'Samajhdaar, caring, emotional support deti hai' },
+  { id: 'Cute & Shy', emoji: '🥺', name: 'Cute & Shy', desc: 'Pyaara, sharmata, teri har baat sunta hai' },
+  { id: 'Playful & Flirty', emoji: '😏', name: 'Playful & Flirty', desc: 'Mazedaar, thoda naughty, full of energy' },
+  { id: 'Caring & Mature', emoji: '🥰', name: 'Caring & Mature', desc: 'Samajhdaar, caring, emotional support deta/deti hai' },
 ];
 
 function calculateGfAge(dobStr) {
@@ -35,7 +48,9 @@ function calculateGfAge(dobStr) {
 
 export default function CreateAvatarPage() {
   const router = useRouter();
+  const { t } = useLang();
   const [step, setStep] = useState(1);
+  const [companionGender, setCompanionGender] = useState(''); // 'male' | 'female'
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [uploadedUrl, setUploadedUrl] = useState(null);
@@ -47,6 +62,9 @@ export default function CreateAvatarPage() {
   const [uploading, setUploading] = useState(false);
   const [userId, setUserId] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+
+  // Derive preset list based on chosen gender
+  const PRESET_AVATARS = companionGender === 'male' ? PRESET_AVATARS_MALE : PRESET_AVATARS_FEMALE;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -89,10 +107,10 @@ export default function CreateAvatarPage() {
   };
 
   const handleCreate = async () => {
-    if (!name.trim()) { setError('Girlfriend ka naam toh daal!'); return; }
-    if (!dob) { setError('Girlfriend ka date of birth daal!'); return; }
+    if (!name.trim()) { setError(t('createAvatar.nameRequired')); return; }
+    if (!dob) { setError(t('createAvatar.dobRequired')); return; }
     if (dobError) { setError(dobError); return; }
-    if (!personality) { setError('Personality choose karo!'); return; }
+    if (!personality) { setError(t('createAvatar.personalityRequired')); return; }
 
     const avatarUrl = uploadedUrl || selectedAvatar?.emoji || null;
     setLoading(true);
@@ -102,6 +120,7 @@ export default function CreateAvatarPage() {
         user_id: userId,
         name: name.trim(),
         avatar_url: avatarUrl,
+        companion_gender: companionGender || 'female',
         dob: dob,
         personality: personality,
         mood: 'happy',
@@ -117,10 +136,11 @@ export default function CreateAvatarPage() {
   };
 
   const steps = [
-    { label: 'Naam', num: 1 },
-    { label: 'Avatar', num: 2 },
-    { label: 'Personality', num: 3 },
-    { label: 'Birthday', num: 4 },
+    { label: t('createAvatar.stepGender'), num: 1 },
+    { label: t('createAvatar.stepName'), num: 2 },
+    { label: t('createAvatar.stepAvatar'), num: 3 },
+    { label: t('createAvatar.stepPersonality'), num: 4 },
+    { label: t('createAvatar.stepBirthday'), num: 5 },
   ];
 
   return (
@@ -142,15 +162,30 @@ export default function CreateAvatarPage() {
           )}
         </nav>
         <div className="sidebar-footer">
-          <ThemeToggle />
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+            <ThemeToggle />
+            <LanguageToggle compact />
+          </div>
         </div>
       </aside>
 
       <main className="main-content">
+        <header className="app-header">
+          <div className="mobile-logo">
+            <SoulmateLogo size={28} />
+            <span className="gradient-text" style={{ fontWeight: 700, fontSize: '1.1rem' }}>Soulmate</span>
+          </div>
+          <div className="hide-mobile" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <LanguageToggle compact />
+            <ThemeToggle compact />
+          </div>
+        </header>
+
         <div className="create-avatar-wrapper">
           <div className="page-header">
-            <h1>✨ <span className="gradient-text">Naya Companion Banao</span></h1>
-            <p>Apni perfect understanding companion design karo step by step</p>
+            <h1>✨ <span className="gradient-text">{t('createAvatar.pageTitle')}</span></h1>
+            <p>{t('createAvatar.pageSubtitle')}</p>
           </div>
 
           {/* Step Indicator */}
@@ -168,14 +203,64 @@ export default function CreateAvatarPage() {
 
           {error && <div className="error-msg" style={{ marginBottom: '16px' }}>⚠️ {error}</div>}
 
-          {/* STEP 1: Name */}
+          {/* STEP 1: Companion Gender */}
           {step === 1 && (
             <div className="step-card">
-              <h2>Companion ka Naam Kya Hai? 💕</h2>
-              <p>Ek pyaara naam rakh uska — isse wo pehchani jaayegi</p>
+              <h2>{t('createAvatar.step1Title')}</h2>
+              <p>{t('createAvatar.step1Sub')}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '20px' }}>
+                {[
+                  { val: 'female', emoji: '👩', label: t('createAvatar.girlfriendLabel'), desc: t('createAvatar.girlfriendDesc') },
+                  { val: 'male', emoji: '👨', label: t('createAvatar.boyfriendLabel'), desc: t('createAvatar.boyfriendDesc') },
+                ].map(g => (
+                  <button
+                    key={g.val}
+                    type="button"
+                    onClick={() => { setCompanionGender(g.val); setSelectedAvatar(null); }}
+                    style={{
+                      padding: '24px 16px',
+                      borderRadius: 'var(--radius-lg)',
+                      border: companionGender === g.val ? '2px solid var(--brand-pink)' : '2px solid var(--border-color)',
+                      background: companionGender === g.val ? 'rgba(255,77,141,0.1)' : 'var(--bg-secondary)',
+                      color: 'var(--text-primary)',
+                      fontWeight: companionGender === g.val ? 700 : 400,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '10px',
+                      transition: 'all 0.2s',
+                      width: '100%',
+                    }}
+                  >
+                    <span style={{ fontSize: '3rem' }}>{g.emoji}</span>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{g.label}</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{g.desc}</div>
+                    {companionGender === g.val && (
+                      <span style={{ color: 'var(--brand-pink)', fontSize: '1.2rem' }}>{t('createAvatar.selectedLabel')}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="step-actions" style={{ marginTop: '24px' }}>
+                <button className="btn-primary" onClick={() => {
+                  if (!companionGender) { setError(t('createAvatar.chooseTypeFirst')); return; }
+                  setError(''); setStep(2);
+                }}>
+                  {t('createAvatar.nextBtn')}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Name */}
+          {step === 2 && (
+            <div className="step-card">
+              <h2>{companionGender === 'male' ? t('createAvatar.step2TitleM') : t('createAvatar.step2TitleF')}</h2>
+              <p>{t('createAvatar.step2Sub')}</p>
               <input
                 className="input-field"
-                placeholder="e.g. Priya, Riya, Sofia, Anjali..."
+                placeholder={companionGender === 'male' ? t('createAvatar.step2PlaceholderM') : t('createAvatar.step2PlaceholderF')}
                 value={name}
                 onChange={e => setName(e.target.value)}
                 style={{ fontSize: '1.1rem', padding: '14px 18px' }}
@@ -183,21 +268,22 @@ export default function CreateAvatarPage() {
                 maxLength={30}
               />
               <div className="step-actions">
+                <button className="btn-secondary" onClick={() => setStep(1)}>{t('createAvatar.backBtn')}</button>
                 <button className="btn-primary" onClick={() => {
-                  if (!name.trim()) { setError('Naam toh daal yaar! 😅'); return; }
-                  setError(''); setStep(2);
+                  if (!name.trim()) { setError(t('createAvatar.nameRequired')); return; }
+                  setError(''); setStep(3);
                 }}>
-                  Aage Chalo →
+                  {t('createAvatar.nextBtn')}
                 </button>
               </div>
             </div>
           )}
 
-          {/* STEP 2: Avatar */}
-          {step === 2 && (
+          {/* STEP 3: Avatar */}
+          {step === 3 && (
             <div className="step-card">
-              <h2>Avatar Choose Karo 📸</h2>
-              <p>Preset se choose karo ya apni image upload karo</p>
+              <h2>{t('createAvatar.step3Title')}</h2>
+              <p>{t('createAvatar.step3Sub')}</p>
 
               <div className="avatar-selector-grid">
                 {PRESET_AVATARS.map(av => (
@@ -212,35 +298,46 @@ export default function CreateAvatarPage() {
                 ))}
               </div>
 
-              <div className="auth-divider" style={{ margin: '20px 0' }}>ya apni photo upload karo</div>
+              <div className="auth-divider" style={{ margin: '20px 0' }}>{t('createAvatar.uploadDivider')}</div>
 
-              <label className="upload-area" style={{ cursor: 'pointer' }}>
+              <label className="upload-area">
                 <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
-                {uploading ? <span>⏳ Upload ho raha hai...</span> : uploadedUrl ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
-                    <img src={uploadedUrl} alt="Uploaded" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover' }} />
-                    <span style={{ color: '#00e676' }}>✅ Image upload ho gayi!</span>
+                {uploading ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--brand-pink)' }}>
+                    <span>{t('createAvatar.uploading')}</span>
+                  </div>
+                ) : uploadedUrl ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <img src={uploadedUrl} alt="Uploaded" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--brand-pink)' }} />
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ color: '#00e676', fontWeight: 600, fontSize: '0.92rem' }}>✅ Image Uploaded Successfully!</div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '2px' }}>Click to change photo</div>
+                    </div>
                   </div>
                 ) : (
-                  <span>📷 Click karke image upload karo (max 5MB)</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '1.6rem' }}>📸</span>
+                    <span style={{ fontWeight: 500 }}>{t('createAvatar.uploadPrompt')}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t('createAvatar.uploadHint')}</span>
+                  </div>
                 )}
               </label>
 
               <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(1)}>← Back</button>
+                <button className="btn-secondary" onClick={() => setStep(2)}>{t('createAvatar.backBtn')}</button>
                 <button className="btn-primary" onClick={() => {
-                  if (!selectedAvatar && !uploadedUrl) { setError('Ek avatar choose karo ya upload karo!'); return; }
-                  setError(''); setStep(3);
-                }}>Aage Chalo →</button>
+                  if (!selectedAvatar && !uploadedUrl) { setError(t('createAvatar.avatarRequired')); return; }
+                  setError(''); setStep(4);
+                }}>{t('createAvatar.nextBtn')}</button>
               </div>
             </div>
           )}
 
-          {/* STEP 3: Personality */}
-          {step === 3 && (
+          {/* STEP 4: Personality */}
+          {step === 4 && (
             <div className="step-card">
-              <h2>Kaisi Personality Chahiye? 🌟</h2>
-              <p>Teri companion kaisi hogi — choose karo</p>
+              <h2>{t('createAvatar.step4Title')}</h2>
+              <p>{t('createAvatar.step4Sub')}</p>
               <div className="personality-grid">
                 {PERSONALITIES.map(p => (
                   <div key={p.id} className={`personality-card ${personality === p.id ? 'selected' : ''}`} onClick={() => setPersonality(p.id)}>
@@ -251,27 +348,27 @@ export default function CreateAvatarPage() {
                 ))}
               </div>
               <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(2)}>← Back</button>
+                <button className="btn-secondary" onClick={() => setStep(3)}>{t('createAvatar.backBtn')}</button>
                 <button className="btn-primary" onClick={() => {
-                  if (!personality) { setError('Personality choose karo!'); return; }
-                  setError(''); setStep(4);
-                }}>Aage Chalo →</button>
+                  if (!personality) { setError(t('createAvatar.personalityRequired')); return; }
+                  setError(''); setStep(5);
+                }}>{t('createAvatar.nextBtn')}</button>
               </div>
             </div>
           )}
 
-          {/* STEP 4: DOB */}
-          {step === 4 && (
+          {/* STEP 5: DOB */}
+          {step === 5 && (
             <div className="step-card">
-              <h2>Companion ka Birthday Kab Hai? 🎂</h2>
-              <p>Kam se kam 18 saal ki honi chahiye — birthday pe notification aayega!</p>
+              <h2>{t('createAvatar.step5Title')}</h2>
+              <p>{t('createAvatar.step5Sub')}</p>
               <DatePicker
                 value={dob}
                 onChange={({ isoDate, age }) => {
                   setDob(isoDate);
                   setDobError('');
                   if (age !== null && age < 18) {
-                    setDobError('Companion ki age kam se kam 18 saal honi chahiye 🚫');
+                    setDobError(t('createAvatar.ageMin'));
                   }
                 }}
                 placeholder="DD/MM/YYYY"
@@ -289,14 +386,14 @@ export default function CreateAvatarPage() {
                 </div>
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{name}</div>
-                  <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{personality}</div>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{personality} • {companionGender === 'male' ? t('createAvatar.summaryBoyfriend') : t('createAvatar.summaryGirlfriend')}</div>
                 </div>
               </div>
 
               <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(3)}>← Back</button>
+                <button className="btn-secondary" onClick={() => setStep(4)}>{t('createAvatar.backBtn')}</button>
                 <button className="btn-primary" onClick={handleCreate} disabled={loading || !!dobError}>
-                  {loading ? '⏳ Ban rahi hai...' : '💕 Companion Banao!'}
+                  {loading ? t('createAvatar.creatingBtn') : t('createAvatar.createBtn')}
                 </button>
               </div>
             </div>

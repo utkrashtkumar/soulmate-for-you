@@ -2,45 +2,19 @@ import React from 'react';
 
 export default function SoulmateLogo({ size = 36 }) {
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-      <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Soft elegant background glow */}
-        <circle cx="50" cy="50" r="46" fill="url(#bgGlow)" stroke="url(#borderGrad)" strokeWidth="1.5" />
-        
-        {/* Intersecting Hearts representing connection */}
-        <g transform="translate(18, 22) scale(0.95)">
-          {/* Main Heart */}
-          <path 
-            d="M32 57.35L29.45 55.03C9.4 36.88 2 30.15 2 21.75C2 14.95 7.35 9.6 14.15 9.6C17.99 9.6 21.67 11.39 24.08 14.22L32 23.51L39.92 14.22C42.33 11.39 46.01 9.6 49.85 9.6C56.65 9.6 62 14.95 62 21.75C62 30.15 54.6 36.88 34.55 55.05L32 57.35Z" 
-            fill="url(#heartGrad)" 
-            filter="url(#shadow)"
-          />
-          {/* Inner spark heart */}
-          <path 
-            d="M20 30C20 22 25 18 30 22C35 18 40 22 40 30C40 36 30 42 30 42C30 42 20 36 20 30Z" 
-            fill="#ffffff" 
-            opacity="0.25"
-          />
-        </g>
-
-        <defs>
-          <filter id="shadow" x="-10" y="-10" width="84" height="84" filterUnits="userSpaceOnUse">
-            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#ff4d8d" floodOpacity="0.3" />
-          </filter>
-          <linearGradient id="bgGlow" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-            <stop stopColor="rgba(255, 77, 141, 0.08)" />
-            <stop stopColor="rgba(168, 85, 247, 0.04)" />
-          </linearGradient>
-          <linearGradient id="borderGrad" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#ff4d8d" stopOpacity="0.4" />
-            <stop stopColor="#a855f7" stopOpacity="0.2" />
-          </linearGradient>
-          <linearGradient id="heartGrad" x1="2" y1="9.6" x2="62" y2="57.35" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#ff4d8d" />
-            <stop stopColor="#ff758c" />
-            <stop stopColor="#a855f7" />
-          </linearGradient>
-        </defs>
+    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size, flexShrink: 0 }}>
+      <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Robust Brand Gradient Heart */}
+        <path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          fill="#ff4d8d"
+        />
+        {/* Subtle white accent overlay for depth */}
+        <path
+          d="M12 18.5l-0.8-0.7c-2.8-2.5-4.7-4.2-4.7-6.3 0-1.7 1.3-3 3-3 .9 0 1.9.4 2.5 1.1.6-.7 1.6-1.1 2.5-1.1 1.7 0 3 1.3 3 3 0 2.1-1.9 3.8-4.7 6.3l-0.8.7z"
+          fill="#ffffff"
+          opacity="0.22"
+        />
       </svg>
     </div>
   );
