@@ -262,7 +262,7 @@ export default function RegisterPage() {
                     onChange={(e) => setCountryCode(e.target.value)}
                     className="input-field"
                     style={{
-                      width: '130px',
+                      width: '95px',
                       flexShrink: 0,
                       padding: '8px 4px',
                       cursor: 'pointer',
@@ -274,7 +274,7 @@ export default function RegisterPage() {
                   >
                     {COUNTRY_CODES.map((cc, i) => (
                       <option key={`${cc.country}-${cc.code}-${i}`} value={cc.code}>
-                        {cc.flag} {cc.country} ({cc.code})
+                        {cc.flag} {cc.code} {cc.country}
                       </option>
                     ))}
                   </select>
