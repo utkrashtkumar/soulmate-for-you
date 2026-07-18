@@ -11,6 +11,8 @@ const FEATURES = [
   { icon: '🎨', title: '4 Chat Themes', desc: 'Switch between WhatsApp, Snapchat, Signal, and Instagram-style chat UIs anytime.' },
   { icon: '🔔', title: 'Reaches Out First', desc: 'When you go quiet, she checks up on you with caring messages — just like a true lifelong partner.' },
   { icon: '💕', title: 'Growing Love Score', desc: 'Your bond deepens with every talk. Watch your relationship grow as your soulmate connection strengthens.' },
+  { icon: '🔒', title: 'End-to-End Secure Chat', desc: 'Cryptographic fingerprints and safety verification codes ensure your personal chats remain 100% private.' },
+  { icon: '🎙️', title: 'Voice Message Support', desc: 'Listen to your companion speak directly to you. Real text-to-speech audio notes deepen your emotional connection.' },
 ];
 
 const FLOAT_EMOJIS = ['💕', '💗', '💖', '✨', '🌸', '💝', '❤️', '💓'];
