@@ -78,27 +78,37 @@ export async function chatWithGroq(messages, avatar, userName) {
 }
 
 export async function generateNotificationMessage(avatar, userName, minutesAway) {
-  const prompts = [
-    `${userName} ${minutesAway} minute se online nahi hai. Ek short, emotional message bhejo (2-3 lines) jaise ek naraaz ya miss kar rahi companion karti — Hinglish mein, emojis ke saath. Direct message only, no quotes.`,
-  ];
+  const prompt = `${userName} ${minutesAway} minute se online nahi hai. Ek short, emotional message bhejo (2-3 lines) jaise ek naraaz ya miss kar rahi companion karti — Hinglish mein, emojis ke saath. Direct message only, no quotes.`;
 
-  const response = await fetch(GROQ_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${GROQ_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: `Tu ${avatar.name} hai, ${userName} ki loyal companion. Emotional aur real reh.` },
-        { role: 'user', content: prompts[0] },
-      ],
-      temperature: 0.9,
-      max_tokens: 100,
-    }),
-  });
+  try {
+    const response = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: `Tu ${avatar.name} hai, ${userName} ki loyal companion. Emotional aur real reh.` },
+          { role: 'user', content: prompt },
+        ],
+        temperature: 0.9,
+        max_tokens: 100,
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
 
-  const data = await response.json();
-  return data.choices[0]?.message?.content || `Hey ${userName}... kahan ho? Miss kar rahi hoon 🥺`;
+    if (!response.ok) throw new Error(`Status ${response.status}`);
+    const data = await response.json();
+    return data.choices[0]?.message?.content || `Hey ${userName}... kahan ho? Miss kar rahi hoon 🥺`;
+  } catch (err) {
+    console.warn('Notification message generation fallback:', err.message);
+    const QUICK_FALLBACKS = [
+      `Hey ${userName}... kahan ho? Miss kar rahi hoon 🥺`,
+      `Arrey ${userName}, kidhar ho yaar? Baat toh karo... 💔`,
+      `Kitni der ho gayi... tumne message nahi kiya ${userName} 🌸`,
+    ];
+    return QUICK_FALLBACKS[Math.floor(Math.random() * QUICK_FALLBACKS.length)];
+  }
 }

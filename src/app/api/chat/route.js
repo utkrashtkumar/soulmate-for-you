@@ -1,119 +1,173 @@
 // API Route: /api/chat
-// Connects to Groq (FREE) for AI responses
-// Handles rate limits with retry + model fallback for multiple concurrent users
+// Multi-provider AI fallback system (Google Gemini + Groq + OpenRouter)
+// Guarantees high availability & zero downtime during simultaneous multi-user chats
 
-// Model fallback chain — try faster/lighter models if primary is rate-limited
-const MODEL_CHAIN = [
-  'llama-3.3-70b-versatile',       // Primary: Best quality
-  'llama-3.1-8b-instant',          // Fallback 1: Faster, less likely rate-limited
-  'gemma2-9b-it',                  // Fallback 2: Google Gemma, separate rate limit pool
-  'mixtral-8x7b-32768',            // Fallback 3: Mixtral, separate pool
-];
-
-// In-memory request queue to prevent duplicate simultaneous calls per avatar
 const inFlight = new Map();
 
-async function callGroq(model, messages, systemPrompt, retries = 2) {
-  const body = JSON.stringify({
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...messages,
-    ],
-    temperature: 0.88,
-    max_tokens: 200,        // Reduced from 250 to lower token usage & latency
-    top_p: 0.92,
-    stream: false,
+// Helper to call Google Gemini API (Free 1,500 requests/day, 15 req/min)
+async function callGemini(model, messages, systemPrompt) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('NO_GEMINI_KEY');
+
+  const contents = messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }]
+  }));
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents,
+      generationConfig: {
+        temperature: 0.85,
+        maxOutputTokens: 250,
+        topP: 0.9,
+      },
+    }),
+    signal: AbortSignal.timeout(12000),
   });
 
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body,
-        // Add a 15-second timeout to prevent hanging
-        signal: AbortSignal.timeout(15000),
-      });
-
-      if (response.status === 429) {
-        // Rate limited — extract retry-after if available
-        const retryAfter = parseInt(response.headers.get('retry-after') || '2', 10);
-        if (attempt < retries) {
-          // Exponential backoff: 1s, 2s, 4s...
-          await new Promise(r => setTimeout(r, Math.min(retryAfter * 1000, (attempt + 1) * 1000)));
-          continue;
-        }
-        // Signal to caller that this model is rate-limited
-        throw new Error('RATE_LIMITED');
-      }
-
-      if (!response.ok) {
-        const errText = await response.text();
-        console.error(`Groq error [${model}]:`, errText);
-        throw new Error(`HTTP_${response.status}`);
-      }
-
-      const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content?.trim();
-      if (!reply) throw new Error('EMPTY_RESPONSE');
-      return reply;
-
-    } catch (err) {
-      if (err.name === 'TimeoutError' || err.message === 'RATE_LIMITED') {
-        throw err; // Propagate to try next model
-      }
-      if (attempt < retries) {
-        await new Promise(r => setTimeout(r, (attempt + 1) * 500));
-        continue;
-      }
-      throw err;
-    }
+  if (!response.ok) {
+    const errText = await response.text();
+    console.warn(`[Gemini:${model}] error ${response.status}:`, errText);
+    throw new Error(`GEMINI_ERR_${response.status}`);
   }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  if (!text) throw new Error('GEMINI_EMPTY_RESPONSE');
+  return text;
+}
+
+// Helper to call Groq API (Free 14,400 requests/day)
+async function callGroq(model, messages, systemPrompt) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error('NO_GROQ_KEY');
+
+  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages,
+      ],
+      temperature: 0.88,
+      max_tokens: 220,
+      top_p: 0.92,
+      stream: false,
+    }),
+    signal: AbortSignal.timeout(12000),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    console.warn(`[Groq:${model}] error ${response.status}:`, errText);
+    throw new Error(`GROQ_ERR_${response.status}`);
+  }
+
+  const data = await response.json();
+  const reply = data.choices?.[0]?.message?.content?.trim();
+  if (!reply) throw new Error('GROQ_EMPTY_RESPONSE');
+  return reply;
+}
+
+// Helper to call OpenRouter API (Free models tier)
+async function callOpenRouter(model, messages, systemPrompt) {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error('NO_OPENROUTER_KEY');
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://soulmatelove.in',
+      'X-Title': 'Soulmate AI',
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        ...messages,
+      ],
+      temperature: 0.85,
+      max_tokens: 220,
+    }),
+    signal: AbortSignal.timeout(12000),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    console.warn(`[OpenRouter:${model}] error ${response.status}:`, errText);
+    throw new Error(`OPENROUTER_ERR_${response.status}`);
+  }
+
+  const data = await response.json();
+  const reply = data.choices?.[0]?.message?.content?.trim();
+  if (!reply) throw new Error('OPENROUTER_EMPTY_RESPONSE');
+  return reply;
 }
 
 export async function POST(request) {
   try {
     const { messages, systemPrompt, avatarId } = await request.json();
 
-    // Trim message history to last 12 exchanges to reduce token usage for concurrent calls
-    const trimmedMessages = messages.slice(-24);
+    // Limit chat history to last 16 turns to keep prompt token size small & speed high
+    const trimmedMessages = messages.slice(-16);
 
-    // Deduplicate: if same avatar already has a request in-flight, wait for it
-    const dedupeKey = avatarId || 'unknown';
+    // Request deduplication per avatar ID
+    const dedupeKey = avatarId || 'global';
     if (inFlight.has(dedupeKey)) {
       try {
         const existingReply = await inFlight.get(dedupeKey);
         return Response.json({ reply: existingReply });
       } catch {
-        // Previous request failed, proceed with new one
+        // Previous in-flight failed, proceed with new request
       }
     }
 
-    // Try each model in the fallback chain
-    let lastError = null;
+    // Provider execution list — tries Gemini first if key exists, then Groq, then OpenRouter
+    const providers = [
+      // 1. Google Gemini (Best quality & high free tier limits)
+      { name: 'Gemini-2.0-Flash', fn: () => callGemini('gemini-2.0-flash', trimmedMessages, systemPrompt) },
+      { name: 'Gemini-1.5-Flash', fn: () => callGemini('gemini-1.5-flash', trimmedMessages, systemPrompt) },
+
+      // 2. Groq AI (Ultra-fast inference)
+      { name: 'Groq-Llama3.3-70B', fn: () => callGroq('llama-3.3-70b-versatile', trimmedMessages, systemPrompt) },
+      { name: 'Groq-Llama3.1-8B', fn: () => callGroq('llama-3.1-8b-instant', trimmedMessages, systemPrompt) },
+      { name: 'Groq-Gemma2-9B', fn: () => callGroq('gemma2-9b-it', trimmedMessages, systemPrompt) },
+
+      // 3. OpenRouter (Free Fallback Pool)
+      { name: 'OpenRouter-Llama-Free', fn: () => callOpenRouter('meta-llama/llama-3.2-11b-vision-instruct:free', trimmedMessages, systemPrompt) },
+      { name: 'OpenRouter-Gemma-Free', fn: () => callOpenRouter('google/gemma-2-9b-it:free', trimmedMessages, systemPrompt) },
+    ];
+
     const requestPromise = (async () => {
-      for (const model of MODEL_CHAIN) {
+      let lastErr = null;
+      for (const provider of providers) {
         try {
-          const reply = await callGroq(model, trimmedMessages, systemPrompt);
-          console.log(`[chat] Responded with model: ${model}`);
+          const reply = await provider.fn();
+          console.log(`[Chat API] Successfully responded using provider: ${provider.name}`);
           return reply;
         } catch (err) {
-          lastError = err;
-          console.warn(`[chat] Model ${model} failed: ${err.message}, trying next...`);
-          if (err.message === 'RATE_LIMITED' || err.name === 'TimeoutError') {
-            continue; // Try next model
+          lastErr = err;
+          // Silently skip if key missing, otherwise log fallback
+          if (!err.message.startsWith('NO_')) {
+            console.warn(`[Chat API] Provider ${provider.name} failed: ${err.message}. Trying next...`);
           }
-          break; // Non-rate-limit errors — don't retry other models
         }
       }
-      throw lastError || new Error('All models failed');
+      throw lastErr || new Error('ALL_PROVIDERS_EXHAUSTED');
     })();
 
-    // Register in-flight
     inFlight.set(dedupeKey, requestPromise);
 
     let reply;
@@ -126,9 +180,8 @@ export async function POST(request) {
     return Response.json({ reply });
 
   } catch (err) {
-    console.error('Chat API error:', err.message);
+    console.error('[Chat API] Final failure:', err.message);
 
-    // Contextual fallback messages (not always same response)
     const FALLBACKS = [
       'Ek sec ruko... thoda busy hai network 🥺 dobara bhejo?',
       'Arrey yaar, connection thoda slow lag raha hai... phir try karo 💕',
