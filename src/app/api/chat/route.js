@@ -147,8 +147,9 @@ export async function POST(request) {
       { name: 'Groq-Gemma2-9B', fn: () => callGroq('gemma2-9b-it', trimmedMessages, systemPrompt) },
 
       // 3. OpenRouter (Free Fallback Pool)
-      { name: 'OpenRouter-Llama-Free', fn: () => callOpenRouter('meta-llama/llama-3.2-11b-vision-instruct:free', trimmedMessages, systemPrompt) },
-      { name: 'OpenRouter-Gemma-Free', fn: () => callOpenRouter('google/gemma-2-9b-it:free', trimmedMessages, systemPrompt) },
+      { name: 'OpenRouter-Llama3.3-Free', fn: () => callOpenRouter('meta-llama/llama-3.3-70b-instruct:free', trimmedMessages, systemPrompt) },
+      { name: 'OpenRouter-Llama3.2-Free', fn: () => callOpenRouter('meta-llama/llama-3.2-3b-instruct:free', trimmedMessages, systemPrompt) },
+      { name: 'OpenRouter-Gemma-Free', fn: () => callOpenRouter('google/gemma-4-31b-it:free', trimmedMessages, systemPrompt) },
     ];
 
     const requestPromise = (async () => {
