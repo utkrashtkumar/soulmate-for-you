@@ -9,8 +9,8 @@ function getKeys(prefix) {
   const keys = [];
   // Try PROVIDER_API_KEY (original single key)
   if (process.env[`${prefix}_API_KEY`]) keys.push(process.env[`${prefix}_API_KEY`]);
-  // Try PROVIDER_API_KEY_2 through PROVIDER_API_KEY_10
-  for (let i = 2; i <= 10; i++) {
+  // Try PROVIDER_API_KEY_2 through PROVIDER_API_KEY_15
+  for (let i = 2; i <= 15; i++) {
     if (process.env[`${prefix}_API_KEY_${i}`]) keys.push(process.env[`${prefix}_API_KEY_${i}`]);
   }
   return keys;
