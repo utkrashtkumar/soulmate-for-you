@@ -508,7 +508,7 @@ export default function AdminPage() {
 
         {/* Tab 2: User Management */}
         {activeTab === 'users' && (
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '16px', width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '16px', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>👥 Users Directory ({filteredUsers.length})</h3>
               <input
@@ -517,11 +517,12 @@ export default function AdminPage() {
                 placeholder="Search user (Naam, email, mobile)..."
                 value={userSearch}
                 onChange={e => setUserSearch(e.target.value)}
-                style={{ maxWidth: '300px', margin: 0, fontSize: '0.85rem', padding: '10px 14px' }}
+                style={{ maxWidth: '300px', width: '100%', margin: 0, fontSize: '0.85rem', padding: '10px 14px' }}
               />
             </div>
 
-            <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+            {/* Desktop Table View */}
+            <div className="admin-table-desktop" style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
               <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', textAlign: 'left' }}>
@@ -566,12 +567,47 @@ export default function AdminPage() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Cards View */}
+            <div className="admin-cards-mobile">
+              {filteredUsers.map(u => (
+                <div key={u.id} style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '0.98rem', color: 'var(--text-primary)' }}>{u.full_name}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--brand-pink)', wordBreak: 'break-all' }}>{u.email}</div>
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{new Date(u.created_at).toLocaleDateString('en-IN')}</span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.02)', padding: '8px', borderRadius: '4px' }}>
+                    <div>📞 <strong>Mobile:</strong> {u.mobile}</div>
+                    <div>🎂 <strong>DOB:</strong> {u.dob ? new Date(u.dob).toLocaleDateString('en-IN') : '--'}</div>
+                    <div>👤 <strong>Age:</strong> {u.age ? `${u.age} saal` : '--'}</div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px', justifyContent: 'flex-end' }}>
+                    <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', flex: 1 }} onClick={() => openEditUser(u)}>
+                      ✏️ Edit
+                    </button>
+                    <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: '0.8rem', color: '#ff6b6b', borderColor: 'rgba(255,107,107,0.3)', flex: 1 }} onClick={() => confirmDeleteUser(u)}>
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {filteredUsers.length === 0 && (
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  Koi user nahi mila jo is search match kare. 🔍
+                </p>
+              )}
+            </div>
           </div>
         )}
 
         {/* Tab 3: Avatar Management */}
         {activeTab === 'avatars' && (
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '16px', width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '16px', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
               <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 700 }}>👩 Companions Directory ({filteredAvatars.length})</h3>
               <input
@@ -580,11 +616,12 @@ export default function AdminPage() {
                 placeholder="Search companions..."
                 value={avatarSearch}
                 onChange={e => setAvatarSearch(e.target.value)}
-                style={{ maxWidth: '300px', margin: 0, fontSize: '0.85rem', padding: '10px 14px' }}
+                style={{ maxWidth: '300px', width: '100%', margin: 0, fontSize: '0.85rem', padding: '10px 14px' }}
               />
             </div>
 
-            <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+            {/* Desktop Table View */}
+            <div className="admin-table-desktop" style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
               <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', textAlign: 'left' }}>
@@ -657,6 +694,60 @@ export default function AdminPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards View */}
+            <div className="admin-cards-mobile">
+              {filteredAvatars.map(av => {
+                const owner = users.find(u => u.id === av.user_id);
+                const avDisplay = av.avatar_url?.startsWith('http')
+                  ? <img src={av.avatar_url} alt={av.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
+                  : <span style={{ fontSize: '1.8rem' }}>{av.avatar_url || '👩'}</span>;
+
+                return (
+                  <div key={av.id} style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {avDisplay}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>{av.name}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Owner: <strong>{owner?.full_name || 'Deleted User'}</strong></div>
+                      </div>
+                      <span className="mood-badge" style={{ fontSize: '0.75rem', flexShrink: 0 }}>
+                        {MOOD_EMOJI[av.mood] || '😊'} {av.mood}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.02)', padding: '8px', borderRadius: '4px' }}>
+                      <div>✨ <strong>Type:</strong> {av.personality}</div>
+                      <div>🎂 <strong>DOB:</strong> {new Date(av.dob).toLocaleDateString('en-IN')}</div>
+                      <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>💖 <strong>Love:</strong></span>
+                        <div style={{ flex: 1, height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: `${av.love_meter}%`, height: '100%', background: 'var(--brand-gradient)' }} />
+                        </div>
+                        <span>{av.love_meter}%</span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      <button className="btn-primary" style={{ padding: '6px 12px', fontSize: '0.78rem', flex: 1 }} onClick={() => loadChatTranscript(av.id)}>
+                        💬 Chats
+                      </button>
+                      <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.78rem', flex: 1 }} onClick={() => openEditAvatar(av)}>
+                        ✏️ Edit
+                      </button>
+                      <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.78rem', color: '#ff6b6b', borderColor: 'rgba(255,107,107,0.3)', flex: 1 }} onClick={() => confirmDeleteAvatar(av)}>
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+              {filteredAvatars.length === 0 && (
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  Koi companion nahi mila jo is search match kare. 🔍
+                </p>
+              )}
             </div>
           </div>
         )}

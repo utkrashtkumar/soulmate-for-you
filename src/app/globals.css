@@ -1649,10 +1649,32 @@ input, textarea, select {
   }
 }
 
-/* ═══════════════════════════════════════════════════════
-   MOBILE RESPONSIVE SYSTEM (MAINLY MOBILE DEVICES)
-═══════════════════════════════════════════════════════ */
+/* Admin Panel Responsive Display Rules */
+.admin-table-desktop {
+  display: block;
+}
+
+.admin-cards-mobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  .admin-table-desktop {
+    display: none !important;
+  }
+
+  .admin-cards-mobile {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .modal-card {
+    max-width: 92vw !important;
+    padding: 20px 16px !important;
+    box-sizing: border-box !important;
+  }
+
   /* Prevent iOS zoom on input focus */
   input, textarea, select {
     font-size: 16px !important;
