@@ -62,15 +62,32 @@ export default function CreateAvatarPage() {
   const [uploading, setUploading] = useState(false);
   const [userId, setUserId] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+  const [avatarCount, setAvatarCount] = useState(0);
+  const [limitReached, setLimitReached] = useState(false);
+  const [checkingLimit, setCheckingLimit] = useState(true);
 
   // Derive preset list based on chosen gender
   const PRESET_AVATARS = companionGender === 'male' ? PRESET_AVATARS_MALE : PRESET_AVATARS_FEMALE;
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) { router.push('/login'); return; }
       setUserId(session.user.id);
       setUserEmail(session.user.email);
+
+      // Check existing companion count (limit 2 for free users)
+      const { data: avs } = await supabase
+        .from('avatars')
+        .select('id')
+        .eq('user_id', session.user.id);
+
+      const count = avs ? avs.length : 0;
+      setAvatarCount(count);
+      const isAdmin = session.user.email === 'givekisstome@gmail.com';
+      if (count >= 2 && !isAdmin) {
+        setLimitReached(true);
+      }
+      setCheckingLimit(false);
     });
   }, [router]);
 
@@ -107,6 +124,13 @@ export default function CreateAvatarPage() {
   };
 
   const handleCreate = async () => {
+    const isAdmin = userEmail === 'givekisstome@gmail.com';
+    if (avatarCount >= 2 && !isAdmin) {
+      setError(t('createAvatar.limitReachedDesc'));
+      setLimitReached(true);
+      return;
+    }
+
     if (!name.trim()) { setError(t('createAvatar.nameRequired')); return; }
     if (!dob) { setError(t('createAvatar.dobRequired')); return; }
     if (dobError) { setError(dobError); return; }
@@ -188,215 +212,247 @@ export default function CreateAvatarPage() {
             <p>{t('createAvatar.pageSubtitle')}</p>
           </div>
 
-          {/* Step Indicator */}
-          <div className="step-indicator">
-            {steps.map((s, i) => (
-              <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div className={`step ${step === s.num ? 'active' : step > s.num ? 'done' : ''}`}>
-                  <div className="step-num">{step > s.num ? '✓' : s.num}</div>
-                  <div className="step-label">{s.label}</div>
+          {checkingLimit ? (
+            <div className="step-card" style={{ textAlign: 'center', padding: '60px 24px' }}>
+              <div className="loading-spinner" style={{ margin: '0 auto 16px' }} />
+              <p style={{ color: 'var(--text-secondary)' }}>{t('common.loading')}</p>
+            </div>
+          ) : limitReached ? (
+            <div className="step-card" style={{ textAlign: 'center', padding: '48px 24px' }}>
+              <div style={{ fontSize: '3.8rem', marginBottom: '16px' }}>👑</div>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '12px', color: 'var(--text-primary)' }}>
+                {t('createAvatar.limitReachedTitle')}
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '24px', fontSize: '0.95rem', lineHeight: '1.6', maxWidth: '440px', margin: '0 auto 24px' }}>
+                {t('createAvatar.limitReachedDesc')}
+              </p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                <button className="btn-secondary" onClick={() => router.push('/dashboard')}>
+                  {t('createAvatar.backToDashboard')}
+                </button>
+                <button className="btn-primary" onClick={() => router.push('/upgrade')}>
+                  {t('createAvatar.upgradeCta')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Step Indicator */}
+              <div className="step-indicator">
+                {steps.map((s, i) => (
+                  <div key={s.num} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div className={`step ${step === s.num ? 'active' : step > s.num ? 'done' : ''}`}>
+                      <div className="step-num">{step > s.num ? '✓' : s.num}</div>
+                      <div className="step-label">{s.label}</div>
+                    </div>
+                    {i < steps.length - 1 && <div className="step-divider" />}
+                  </div>
+                ))}
+              </div>
+
+              {error && <div className="error-msg" style={{ marginBottom: '16px' }}>⚠️ {error}</div>}
+
+              {/* STEP 1: Companion Gender */}
+              {step === 1 && (
+                <div className="step-card">
+                  <h2>{t('createAvatar.step1Title')}</h2>
+                  <p>{t('createAvatar.step1Sub')}</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '20px' }}>
+                    {[
+                      { val: 'female', emoji: '👩', label: t('createAvatar.girlfriendLabel'), desc: t('createAvatar.girlfriendDesc') },
+                      { val: 'male', emoji: '👨', label: t('createAvatar.boyfriendLabel'), desc: t('createAvatar.boyfriendDesc') },
+                    ].map(g => (
+                      <button
+                        key={g.val}
+                        type="button"
+                        onClick={() => { setCompanionGender(g.val); setSelectedAvatar(null); }}
+                        style={{
+                          padding: '24px 16px',
+                          borderRadius: 'var(--radius-lg)',
+                          border: companionGender === g.val ? '2px solid var(--brand-pink)' : '2px solid var(--border-color)',
+                          background: companionGender === g.val ? 'rgba(255,77,141,0.1)' : 'var(--bg-secondary)',
+                          color: 'var(--text-primary)',
+                          fontWeight: companionGender === g.val ? 700 : 400,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          gap: '10px',
+                          transition: 'all 0.2s',
+                          width: '100%',
+                        }}
+                      >
+                        <span style={{ fontSize: '3rem' }}>{g.emoji}</span>
+                        <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{g.label}</div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{g.desc}</div>
+                        {companionGender === g.val && (
+                          <span style={{ color: 'var(--brand-pink)', fontSize: '1.2rem' }}>{t('createAvatar.selectedLabel')}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="step-actions" style={{ marginTop: '24px' }}>
+                    <button className="btn-primary" onClick={() => {
+                      if (!companionGender) { setError(t('createAvatar.chooseTypeFirst')); return; }
+                      setError(''); setStep(2);
+                    }}>
+                      {t('createAvatar.nextBtn')}
+                    </button>
+                  </div>
                 </div>
-                {i < steps.length - 1 && <div className="step-divider" />}
-              </div>
-            ))}
-          </div>
+              )}
 
-          {error && <div className="error-msg" style={{ marginBottom: '16px' }}>⚠️ {error}</div>}
+              {/* STEP 2: Name */}
+              {step === 2 && (
+                <div className="step-card">
+                  <h2>{companionGender === 'male' ? t('createAvatar.step2TitleM') : t('createAvatar.step2TitleF')}</h2>
+                  <p>{t('createAvatar.step2Sub')}</p>
+                  <input
+                    className="input-field"
+                    placeholder={companionGender === 'male' ? t('createAvatar.step2PlaceholderM') : t('createAvatar.step2PlaceholderF')}
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    style={{ fontSize: '1.1rem', padding: '14px 18px' }}
+                    autoFocus
+                    maxLength={30}
+                  />
+                  <div className="step-actions">
+                    <button className="btn-secondary" onClick={() => setStep(1)}>{t('createAvatar.backBtn')}</button>
+                    <button className="btn-primary" onClick={() => {
+                      if (!name.trim()) { setError(t('createAvatar.nameRequired')); return; }
+                      setError(''); setStep(3);
+                    }}>
+                      {t('createAvatar.nextBtn')}
+                    </button>
+                  </div>
+                </div>
+              )}
 
-          {/* STEP 1: Companion Gender */}
-          {step === 1 && (
-            <div className="step-card">
-              <h2>{t('createAvatar.step1Title')}</h2>
-              <p>{t('createAvatar.step1Sub')}</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '20px' }}>
-                {[
-                  { val: 'female', emoji: '👩', label: t('createAvatar.girlfriendLabel'), desc: t('createAvatar.girlfriendDesc') },
-                  { val: 'male', emoji: '👨', label: t('createAvatar.boyfriendLabel'), desc: t('createAvatar.boyfriendDesc') },
-                ].map(g => (
-                  <button
-                    key={g.val}
-                    type="button"
-                    onClick={() => { setCompanionGender(g.val); setSelectedAvatar(null); }}
-                    style={{
-                      padding: '24px 16px',
-                      borderRadius: 'var(--radius-lg)',
-                      border: companionGender === g.val ? '2px solid var(--brand-pink)' : '2px solid var(--border-color)',
-                      background: companionGender === g.val ? 'rgba(255,77,141,0.1)' : 'var(--bg-secondary)',
-                      color: 'var(--text-primary)',
-                      fontWeight: companionGender === g.val ? 700 : 400,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      gap: '10px',
-                      transition: 'all 0.2s',
-                      width: '100%',
-                    }}
-                  >
-                    <span style={{ fontSize: '3rem' }}>{g.emoji}</span>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{g.label}</div>
-                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>{g.desc}</div>
-                    {companionGender === g.val && (
-                      <span style={{ color: 'var(--brand-pink)', fontSize: '1.2rem' }}>{t('createAvatar.selectedLabel')}</span>
+              {/* STEP 3: Avatar */}
+              {step === 3 && (
+                <div className="step-card">
+                  <h2>{t('createAvatar.step3Title')}</h2>
+                  <p>{t('createAvatar.step3Sub')}</p>
+
+                  <div className="avatar-selector-grid">
+                    {PRESET_AVATARS.map(av => (
+                      <div
+                        key={av.id}
+                        className={`avatar-option ${selectedAvatar?.id === av.id && !uploadedUrl ? 'selected' : ''}`}
+                        onClick={() => { setSelectedAvatar(av); setUploadedUrl(null); }}
+                        style={{ background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.8rem', cursor: 'pointer' }}
+                      >
+                        {av.emoji}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="auth-divider" style={{ margin: '20px 0' }}>{t('createAvatar.uploadDivider')}</div>
+
+                  <label className="upload-area">
+                    <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
+                    {uploading ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--brand-pink)' }}>
+                        <span>{t('createAvatar.uploading')}</span>
+                      </div>
+                    ) : uploadedUrl ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <img src={uploadedUrl} alt="Uploaded" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--brand-pink)' }} />
+                        <div style={{ textAlign: 'left' }}>
+                          <div style={{ color: '#00e676', fontWeight: 600, fontSize: '0.92rem' }}>✅ Image Uploaded Successfully!</div>
+                          <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '2px' }}>Click to change photo</div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                        <span style={{ fontSize: '1.6rem' }}>📸</span>
+                        <span style={{ fontWeight: 500 }}>{t('createAvatar.uploadPrompt')}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t('createAvatar.uploadHint')}</span>
+                      </div>
                     )}
-                  </button>
-                ))}
-              </div>
-              <div className="step-actions" style={{ marginTop: '24px' }}>
-                <button className="btn-primary" onClick={() => {
-                  if (!companionGender) { setError(t('createAvatar.chooseTypeFirst')); return; }
-                  setError(''); setStep(2);
-                }}>
-                  {t('createAvatar.nextBtn')}
-                </button>
-              </div>
-            </div>
-          )}
+                  </label>
 
-          {/* STEP 2: Name */}
-          {step === 2 && (
-            <div className="step-card">
-              <h2>{companionGender === 'male' ? t('createAvatar.step2TitleM') : t('createAvatar.step2TitleF')}</h2>
-              <p>{t('createAvatar.step2Sub')}</p>
-              <input
-                className="input-field"
-                placeholder={companionGender === 'male' ? t('createAvatar.step2PlaceholderM') : t('createAvatar.step2PlaceholderF')}
-                value={name}
-                onChange={e => setName(e.target.value)}
-                style={{ fontSize: '1.1rem', padding: '14px 18px' }}
-                autoFocus
-                maxLength={30}
-              />
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(1)}>{t('createAvatar.backBtn')}</button>
-                <button className="btn-primary" onClick={() => {
-                  if (!name.trim()) { setError(t('createAvatar.nameRequired')); return; }
-                  setError(''); setStep(3);
-                }}>
-                  {t('createAvatar.nextBtn')}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Avatar */}
-          {step === 3 && (
-            <div className="step-card">
-              <h2>{t('createAvatar.step3Title')}</h2>
-              <p>{t('createAvatar.step3Sub')}</p>
-
-              <div className="avatar-selector-grid">
-                {PRESET_AVATARS.map(av => (
-                  <div
-                    key={av.id}
-                    className={`avatar-option ${selectedAvatar?.id === av.id && !uploadedUrl ? 'selected' : ''}`}
-                    onClick={() => { setSelectedAvatar(av); setUploadedUrl(null); }}
-                    style={{ background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.8rem', cursor: 'pointer' }}
-                  >
-                    {av.emoji}
+                  <div className="step-actions">
+                    <button className="btn-secondary" onClick={() => setStep(2)}>{t('createAvatar.backBtn')}</button>
+                    <button className="btn-primary" onClick={() => {
+                      if (!selectedAvatar && !uploadedUrl) { setError(t('createAvatar.avatarRequired')); return; }
+                      setError(''); setStep(4);
+                    }}>{t('createAvatar.nextBtn')}</button>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
 
-              <div className="auth-divider" style={{ margin: '20px 0' }}>{t('createAvatar.uploadDivider')}</div>
-
-              <label className="upload-area">
-                <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
-                {uploading ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--brand-pink)' }}>
-                    <span>{t('createAvatar.uploading')}</span>
+              {/* STEP 4: Personality */}
+              {step === 4 && (
+                <div className="step-card">
+                  <h2>{t('createAvatar.step4Title')}</h2>
+                  <p>{t('createAvatar.step4Sub')}</p>
+                  <div className="personality-grid">
+                    {PERSONALITIES.map(p => (
+                      <div key={p.id} className={`personality-card ${personality === p.id ? 'selected' : ''}`} onClick={() => setPersonality(p.id)}>
+                        <span className="emoji">{p.emoji}</span>
+                        <div className="name">{p.name}</div>
+                        <div className="desc">{p.desc}</div>
+                        {personality === p.id && (
+                          <div style={{ marginTop: '8px', color: 'var(--brand-pink)', fontWeight: 700, fontSize: '0.78rem' }}>
+                            {t('createAvatar.selectedLabel')}
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ) : uploadedUrl ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <img src={uploadedUrl} alt="Uploaded" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--brand-pink)' }} />
-                    <div style={{ textAlign: 'left' }}>
-                      <div style={{ color: '#00e676', fontWeight: 600, fontSize: '0.92rem' }}>✅ Image Uploaded Successfully!</div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', marginTop: '2px' }}>Click to change photo</div>
+                  <div className="step-actions">
+                    <button className="btn-secondary" onClick={() => setStep(3)}>{t('createAvatar.backBtn')}</button>
+                    <button className="btn-primary" onClick={() => {
+                      if (!personality) { setError(t('createAvatar.personalityRequired')); return; }
+                      setError(''); setStep(5);
+                    }}>{t('createAvatar.nextBtn')}</button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 5: DOB */}
+              {step === 5 && (
+                <div className="step-card">
+                  <h2>{t('createAvatar.step5Title')}</h2>
+                  <p>{t('createAvatar.step5Sub')}</p>
+                  <DatePicker
+                    value={dob}
+                    onChange={({ isoDate, age }) => {
+                      setDob(isoDate);
+                      setDobError('');
+                      if (age !== null && age < 18) {
+                        setDobError(t('createAvatar.ageMin'));
+                      }
+                    }}
+                    placeholder="DD/MM/YYYY"
+                    minAge={18}
+                  />
+                  {dobError && <div className="error-msg" style={{ marginTop: '12px' }}>⚠️ {dobError}</div>}
+
+                  {/* Summary */}
+                  <div style={{
+                    marginTop: '20px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)',
+                    padding: '16px', display: 'flex', gap: '16px', alignItems: 'center',
+                  }}>
+                    <div style={{ fontSize: '2.5rem' }}>
+                      {uploadedUrl ? <img src={uploadedUrl} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} /> : selectedAvatar?.emoji}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{name}</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{personality} • {companionGender === 'male' ? t('createAvatar.summaryBoyfriend') : t('createAvatar.summaryGirlfriend')}</div>
                     </div>
                   </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '1.6rem' }}>📸</span>
-                    <span style={{ fontWeight: 500 }}>{t('createAvatar.uploadPrompt')}</span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{t('createAvatar.uploadHint')}</span>
+
+                  <div className="step-actions">
+                    <button className="btn-secondary" onClick={() => setStep(4)}>{t('createAvatar.backBtn')}</button>
+                    <button className="btn-primary" onClick={handleCreate} disabled={loading || !!dobError}>
+                      {loading ? t('createAvatar.creatingBtn') : t('createAvatar.createBtn')}
+                    </button>
                   </div>
-                )}
-              </label>
-
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(2)}>{t('createAvatar.backBtn')}</button>
-                <button className="btn-primary" onClick={() => {
-                  if (!selectedAvatar && !uploadedUrl) { setError(t('createAvatar.avatarRequired')); return; }
-                  setError(''); setStep(4);
-                }}>{t('createAvatar.nextBtn')}</button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: Personality */}
-          {step === 4 && (
-            <div className="step-card">
-              <h2>{t('createAvatar.step4Title')}</h2>
-              <p>{t('createAvatar.step4Sub')}</p>
-              <div className="personality-grid">
-                {PERSONALITIES.map(p => (
-                  <div key={p.id} className={`personality-card ${personality === p.id ? 'selected' : ''}`} onClick={() => setPersonality(p.id)}>
-                    <span className="emoji">{p.emoji}</span>
-                    <div className="name">{p.name}</div>
-                    <div className="desc">{p.desc}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(3)}>{t('createAvatar.backBtn')}</button>
-                <button className="btn-primary" onClick={() => {
-                  if (!personality) { setError(t('createAvatar.personalityRequired')); return; }
-                  setError(''); setStep(5);
-                }}>{t('createAvatar.nextBtn')}</button>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 5: DOB */}
-          {step === 5 && (
-            <div className="step-card">
-              <h2>{t('createAvatar.step5Title')}</h2>
-              <p>{t('createAvatar.step5Sub')}</p>
-              <DatePicker
-                value={dob}
-                onChange={({ isoDate, age }) => {
-                  setDob(isoDate);
-                  setDobError('');
-                  if (age !== null && age < 18) {
-                    setDobError(t('createAvatar.ageMin'));
-                  }
-                }}
-                placeholder="DD/MM/YYYY"
-                minAge={18}
-              />
-              {dobError && <div className="error-msg" style={{ marginTop: '12px' }}>⚠️ {dobError}</div>}
-
-              {/* Summary */}
-              <div style={{
-                marginTop: '20px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)',
-                padding: '16px', display: 'flex', gap: '16px', alignItems: 'center',
-              }}>
-                <div style={{ fontSize: '2.5rem' }}>
-                  {uploadedUrl ? <img src={uploadedUrl} alt="" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} /> : selectedAvatar?.emoji}
                 </div>
-                <div>
-                  <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{name}</div>
-                  <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{personality} • {companionGender === 'male' ? t('createAvatar.summaryBoyfriend') : t('createAvatar.summaryGirlfriend')}</div>
-                </div>
-              </div>
-
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep(4)}>{t('createAvatar.backBtn')}</button>
-                <button className="btn-primary" onClick={handleCreate} disabled={loading || !!dobError}>
-                  {loading ? t('createAvatar.creatingBtn') : t('createAvatar.createBtn')}
-                </button>
-              </div>
-            </div>
+              )}
+            </>
           )}
         </div>
       </main>

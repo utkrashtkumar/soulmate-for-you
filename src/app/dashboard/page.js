@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import UpdatePhotoModal from '@/components/UpdatePhotoModal';
 import { useLang } from '@/context/LanguageContext';
 
 const MOOD_EMOJI = { happy: '😊', sad: '😢', jealous: '😤', playful: '😋', romantic: '🥰', angry: '😠' };
@@ -85,6 +86,7 @@ export default function DashboardPage() {
   const [avatars, setAvatars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [selectedAvatarForPhoto, setSelectedAvatarForPhoto] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -240,6 +242,14 @@ export default function DashboardPage() {
                   <button className="btn-primary" style={{ flex: 2 }} onClick={() => router.push(`/chat/${av.id}`)}>
                     {t('dashboard.chatNow')}
                   </button>
+                  <button
+                    className="btn-secondary"
+                    style={{ padding: '0 12px', fontSize: '1.1rem' }}
+                    title={t('createAvatar.changePhotoBtn')}
+                    onClick={() => setSelectedAvatarForPhoto(av)}
+                  >
+                    📸
+                  </button>
                 </div>
               </div>
             </div>
@@ -292,6 +302,17 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+      {/* Update Photo Modal */}
+      <UpdatePhotoModal
+        avatar={selectedAvatarForPhoto}
+        isOpen={!!selectedAvatarForPhoto}
+        onClose={() => setSelectedAvatarForPhoto(null)}
+        onSuccess={(newUrl) => {
+          if (selectedAvatarForPhoto) {
+            setAvatars(prev => prev.map(a => a.id === selectedAvatarForPhoto.id ? { ...a, avatar_url: newUrl } : a));
+          }
+        }}
+      />
     </div>
   );
 }

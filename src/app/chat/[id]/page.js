@@ -3,6 +3,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
+import LanguageToggle from '@/components/LanguageToggle';
+import UpdatePhotoModal from '@/components/UpdatePhotoModal';
 import { useLang } from '@/context/LanguageContext';
 
 
@@ -64,6 +66,7 @@ export default function ChatPage() {
   const [savedSnapchatMessages, setSavedSnapchatMessages] = useState({});
   const [disappearingTimer, setDisappearingTimer] = useState(0); // in seconds, 0 = off
   const [showSafetyModal, setShowSafetyModal] = useState(false);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [flashScreen, setFlashScreen] = useState(false); // for snapchat screenshot flash
   
   const activeTimersRef = useRef({});
@@ -231,10 +234,13 @@ ${isBday ? `- AAJ TERA BIRTHDAY HAI! ${userName} ko special feel karao!` : ''}
 ${idleInstruction}${screenshotInstruction}`;
 
     try {
+      // Trim history to last 20 messages to reduce tokens & latency under load
+      const trimmedHistory = historyForAI.slice(-20);
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: historyForAI, systemPrompt }),
+        body: JSON.stringify({ messages: trimmedHistory, systemPrompt, avatarId }),
       });
 
       const data = await response.json();
@@ -953,12 +959,37 @@ ${idleInstruction}${screenshotInstruction}`;
           {/* Avatar Info */}
           <div className="sidebar-section">
             <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', margin: '0 auto 8px', overflow: 'hidden', background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', border: '3px solid var(--brand-pink)' }}>
-                {avatarDisplay}
+              <div style={{ position: 'relative', width: 68, height: 68, margin: '0 auto 8px' }}>
+                <div style={{ width: 68, height: 68, borderRadius: '50%', overflow: 'hidden', background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.2rem', border: '3px solid var(--brand-pink)' }}>
+                  {avatarDisplay}
+                </div>
+                <button
+                  onClick={() => setShowPhotoModal(true)}
+                  title={t('createAvatar.changePhotoBtn')}
+                  style={{
+                    position: 'absolute', bottom: 0, right: 0,
+                    width: 26, height: 26, borderRadius: '50%',
+                    background: 'var(--brand-pink)', border: '2px solid var(--bg-card)',
+                    color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '0.75rem', cursor: 'pointer', boxShadow: '0 2px 6px rgba(0,0,0,0.3)'
+                  }}
+                >
+                  📷
+                </button>
               </div>
               <div style={{ fontWeight: 700, fontSize: '1rem' }}>{avatar?.name}</div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{avatar?.personality}</div>
-              <div className="mood-badge" style={{ marginTop: '8px', display: 'inline-flex' }}>
+              <button
+                onClick={() => setShowPhotoModal(true)}
+                style={{
+                  marginTop: '8px', background: 'rgba(255,77,141,0.1)', border: '1px solid rgba(255,77,141,0.3)',
+                  color: 'var(--brand-pink)', padding: '4px 10px', borderRadius: '12px',
+                  fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer'
+                }}
+              >
+                {t('createAvatar.changePhotoBtn')}
+              </button>
+              <div className="mood-badge" style={{ marginTop: '8px', display: 'inline-flex', width: '100%', justifyContent: 'center' }}>
                 {MOOD_EMOJI[avatar?.mood]} {avatar?.mood}
               </div>
             </div>
@@ -1134,6 +1165,13 @@ ${idleInstruction}${screenshotInstruction}`;
           </div>
         </div>
       )}
+      {/* Photo Modal */}
+      <UpdatePhotoModal
+        avatar={avatar}
+        isOpen={showPhotoModal}
+        onClose={() => setShowPhotoModal(false)}
+        onSuccess={(newUrl) => setAvatar(prev => prev ? { ...prev, avatar_url: newUrl } : prev)}
+      />
     </div>
   );
 }

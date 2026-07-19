@@ -214,6 +214,17 @@ const translations = {
       // Summary
       summaryBoyfriend: '👨 Boyfriend',
       summaryGirlfriend: '👩 Girlfriend',
+      limitReachedTitle: 'Companion Limit Reached! 👑',
+      limitReachedDesc: 'Free plan allows maximum 2 companions. Upgrade to Premium to create unlimited companions.',
+      limitReachedMaxMsg: 'You already have 2 active companions 💕',
+      backToDashboard: '🏠 Go to Dashboard',
+      upgradeCta: '👑 Upgrade to Premium',
+      changePhotoBtn: '📷 Change Photo',
+      updatePhotoTitle: 'Update Companion Photo 📸',
+      updatePhotoSub: 'Upload a custom photo or pick an emoji avatar',
+      savePhoto: '💾 Save Photo',
+      savingPhoto: '⏳ Saving...',
+      photoSuccess: 'Photo updated successfully! 💕',
     },
 
     chat: {
@@ -518,6 +529,17 @@ const translations = {
       imageTooLarge: 'Image 5MB se chhoti honi chahiye',
       summaryBoyfriend: '👨 Boyfriend',
       summaryGirlfriend: '👩 Girlfriend',
+      limitReachedTitle: 'Companion Limit Poori Ho Gayi! 👑',
+      limitReachedDesc: 'Free plan mein sirf 2 companions allowed hain. Unlimited companions ke liye Premium plan lein.',
+      limitReachedMaxMsg: 'Aapke paas pehle se 2 active companions hain 💕',
+      backToDashboard: '🏠 Dashboard par jayein',
+      upgradeCta: '👑 Premium Plan Mein Upgrade Karein',
+      changePhotoBtn: '📷 Photo Badlein',
+      updatePhotoTitle: 'Companion ki Photo Badlein 📸',
+      updatePhotoSub: 'Nayi photo upload karein ya emoji avatar chunein',
+      savePhoto: '💾 Photo Save Karein',
+      savingPhoto: '⏳ Save Ho Raha Hai...',
+      photoSuccess: 'Photo update ho gayi! 💕',
     },
 
     chat: {
