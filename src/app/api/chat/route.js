@@ -138,7 +138,8 @@ export async function POST(request) {
     const providers = [
       // 1. Google Gemini (Best quality & high free tier limits)
       { name: 'Gemini-2.0-Flash', fn: () => callGemini('gemini-2.0-flash', trimmedMessages, systemPrompt) },
-      { name: 'Gemini-1.5-Flash', fn: () => callGemini('gemini-1.5-flash', trimmedMessages, systemPrompt) },
+      { name: 'Gemini-2.0-Flash-Lite', fn: () => callGemini('gemini-2.0-flash-lite', trimmedMessages, systemPrompt) },
+      { name: 'Gemini-Flash-Latest', fn: () => callGemini('gemini-flash-latest', trimmedMessages, systemPrompt) },
 
       // 2. Groq AI (Ultra-fast inference)
       { name: 'Groq-Llama3.3-70B', fn: () => callGroq('llama-3.3-70b-versatile', trimmedMessages, systemPrompt) },
