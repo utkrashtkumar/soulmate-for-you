@@ -760,7 +760,14 @@ ${idleInstruction}${screenshotInstruction}`;
                 return (
                   <div key={msg.id} className={`msg-group ${msg.role === 'user' ? 'sent' : 'received'}`}
                     style={{ marginBottom: i < msgs.length - 1 && msgs[i + 1]?.role === msg.role ? '2px' : '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
+                      width: 'fit-content',
+                      maxWidth: '100%',
+                    }}>
                       <div
                         className={`msg-bubble ${msg.role === 'user' ? 'sent' : 'received'}`}
                         style={{
