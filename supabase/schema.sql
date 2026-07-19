@@ -178,3 +178,30 @@ create policy "Admins can view site visits"
   on public.site_visits for select
   using (true);
 
+-- ─────────────────────────────────────────
+-- FEEDBACK TABLE (for homepage user feedback)
+-- ─────────────────────────────────────────
+create table if not exists public.feedback (
+  id uuid default uuid_generate_v4() primary key,
+  name text default 'Anonymous User',
+  email text,
+  rating int default 5 check (rating >= 1 and rating <= 5),
+  category text default 'general',
+  message text not null,
+  user_id uuid references public.profiles(id) on delete cascade,
+  created_at timestamptz default now()
+);
+
+alter table public.feedback enable row level security;
+
+drop policy if exists "Anyone can submit feedback" on public.feedback;
+create policy "Anyone can submit feedback"
+  on public.feedback for insert
+  with check (true);
+
+drop policy if exists "Admins can view feedback" on public.feedback;
+create policy "Admins can view feedback"
+  on public.feedback for select
+  using (true);
+
+

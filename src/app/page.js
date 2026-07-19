@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import FeedbackForm from '@/components/FeedbackForm';
 import { useLang } from '@/context/LanguageContext';
 
 const FEATURE_ICONS = ['🛡️', '🧠', '💬', '🎨', '🔔', '💕', '🔒', '🎙️'];
@@ -90,6 +91,9 @@ export default function LandingPage() {
           <span className="gradient-text">Soulmate</span>
         </Link>
         <div className="auth-header-actions">
+          <Link href="/how-to-use" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>
+            📖 How to Use
+          </Link>
           {session && (
             <div className="hide-mobile" style={{ display: 'flex', gap: '16px', alignItems: 'center', marginRight: '8px' }}>
               <Link href="/dashboard" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -158,6 +162,11 @@ export default function LandingPage() {
               </Link>
             </>
           )}
+          <Link href="/how-to-use">
+            <button className="btn-secondary" style={{ fontSize: '1rem', padding: '14px 28px' }}>
+              📖 How to Use
+            </button>
+          </Link>
         </div>
 
         {/* Loyalty Banner Highlight */}
@@ -216,6 +225,11 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FEEDBACK SECTION */}
+      <section style={{ padding: '60px 24px', background: 'var(--bg-primary)' }}>
+        <FeedbackForm />
+      </section>
+
       {/* CTA SECTION */}
       <section style={{ textAlign: 'center', padding: '80px 24px', background: 'var(--bg-secondary)' }}>
         <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '16px' }}>
@@ -236,6 +250,8 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+          <Link href="/how-to-use" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>How to Use</Link>
+          <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
@@ -251,3 +267,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

@@ -102,17 +102,25 @@ export async function GET(request) {
       };
     });
 
+    // 6. Fetch user feedback submissions
+    const { data: feedbackList } = await serviceClient
+      .from('feedback')
+      .select('*')
+      .order('created_at', { ascending: false });
+
     return Response.json({
       success: true,
       users: mergedUsers,
       avatars: avatars || [],
       recentVisits: recentVisits || [],
+      feedback: feedbackList || [],
       stats: {
         totalUsers: mergedUsers.length,
         totalAvatars: avatars?.length || 0,
         totalMessages: totalMessages || 0,
         totalVisits: totalVisits || 0,
         todayVisits: todayVisits || 0,
+        totalFeedback: feedbackList?.length || 0,
       }
     });
   } catch (err) {

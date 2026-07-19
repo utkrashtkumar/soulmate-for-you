@@ -24,7 +24,8 @@ export default function AdminPage() {
   // Database lists
   const [users, setUsers] = useState([]);
   const [avatars, setAvatars] = useState([]);
-  const [stats, setStats] = useState({ totalUsers: 0, totalAvatars: 0, totalMessages: 0 });
+  const [feedback, setFeedback] = useState([]);
+  const [stats, setStats] = useState({ totalUsers: 0, totalAvatars: 0, totalMessages: 0, totalFeedback: 0 });
 
   // Search and filters
   const [userSearch, setUserSearch] = useState('');
@@ -89,7 +90,8 @@ export default function AdminPage() {
 
       setUsers(data.users || []);
       setAvatars(data.avatars || []);
-      setStats(data.stats || { totalUsers: 0, totalAvatars: 0, totalMessages: 0 });
+      setFeedback(data.feedback || []);
+      setStats(data.stats || { totalUsers: 0, totalAvatars: 0, totalMessages: 0, totalFeedback: 0 });
     } catch (err) {
       setError('Data load karne me error: ' + err.message);
     }
@@ -369,6 +371,9 @@ export default function AdminPage() {
           </button>
           <button className={`nav-item ${activeTab === 'chats' ? 'active' : ''}`} onClick={() => setActiveTab('chats')} style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left' }}>
             <span className="icon">💬</span> Chat Logs
+          </button>
+          <button className={`nav-item ${activeTab === 'feedback' ? 'active' : ''}`} onClick={() => setActiveTab('feedback')} style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left' }}>
+            <span className="icon">💌</span> User Feedback ({feedback.length})
           </button>
           <div style={{ height: '1px', background: 'var(--border-color)', margin: '12px 0' }} />
           <Link href="/dashboard" className="nav-item">
@@ -776,6 +781,89 @@ export default function AdminPage() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ─── TAB 5: USER FEEDBACK ───────────────────────────────────────────── */}
+        {activeTab === 'feedback' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0 }}>💌 User Submitted Feedback</h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>
+                  Feedback messages, feature requests, and bug reports submitted from Homepage
+                </p>
+              </div>
+              <div style={{ background: 'var(--bg-glass)', padding: '6px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.88rem', fontWeight: 600 }}>
+                Total Submissions: {feedback.length}
+              </div>
+            </div>
+
+            {feedback.length > 0 ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
+                {feedback.map((item) => (
+                  <div
+                    key={item.id}
+                    style={{
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '20px',
+                      boxShadow: 'var(--shadow-card)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '1.1rem' }}>
+                        {'⭐'.repeat(item.rating || 5)}
+                      </span>
+                      <span style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        padding: '3px 8px',
+                        borderRadius: '10px',
+                        background: 'rgba(255, 77, 141, 0.12)',
+                        color: 'var(--brand-pink)',
+                        textTransform: 'uppercase',
+                      }}>
+                        {item.category || 'General'}
+                      </span>
+                    </div>
+
+                    <p style={{ fontSize: '0.92rem', color: 'var(--text-primary)', margin: 0, lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                      "{item.message}"
+                    </p>
+
+                    <div style={{
+                      marginTop: 'auto',
+                      paddingTop: '10px',
+                      borderTop: '1px solid var(--border-color)',
+                      fontSize: '0.78rem',
+                      color: 'var(--text-secondary)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}>
+                      <div>
+                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{item.name || 'Anonymous User'}</div>
+                        {item.email && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.email}</div>}
+                      </div>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                        {new Date(item.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
+                <span style={{ fontSize: '3rem', display: 'block', marginBottom: '8px' }}>💬</span>
+                <p style={{ fontWeight: 600, fontSize: '1rem', margin: 0 }}>Abhi tak koi feedback submit nahi hua hai.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>Homepage se submit hone wale saare feedback yahan dikhenge.</p>
+              </div>
+            )}
           </div>
         )}
       </main>
