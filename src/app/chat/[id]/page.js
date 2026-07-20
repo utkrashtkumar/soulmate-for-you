@@ -700,52 +700,78 @@ ${idleInstruction}${screenshotInstruction}`;
         </div>
       )}
 
-      {/* THEME PICKER BOTTOM SHEET */}
+      {/* THEME PICKER MODAL */}
       {showThemePicker && (
         <div
           onClick={() => setShowThemePicker(false)}
           style={{
-            position: 'fixed', inset: 0, zIndex: 9000,
-            background: 'rgba(0,0,0,0.5)',
-            display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+            position: 'fixed', inset: 0, zIndex: 99999,
+            background: 'rgba(0,0,0,0.7)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '16px',
+            animation: 'fade-in 0.2s ease',
           }}
         >
           <div
             onClick={e => e.stopPropagation()}
             style={{
               background: 'var(--bg-card)',
-              borderRadius: '20px 20px 0 0',
-              padding: '20px 20px 36px',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '24px',
               width: '100%',
-              maxWidth: '480px',
-              boxShadow: '0 -8px 40px rgba(0,0,0,0.4)',
+              maxWidth: '440px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+              position: 'relative',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>{t('chat.themePicker')}</h3>
+            <button
+              onClick={() => setShowThemePicker(false)}
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                background: 'none', border: 'none', color: 'var(--text-muted)',
+                fontSize: '1.2rem', cursor: 'pointer',
+              }}
+            >
+              ✕
+            </button>
+
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <span style={{ fontSize: '2.4rem', display: 'inline-block', marginBottom: '4px' }}>🎨</span>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>Choose Chat Theme</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
+                Customize your chat style & theme features 💕
+              </p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              {THEMES.map(t => (
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              {THEMES.map(themeItem => (
                 <button
-                  key={t.id}
-                  onClick={() => { handleThemeChange(t.id); setShowThemePicker(false); }}
+                  key={themeItem.id}
+                  onClick={() => {
+                    handleThemeChange(themeItem.id);
+                    setShowThemePicker(false);
+                  }}
                   style={{
                     padding: '14px 12px',
                     borderRadius: 'var(--radius-md)',
-                    border: theme === t.id ? '2px solid var(--brand-pink)' : '2px solid var(--border-color)',
-                    background: theme === t.id ? 'rgba(255,77,141,0.1)' : 'var(--bg-primary)',
+                    border: theme === themeItem.id ? '2px solid var(--brand-pink)' : '1px solid var(--border-color)',
+                    background: theme === themeItem.id ? 'rgba(255,77,141,0.12)' : 'var(--bg-primary)',
                     color: 'var(--text-primary)',
-                    fontWeight: theme === t.id ? 700 : 500,
+                    fontWeight: theme === themeItem.id ? 700 : 500,
                     fontSize: '0.9rem',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
-                    transition: 'all 0.2s',
+                    gap: '10px',
+                    boxShadow: theme === themeItem.id ? '0 0 12px rgba(255, 77, 141, 0.25)' : 'none',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  {t.emoji} {t.label.split(' ').slice(1).join(' ')}
-                  {theme === t.id && <span style={{ marginLeft: 'auto', color: 'var(--brand-pink)' }}>✓</span>}
+                  <span style={{ fontSize: '1.3rem' }}>{themeItem.emoji}</span>
+                  <span>{themeItem.label.split(' ').slice(1).join(' ') || themeItem.label}</span>
+                  {theme === themeItem.id && <span style={{ marginLeft: 'auto', color: 'var(--brand-pink)', fontWeight: 800 }}>✓</span>}
                 </button>
               ))}
             </div>

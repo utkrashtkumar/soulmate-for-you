@@ -2937,5 +2937,117 @@ select.input-field:focus {
   transform: translateY(-3px) scale(1.04);
 }
 
+/* ═══════════════════════════════════════════════════════
+   DYNAMIC CHAT THEMES (WhatsApp, Snapchat, Signal, Instagram)
+═══════════════════════════════════════════════════════ */
+
+/* 1. WHATSAPP THEME (Green & Dark Emerald) */
+.chat-layout[data-theme="whatsapp"] {
+  background: #0b141a !important;
+}
+.chat-layout[data-theme="whatsapp"] .chat-header {
+  background: #202c33 !important;
+  border-bottom: 1px solid #2a3942 !important;
+}
+.chat-layout[data-theme="whatsapp"] .chat-messages {
+  background-color: #0b141a !important;
+  background-image: radial-gradient(#202c33 1px, transparent 1px) !important;
+  background-size: 20px 20px !important;
+}
+.chat-layout[data-theme="whatsapp"] .msg-bubble.sent {
+  background: #005c4b !important;
+  color: #e9edef !important;
+  border-bottom-right-radius: 2px !important;
+}
+.chat-layout[data-theme="whatsapp"] .msg-bubble.received {
+  background: #202c33 !important;
+  color: #e9edef !important;
+  border-bottom-left-radius: 2px !important;
+}
+.chat-layout[data-theme="whatsapp"] .chat-input-bar {
+  background: #202c33 !important;
+  border-top: 1px solid #2a3942 !important;
+}
+.chat-layout[data-theme="whatsapp"] .chat-input-field {
+  background: #2a3942 !important;
+  color: #e9edef !important;
+}
+
+/* 2. SNAPCHAT THEME (Snap Yellow & Purple) */
+.chat-layout[data-theme="snapchat"] {
+  background: #0f0f14 !important;
+}
+.chat-layout[data-theme="snapchat"] .chat-header {
+  background: #191922 !important;
+  border-bottom: 1px solid #fffc00 !important;
+}
+.chat-layout[data-theme="snapchat"] .chat-header .name {
+  color: #fffc00 !important;
+}
+.chat-layout[data-theme="snapchat"] .msg-bubble.sent {
+  background: linear-gradient(135deg, #0099ff 0%, #a855f7 100%) !important;
+  color: #ffffff !important;
+}
+.chat-layout[data-theme="snapchat"] .msg-bubble.received {
+  background: #1e1e2a !important;
+  color: #ffffff !important;
+  border-left: 3px solid #fffc00 !important;
+}
+.chat-layout[data-theme="snapchat"] .chat-input-bar {
+  background: #191922 !important;
+  border-top: 1px solid rgba(255, 252, 0, 0.3) !important;
+}
+
+/* 3. SIGNAL THEME (Privacy Cobalt Blue) */
+.chat-layout[data-theme="signal"] {
+  background: #16171a !important;
+}
+.chat-layout[data-theme="signal"] .chat-header {
+  background: #1f2125 !important;
+  border-bottom: 1px solid #2c6bed !important;
+}
+.chat-layout[data-theme="signal"] .chat-header .name {
+  color: #3a76f0 !important;
+}
+.chat-layout[data-theme="signal"] .msg-bubble.sent {
+  background: #2c6bed !important;
+  color: #ffffff !important;
+}
+.chat-layout[data-theme="signal"] .msg-bubble.received {
+  background: #2b2d33 !important;
+  color: #ffffff !important;
+}
+.chat-layout[data-theme="signal"] .chat-input-bar {
+  background: #1f2125 !important;
+  border-top: 1px solid #2b2d33 !important;
+}
+
+/* 4. INSTAGRAM THEME (Sunset Gradient & Glow) */
+.chat-layout[data-theme="instagram"] {
+  background: #121212 !important;
+}
+.chat-layout[data-theme="instagram"] .chat-header {
+  background: rgba(18, 18, 18, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.chat-layout[data-theme="instagram"] .msg-bubble.sent {
+  background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(253, 29, 29, 0.3) !important;
+}
+.chat-layout[data-theme="instagram"] .msg-bubble.received {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+.chat-layout[data-theme="instagram"] .chat-input-bar {
+  background: rgba(18, 18, 18, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+
 
 
