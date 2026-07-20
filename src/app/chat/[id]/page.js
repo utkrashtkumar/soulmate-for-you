@@ -92,6 +92,7 @@ export default function ChatPage({ params: paramsProp }) {
   const [showSafetyModal, setShowSafetyModal] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [activeFilterStyle, setActiveFilterStyle] = useState('');
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
 
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showDiaryModal, setShowDiaryModal] = useState(false);
