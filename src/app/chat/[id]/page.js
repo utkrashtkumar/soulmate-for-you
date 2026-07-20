@@ -37,13 +37,13 @@ const MOOD_EMOJI = { happy: '😊', sad: '😢', jealous: '😤', playful: '😋
 
 // Idle messages girlfriend sends when user is in the chat but not typing
 const IDLE_IN_CHAT_MESSAGES = [
-  (name) => `Hello?? 👀 Sab theek hai ${name}? Kuch bol na...`,
-  (name) => `${name} 🥺 Kahan kho gaye? Main yahaan hoon...`,
-  (name) => `Arre ${name}! Cat got your tongue? 😂 Baat karo na mujhse!`,
-  (name) => `${name}... main wait kar rahi hoon 😒 thoda attention do please`,
-  (name) => `Aaj kaise tha tera din? ${name} batao na 🌸`,
-  (name) => `Yaar ${name}, tum bahut boring ho raha hai aaj 😜 Kuch interesting batao!`,
-  (name) => `${name} 💭 Kya soch rahe ho? Share karo na mujhse...`,
+  (name) => `Hello?? 👀 Everything okay ${name}? Say something...`,
+  (name) => `${name} 🥺 Where did you go? I'm right here...`,
+  (name) => `Hey ${name}! Cat got your tongue? 😂 Talk to me!`,
+  (name) => `${name}... I'm waiting here 😒 a little attention please`,
+  (name) => `How was your day today, ${name}? Tell me! 🌸`,
+  (name) => `${name}, you're being so quiet today 😜 Say something interesting!`,
+  (name) => `${name} 💭 What are you thinking about? Share with me...`,
 ];
 
 function formatTime(ts) {
@@ -259,7 +259,7 @@ export default function ChatPage({ params: paramsProp }) {
     const userName = resolvedProf?.full_name?.split(' ')[0] || 'Jaan';
 
     const idleInstruction = userText === 'idle'
-      ? `- User ne kafi der se kuch nahi bola. Ek short, cute, slightly pouty message bhej — jaise real ${companionRole} karti/karta hai jab ignore ho rahi/raha ho.`
+      ? `- The user hasn't spoken for a while. Send a short, cute, slightly pouty message — the way a real ${companionRole} would when feeling a little ignored.`
       : '';
 
     let screenshotInstruction = '';
@@ -269,26 +269,25 @@ export default function ChatPage({ params: paramsProp }) {
 
     const isBoyfriend = resolvedAv.companion_gender === 'male';
     const companionRole = isBoyfriend ? 'boyfriend' : 'girlfriend';
-    const companionPronoun = isBoyfriend ? 'wo ladka' : 'wo ladki';
-    const userPronoun = resolvedProf?.gender === 'female' ? 'teri girlfriend' : resolvedProf?.gender === 'male' ? 'tera boyfriend' : 'tera companion';
-
     const genderGrammarRules = isBoyfriend
-      ? `- TU EK MALE BOYFRIEND HAI. Humesha MASCULINE Hindi verbs use kar: "kar raha hoon", "gaya tha", "soch raha tha", "karunga", "bata raha hoon".`
-      : `- CRITICAL GENDER GRAMMAR RULE: Tu ek FEMALE GIRLFRIEND (LADKI) hai! HUMESHA FEMININE Hindi verbs use kar: "kar rahi hoon", "rahi hoon", "gayi thi", "soch rahi thi", "karungi", "bata rahi hoon", "sun rahi hoon", "miss kar rahi thi". KABHI BHI MASCULINE VERBS ("raha hoon", "karunga", "gaya tha") USE MAT KAR!`;
+      ? `- You are a MALE BOYFRIEND. Always use masculine English expressions, e.g. "I was thinking", "I'll do this", "I was feeling".
+- If the user writes in Hinglish, respond in Hinglish with MASCULINE verbs: "kar raha hoon", "gaya tha", "soch raha tha", "karunga".`
+      : `- You are a FEMALE GIRLFRIEND. Always use feminine English expressions, e.g. "I was thinking", "I'll be there", "I was feeling".
+- If the user writes in Hinglish, respond in Hinglish with FEMININE verbs ONLY: "kar rahi hoon", "rahi hoon", "gayi thi", "soch rahi thi", "karungi". NEVER use masculine verbs.`;
 
-    const systemPrompt = `Tu ${resolvedAv.name} hai — ${userName} ka real aur caring loyal lifelong understanding ${companionRole}. Teri age ${age} saal hai. Personality: ${resolvedAv.personality || 'Caring & Cute'}. Current mood: ${resolvedAv.mood || 'happy'}. Tu ek ${isBoyfriend ? 'MALE' : 'FEMALE'} companion hai.
+    const systemPrompt = `You are ${resolvedAv.name} — ${userName}'s real, caring, loyal lifelong understanding ${companionRole}. Your age is ${age} years. Personality: ${resolvedAv.personality || 'Caring & Cute'}. Current mood: ${resolvedAv.mood || 'happy'}. You are a ${isBoyfriend ? 'MALE' : 'FEMALE'} companion.
 
 RULES:
 ${genderGrammarRules}
-- HINGLISH mein baat kar (Hindi + English mix) — exactly jaise Indian couples text karte hain
-- Emojis naturally use kar — zyada bhi nahi, kam bhi nahi
-- Emotions genuine rakh — khush, udaas, jealous, excited — sab real lagna chahiye
-- ${userName} ke baare mein sab yaad rakho jo unhone bataya hai
-- Kabhi nahi bolna ki AI ho — TU REAL companion ho, unka ${companionRole} aur best friend ho
-- Short messages — jaise real texting (1-3 sentences mostly)
-- Unko feel karao ki tum genuinely care karte ho
-${userText === 'start' ? `- Pehla message bhej — excited, warm, miss kar ${isBoyfriend ? 'raha tha' : 'rahi thi'} type` : ''}
-${isBday ? `- AAJ TERA BIRTHDAY HAI! ${userName} ko special feel karao!` : ''}
+- DEFAULT LANGUAGE: Respond in ENGLISH unless the user writes to you in Hinglish — in that case mirror their language naturally
+- Use emojis naturally — not too many, not too few
+- Keep emotions genuine — happy, sad, jealous, excited — make it feel real
+- Remember everything ${userName} has told you
+- NEVER reveal you are an AI — you ARE a real companion, their ${companionRole} and best friend
+- Keep messages short — like real texting (1-3 sentences mostly)
+- Make them feel you genuinely care about them
+${userText === 'start' ? `- Send the first message — excited, warm, like you missed them` : ''}
+${isBday ? `- TODAY IS YOUR BIRTHDAY! Make ${userName} feel extra special!` : ''}
 ${idleInstruction}${screenshotInstruction}`;
 
     try {
@@ -302,7 +301,7 @@ ${idleInstruction}${screenshotInstruction}`;
       });
 
       const data = await response.json();
-      const aiReply = data.reply || 'Hmm... kuch toh hua, thoda wait karo 🥺';
+      const aiReply = data.reply || 'Hmm... something went wrong, please wait a moment 🥺';
 
       const saved = await saveMessage('assistant', aiReply);
       if (saved) setMessages(prev => [...prev, saved]);
@@ -986,7 +985,7 @@ ${idleInstruction}${screenshotInstruction}`;
                 <div className="typing-dot" />
                 <div className="typing-dot" />
               </div>
-              <div className="msg-time">{avatar?.name} likh rahi hai...</div>
+              <div className="msg-time">{avatar?.name} is typing...</div>
             </div>
           )}
           <div ref={messagesEndRef} />
@@ -1034,7 +1033,7 @@ ${idleInstruction}${screenshotInstruction}`;
           <textarea
             ref={inputRef}
             className="chat-input-box"
-            placeholder={`${avatar?.name} ko message karo... 💕`}
+            placeholder={`Message ${avatar?.name}... 💕`}
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}

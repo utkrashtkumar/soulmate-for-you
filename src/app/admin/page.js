@@ -90,7 +90,7 @@ export default function AdminPage() {
         setIsAdmin(true);
         await fetchData(session.access_token);
       } catch (err) {
-        setError('Verification fail ho gayi: ' + err.message);
+        setError('Verification failed: ' + err.message);
       } finally {
         setLoading(false);
       }
@@ -135,7 +135,7 @@ export default function AdminPage() {
 
       setUsers(prev => prev.map(u => u.id === editUser.id ? { ...u, ...editUser } : u));
       setEditUser(null);
-      alert('User details update ho gayi! 👍');
+      alert('User details updated! 👍');
     } catch (err) {
       alert('Error updating user: ' + err.message);
     }
@@ -203,7 +203,7 @@ export default function AdminPage() {
 
       setAvatars(prev => prev.map(av => av.id === editAvatar.id ? { ...av, ...editAvatar } : av));
       setEditAvatar(null);
-      alert('Avatar details update ho gayi! 💕');
+      alert('Companion details updated! 💕');
     } catch (err) {
       alert('Error updating avatar: ' + err.message);
     }
@@ -284,7 +284,7 @@ export default function AdminPage() {
   };
 
   const handleClearChat = async (avatarId) => {
-    if (!confirm('⚠️ SAVDHAAN! Kya aap is companion ki poori chat history clear karna chahte hain? Ye wapas nahi aayega!')) return;
+    if (!confirm('⚠️ WARNING! Are you sure you want to clear this companion\'s entire chat history? This action cannot be undone!')) return;
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch('/api/admin/messages', {
@@ -497,7 +497,7 @@ export default function AdminPage() {
                       </span>
                     </div>
                   ))}
-                  {users.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center' }}>Koi user nahi mila 🥺</p>}
+                  {users.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center' }}>No users found 🥺</p>}
                 </div>
               </div>
 
@@ -529,7 +529,7 @@ export default function AdminPage() {
                       </div>
                     );
                   })}
-                  {avatars.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center' }}>Koi companion nahi mila 🥺</p>}
+                  {avatars.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', textAlign: 'center' }}>No companions found 🥺</p>}
                 </div>
               </div>
             </div>
@@ -590,7 +590,7 @@ export default function AdminPage() {
                   {filteredUsers.length === 0 && (
                     <tr>
                       <td colSpan={6} style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
-                        Koi user nahi mila jo is search match kare. 🔍
+                        No users found matching this search. 🔍
                       </td>
                     </tr>
                   )}
@@ -628,7 +628,7 @@ export default function AdminPage() {
               ))}
               {filteredUsers.length === 0 && (
                 <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                  Koi user nahi mila jo is search match kare. 🔍
+                  No users found matching this search. 🔍
                 </p>
               )}
             </div>
@@ -718,7 +718,7 @@ export default function AdminPage() {
                   {filteredAvatars.length === 0 && (
                     <tr>
                       <td colSpan={6} style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
-                        Koi companion nahi mila jo is search match kare. 🔍
+                        No companions found matching this search. 🔍
                       </td>
                     </tr>
                   )}
@@ -775,7 +775,7 @@ export default function AdminPage() {
               })}
               {filteredAvatars.length === 0 && (
                 <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                  Koi companion nahi mila jo is search match kare. 🔍
+                  No companions found matching this search. 🔍
                 </p>
               )}
             </div>
@@ -825,7 +825,7 @@ export default function AdminPage() {
                       </button>
                     );
                   })}
-                  {avatars.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Koi companion list me nahi hai.</p>}
+                  {avatars.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No companions in the list.</p>}
                 </div>
               </div>
 
@@ -886,7 +886,7 @@ export default function AdminPage() {
                         ))
                       ) : (
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                          Koi messages nahi hai. Chat box bilkul khali hai! 🥺
+                          No messages found. Chat is completely empty! 🥺
                         </div>
                       )}
                     </div>

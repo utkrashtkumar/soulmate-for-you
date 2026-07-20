@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
 
       setMessage(t('login.resetSuccess'));
     } catch (err) {
-      setError(err.message || 'Kuch error aa gaya. Dobara try karo!');
+      setError(err.message || 'Something went wrong. Please try again!');
     } finally {
       setLoading(false);
     }

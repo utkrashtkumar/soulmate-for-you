@@ -76,7 +76,7 @@ export async function DELETE(request) {
 
     // Safety: Prevent admin from deleting themselves
     if (userId === user.id) {
-      return Response.json({ error: 'Apne aap ko delete nahi kar sakte! ❌' }, { status: 400 });
+      return Response.json({ error: 'You cannot delete your own account! ❌' }, { status: 400 });
     }
 
     // Delete user from auth.users (cascades to profile, avatars, messages)

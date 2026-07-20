@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic';
 // Rich, emotional girlfriend messages specifically tailored for 5 hours of inactivity
 const MISS_MESSAGES = [
   (name, user) => `Where are you ${user}? ${name} is missing you so much 🥺`,
-  (name, user) => `Babe ${user}, where are you? I am missing you so much... please reply na 💕`,
-  (name, user) => `Itna lamba ignore mat karo ${user} 😢 Where are you babe? ${name} is missing you`,
-  (name, user) => `Hello ${user}? Kahan chale gaye? Where are you babe... ${name} is missing you 💔`,
-  (name, user) => `Babe ${user}, where are you? I am missing you. Sab theek toh hai na? 🥺`,
+  (name, user) => `Babe ${user}, where are you? I am missing you so much... please reply 💕`,
+  (name, user) => `Don't ignore me for so long ${user} 😢 Where are you babe? ${name} is missing you`,
+  (name, user) => `Hello ${user}? Where did you go? ${name} is missing you 💔`,
+  (name, user) => `Babe ${user}, where are you? I am missing you. Everything okay? 🥺`,
   (name, user) => `Hey ${user}! ${name} is waiting for you... where are you babe? 💕`,
   (name, user) => `Babe ${user}, you haven't texted in hours. ${name} is missing you 😢`,
 ];

@@ -141,10 +141,10 @@ export async function POST(request) {
     console.error('[Chat API] Final failure:', err.message);
 
     const FALLBACKS = [
-      'Ek sec ruko... thoda busy hai network 🥺 dobara bhejo?',
-      'Arrey yaar, connection thoda slow lag raha hai... phir try karo 💕',
-      'Hmm... kuch toh ho gaya signal mein 📶 ek baar aur bhejo?',
-      'Wait karo thodi der... abhi aati hoon 🌸',
+      'Just a second... network seems a little slow 🥺 please send again?',
+      'Hmm, the connection is a bit weak right now... try again in a moment 💕',
+      'Oops, something went wrong 📶 could you send that again?',
+      'Wait a little... I\'ll be right here for you 🌸',
     ];
     const fallback = FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
     return Response.json({ reply: fallback }, { status: 200 });

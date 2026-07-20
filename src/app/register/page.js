@@ -200,7 +200,7 @@ const DISPOSABLE_EMAIL_DOMAINS = new Set([
       setSuccess(t('register.successMsg'));
       setTimeout(() => router.push('/dashboard'), 1500);
     } catch (err) {
-      setError(err.message || 'Kuch problem ho gayi. Try karo dobara!');
+      setError(err.message || 'Something went wrong. Please try again!');
     } finally {
       setLoading(false);
     }

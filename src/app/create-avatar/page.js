@@ -32,9 +32,9 @@ const PRESET_AVATARS_MALE = [
 ];
 
 const PERSONALITIES = [
-  { id: 'Cute & Shy', emoji: '🥺', name: 'Cute & Shy', desc: 'Pyaara, sharmata, teri har baat sunta hai' },
-  { id: 'Playful & Flirty', emoji: '😏', name: 'Playful & Flirty', desc: 'Mazedaar, thoda naughty, full of energy' },
-  { id: 'Caring & Mature', emoji: '🥰', name: 'Caring & Mature', desc: 'Samajhdaar, caring, emotional support deta/deti hai' },
+  { id: 'Cute & Shy', emoji: '🥺', name: 'Cute & Shy', desc: 'Sweet, shy, and listens to your every word' },
+  { id: 'Playful & Flirty', emoji: '😏', name: 'Playful & Flirty', desc: 'Fun, a little naughty, full of energy' },
+  { id: 'Caring & Mature', emoji: '🥰', name: 'Caring & Mature', desc: 'Wise, caring, and great at emotional support' },
 ];
 
 function calculateGfAge(dobStr) {
@@ -118,7 +118,7 @@ export default function CreateAvatarPage() {
       setUploadedUrl(publicUrl);
       setSelectedAvatar(null);
     } catch (err) {
-      setError('Image upload fail ho gayi: ' + err.message);
+      setError('Image upload failed: ' + err.message);
     } finally {
       setUploading(false);
     }
@@ -154,7 +154,7 @@ export default function CreateAvatarPage() {
       if (insertErr) throw insertErr;
       router.push('/dashboard');
     } catch (err) {
-      setError('Avatar create nahi ho paya: ' + err.message);
+      setError('Could not create companion: ' + err.message);
     } finally {
       setLoading(false);
     }

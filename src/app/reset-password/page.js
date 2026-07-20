@@ -44,7 +44,7 @@ export default function ResetPasswordPage() {
         router.push('/login');
       }, 2000);
     } catch (err) {
-      setError(err.message || 'Password update nahi ho paya. Try again!');
+      setError(err.message || 'Password could not be updated. Try again!');
     } finally {
       setLoading(false);
     }
