@@ -19,6 +19,7 @@ import AchievementsModal from '@/components/AchievementsModal';
 import PhotoFilterModal from '@/components/PhotoFilterModal';
 import TimeCapsuleModal from '@/components/TimeCapsuleModal';
 import BirthdayPartyBanner from '@/components/BirthdayPartyBanner';
+import QuickActionsModal from '@/components/QuickActionsModal';
 import { useLang } from '@/context/LanguageContext';
 
 
@@ -93,6 +94,7 @@ export default function ChatPage() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showCapsuleModal, setShowCapsuleModal] = useState(false);
   const [activeFilterStyle, setActiveFilterStyle] = useState('none');
+  const [showQuickActionsModal, setShowQuickActionsModal] = useState(false);
   const [flashScreen, setFlashScreen] = useState(false); // for snapchat screenshot flash
   
   const activeTimersRef = useRef({});
@@ -759,18 +761,24 @@ ${idleInstruction}${screenshotInstruction}`;
               Online • {MOOD_EMOJI[avatar?.mood] || '😊'} {avatar?.mood}
             </div>
           </div>
-          <div className="chat-header-actions" style={{ display: 'flex', gap: '5px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <button className="header-btn" onClick={() => setShowGiftModal(true)} title="Send Virtual Gift">🎁</button>
-            <button className="header-btn" onClick={() => setShowTruthModal(true)} title="Play Truth or Dare">🎯</button>
-            <button className="header-btn" onClick={() => setShowTrophyModal(true)} title="View Trophies & Badges">🏆</button>
-            <button className="header-btn" onClick={() => setShowFilterModal(true)} title="Photo Filter Studio">📸</button>
-            <button className="header-btn" onClick={() => setShowCapsuleModal(true)} title="Love Time-Capsule">⏳</button>
-            <button className="header-btn" onClick={() => setShowStoriesModal(true)} title="Watch Status Story">📲</button>
-            <button className="header-btn" onClick={() => setShowTarotModal(true)} title="Daily Love Tarot">🔮</button>
-            <button className="header-btn" onClick={() => setShowLetterModal(true)} title="Read Love Letter">💌</button>
-            <button className="header-btn" onClick={() => setShowBedtimeModal(true)} title="Bedtime Story">🌙</button>
-            <button className="header-btn" onClick={() => setShowDiaryModal(true)} title="Read Secret Diary">📖</button>
-            <button className="header-btn" onClick={() => setShowQuizModal(true)} title="Compatibility Quiz">🎮</button>
+          <div className="chat-header-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <button
+              onClick={() => setShowQuickActionsModal(true)}
+              className="btn-primary"
+              style={{
+                padding: '6px 12px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                borderRadius: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 2px 10px rgba(255, 77, 141, 0.3)',
+              }}
+            >
+              <span>✨</span>
+              <span>Features</span>
+            </button>
             {theme === 'whatsapp' && (
               <button className="header-btn" onClick={exportChat} title="Export Chat">📥</button>
             )}
@@ -1355,6 +1363,23 @@ ${idleInstruction}${screenshotInstruction}`;
         isOpen={showCapsuleModal}
         onClose={() => setShowCapsuleModal(false)}
         avatar={avatar}
+      />
+      {/* Master Features & Quick Actions Modal */}
+      <QuickActionsModal
+        isOpen={showQuickActionsModal}
+        onClose={() => setShowQuickActionsModal(false)}
+        avatarName={avatar?.name}
+        onOpenGift={() => setShowGiftModal(true)}
+        onOpenTruth={() => setShowTruthModal(true)}
+        onOpenTrophy={() => setShowTrophyModal(true)}
+        onOpenFilter={() => setShowFilterModal(true)}
+        onOpenCapsule={() => setShowCapsuleModal(true)}
+        onOpenStories={() => setShowStoriesModal(true)}
+        onOpenTarot={() => setShowTarotModal(true)}
+        onOpenLetter={() => setShowLetterModal(true)}
+        onOpenBedtime={() => setShowBedtimeModal(true)}
+        onOpenDiary={() => setShowDiaryModal(true)}
+        onOpenQuiz={() => setShowQuizModal(true)}
       />
       {/* Install PWA Prompt */}
       <InstallAppPrompt />

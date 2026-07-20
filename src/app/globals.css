@@ -2623,3 +2623,17 @@ select.input-field:focus {
   box-shadow: 0 0 15px rgba(255, 77, 141, 0.15) !important;
 }
 
+/* Quick Action Row & Interactive Cards UX Polish */
+.quick-action-row:hover {
+  border-color: var(--brand-pink) !important;
+  background: rgba(255, 77, 141, 0.08) !important;
+  transform: translateX(4px);
+}
+
+.gift-card-btn:hover {
+  border-color: var(--brand-pink) !important;
+  background: rgba(255, 77, 141, 0.1) !important;
+  transform: translateY(-3px);
+}
+
+
