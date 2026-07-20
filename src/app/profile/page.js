@@ -115,18 +115,42 @@ export default function ProfilePage() {
         dobFormatted = `${y}-${m}-${d}`;
       }
 
-      const { error: updateErr } = await supabase
-        .from('profiles')
-        .update({
+      // 1. Update Supabase Auth User Metadata (Always succeeds)
+      await supabase.auth.updateUser({
+        data: {
           full_name: form.fullName.trim(),
-          mobile: form.mobile.trim(),
-          gender: form.gender,
-          dob: dobFormatted,
           avatar_url: form.avatarUrl,
-        })
+          mobile: form.mobile.trim(),
+          dob: dobFormatted,
+          gender: form.gender,
+        }
+      });
+
+      // 2. Try updating public.profiles table
+      const profileUpdateData = {
+        full_name: form.fullName.trim(),
+        mobile: form.mobile.trim(),
+        gender: form.gender,
+        dob: dobFormatted,
+        avatar_url: form.avatarUrl,
+      };
+
+      let { error: updateErr } = await supabase
+        .from('profiles')
+        .update(profileUpdateData)
         .eq('id', session.user.id);
 
-      if (updateErr) throw updateErr;
+      // Fallback: If avatar_url column is not added in Supabase DB schema yet
+      if (updateErr && updateErr.message?.includes('avatar_url')) {
+        delete profileUpdateData.avatar_url;
+        const { error: fallbackErr } = await supabase
+          .from('profiles')
+          .update(profileUpdateData)
+          .eq('id', session.user.id);
+        if (fallbackErr) throw fallbackErr;
+      } else if (updateErr) {
+        throw updateErr;
+      }
 
       setProfile(prev => ({
         ...prev,

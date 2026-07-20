@@ -13,9 +13,13 @@ create table if not exists public.profiles (
   mobile text not null,
   dob date not null,
   gender text default 'male' check (gender in ('male', 'female', 'other')),
+  avatar_url text,
   theme text default 'whatsapp',
   created_at timestamptz default now()
 );
+
+-- Ensure avatar_url column exists if table was already created
+alter table public.profiles add column if not exists avatar_url text;
 
 alter table public.profiles enable row level security;
 
