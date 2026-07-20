@@ -49,6 +49,9 @@ function Sidebar({ user, onLogout, onShare }) {
         <Link href="/profile" className={`nav-item ${path === '/profile' ? 'active' : ''}`}>
           <span className="icon">👤</span> {t('nav.profile')}
         </Link>
+        <Link href="/contact" className={`nav-item ${path === '/contact' ? 'active' : ''}`}>
+          <span className="icon">📬</span> Contact Us
+        </Link>
         <Link href="/upgrade" className={`nav-item ${path === '/upgrade' ? 'active' : ''}`}>
           <span className="icon">👑</span> {t('nav.upgrade')}
         </Link>

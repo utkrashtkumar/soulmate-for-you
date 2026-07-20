@@ -68,6 +68,9 @@ export default function LandingPage() {
           <Link href="/how-to-use" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>
             📖 How to Use
           </Link>
+          <Link href="/contact" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>
+            📬 Contact Us
+          </Link>
           {session && (
             <div className="hide-mobile" style={{ display: 'flex', gap: '16px', alignItems: 'center', marginRight: '8px' }}>
               <Link href="/dashboard" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
@@ -246,6 +249,8 @@ export default function LandingPage() {
           <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
+          <span>•</span>
+          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
         </div>

@@ -10,10 +10,10 @@ import { supabase } from '@/lib/supabase';
 const ALL_FEATURES = [
   {
     icon: '🧠',
-    titleEn: 'Ultra-Fast Groq AI Engine',
-    titleHi: 'Ultra-Fast Groq AI Engine',
-    descEn: 'Powered by high-performance Llama-3 70B & Groq AI models with multi-key rotation for instant, natural replies and 100% uptime.',
-    descHi: 'Advanced Llama-3 70B aur Groq AI models par aadharit — multi-key rotation ke saath 100% uptime aur superfast replies.',
+    titleEn: 'Ultra-Fast AI Neural Engine',
+    titleHi: 'Ultra-Fast AI Neural Engine',
+    descEn: 'Powered by high-performance proprietary AI models with multi-key failover for instant, natural replies and 100% uptime.',
+    descHi: 'Advanced high-performance AI models par aadharit — multi-key failover ke saath 100% uptime aur superfast replies.',
     badge: 'Core Engine',
   },
   {
@@ -240,6 +240,8 @@ export default function FeaturesPage() {
           <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
+          <span>•</span>
+          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
         </div>

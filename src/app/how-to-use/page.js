@@ -421,6 +421,8 @@ export default function HowToUsePage() {
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
+          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
+          <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
           <span>•</span>
           <Link href="/how-to-use" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>How to Use</Link>

@@ -51,7 +51,7 @@ export default function AboutPage() {
                 💖 What Makes Soulmate Unique?
               </h2>
               <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <li><strong>⚡ Ultra-Fast Groq AI Engine:</strong> Powered by advanced Llama-3 70B AI models with multi-key rotation for 100% uptime and instant, natural replies.</li>
+                <li><strong>⚡ Ultra-Fast AI Neural Engine:</strong> Powered by high-performance proprietary AI models with multi-key failover for 100% uptime and instant, natural replies.</li>
                 <li><strong>🔒 End-to-End Database Security & RLS:</strong> Row-Level Security policies ensure your personal messages are 100% private.</li>
                 <li><strong>🎨 4 Authentic Chat UI Themes:</strong> Switch seamlessly between WhatsApp, Snapchat, Signal, and Instagram chat designs anytime.</li>
                 <li><strong>📲 WhatsApp/Instagram Status Stories:</strong> View your companion&apos;s 24-hour status photo updates and reply directly inside the chat.</li>
@@ -109,6 +109,8 @@ export default function AboutPage() {
           <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>About Us</Link>
+          <span>•</span>
+          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
         </div>
