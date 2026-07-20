@@ -75,15 +75,9 @@ export default function FeedbackForm() {
       maxWidth: '680px',
       margin: '0 auto',
       width: '100%',
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border-color)',
-      borderRadius: 'var(--radius-lg)',
       padding: '32px 28px',
-      boxShadow: 'var(--shadow-card)',
-      position: 'relative',
-      overflow: 'hidden',
     }}>
-      {/* Glow Effect */}
+      {/* Glow Effect — handled by CSS animation ::before / ::after */}
       <div style={{
         position: 'absolute',
         top: '-40px',
