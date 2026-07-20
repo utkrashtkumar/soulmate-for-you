@@ -118,20 +118,12 @@ export default function ProfilePage() {
       // 1. Update Supabase Auth User Metadata (Always succeeds)
       await supabase.auth.updateUser({
         data: {
-          full_name: form.fullName.trim(),
           avatar_url: form.avatarUrl,
-          mobile: form.mobile.trim(),
-          dob: dobFormatted,
-          gender: form.gender,
         }
       });
 
       // 2. Try updating public.profiles table
       const profileUpdateData = {
-        full_name: form.fullName.trim(),
-        mobile: form.mobile.trim(),
-        gender: form.gender,
-        dob: dobFormatted,
         avatar_url: form.avatarUrl,
       };
 
@@ -142,26 +134,18 @@ export default function ProfilePage() {
 
       // Fallback: If avatar_url column is not added in Supabase DB schema yet
       if (updateErr && updateErr.message?.includes('avatar_url')) {
-        delete profileUpdateData.avatar_url;
-        const { error: fallbackErr } = await supabase
-          .from('profiles')
-          .update(profileUpdateData)
-          .eq('id', session.user.id);
-        if (fallbackErr) throw fallbackErr;
+        // Safe to skip database update since auth metadata is updated
+        console.log('Skipped profiles table update since column does not exist yet');
       } else if (updateErr) {
         throw updateErr;
       }
 
       setProfile(prev => ({
         ...prev,
-        full_name: form.fullName.trim(),
-        mobile: form.mobile.trim(),
-        gender: form.gender,
-        dob: dobFormatted,
         avatar_url: form.avatarUrl,
       }));
 
-      setSaveSuccess('Profile updated successfully! 💕');
+      setSaveSuccess('Profile picture updated successfully! 💕');
       // Trigger header refresh
       window.dispatchEvent(new Event('storage'));
     } catch (err) {
@@ -355,9 +339,9 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* EDIT PROFILE DETAILS FORM */}
+          {/* PROFILE DETAILS (READ-ONLY / LOCKED) */}
           <div className="settings-card" style={{ gridColumn: '1 / -1' }}>
-            <h3>✏️ Edit Personal Details</h3>
+            <h3>📋 Personal Details (Locked)</h3>
             <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                 <div className="form-group">
@@ -366,8 +350,8 @@ export default function ProfilePage() {
                     type="text"
                     className="input-field"
                     value={form.fullName}
-                    onChange={e => setForm({ ...form, fullName: e.target.value })}
-                    required
+                    disabled
+                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
                   />
                 </div>
 
@@ -388,8 +372,8 @@ export default function ProfilePage() {
                     type="tel"
                     className="input-field"
                     value={form.mobile}
-                    onChange={e => setForm({ ...form, mobile: e.target.value })}
-                    required
+                    disabled
+                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
                   />
                 </div>
 
@@ -398,8 +382,8 @@ export default function ProfilePage() {
                   <select
                     className="input-field"
                     value={form.gender}
-                    onChange={e => setForm({ ...form, gender: e.target.value })}
-                    style={{ background: 'var(--bg-primary)' }}
+                    disabled
+                    style={{ background: 'var(--bg-primary)', opacity: 0.6, cursor: 'not-allowed' }}
                   >
                     <option value="male">Male 👨</option>
                     <option value="female">Female 👩</option>
@@ -409,11 +393,12 @@ export default function ProfilePage() {
 
                 <div className="form-group">
                   <label>Date of Birth</label>
-                  <DatePicker
-                    value={form.dob}
-                    onChange={({ raw }) => setForm(prev => ({ ...prev, dob: raw }))}
-                    placeholder="DD/MM/YYYY"
-                    minAge={18}
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={profile?.dob ? new Date(profile.dob).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
+                    disabled
+                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
                   />
                 </div>
               </div>
@@ -425,7 +410,7 @@ export default function ProfilePage() {
                   disabled={saving}
                   style={{ padding: '12px 28px', fontSize: '0.92rem' }}
                 >
-                  {saving ? 'Saving...' : '💾 Save Profile Changes'}
+                  {saving ? 'Saving...' : '💾 Save Profile Picture'}
                 </button>
               </div>
             </form>
