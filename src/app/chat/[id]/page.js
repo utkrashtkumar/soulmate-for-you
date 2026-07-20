@@ -78,6 +78,7 @@ export default function ChatPage({ params: paramsProp }) {
   const params = typeof paramsProp?.then === 'function' ? use(paramsProp) : (paramsProp || nextParams);
   const avatarId = params?.id || nextParams?.id;
   const router = useRouter();
+  const { t } = useLang();
 
   const [avatar, setAvatar] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -1167,9 +1168,9 @@ ${idleInstruction}${screenshotInstruction}`;
           <div className="sidebar-section">
             <h3>{t('chat.themeTitle')}</h3>
             <div className="theme-switcher">
-              {THEMES.map(t => (
-                <button key={t.id} className={`theme-btn ${theme === t.id ? 'active' : ''}`} onClick={() => handleThemeChange(t.id)}>
-                  {t.emoji} {t.label.split(' ')[1]}
+              {THEMES.map(themeItem => (
+                <button key={themeItem.id} className={`theme-btn ${theme === themeItem.id ? 'active' : ''}`} onClick={() => handleThemeChange(themeItem.id)}>
+                  {themeItem.emoji} {themeItem.label.split(' ').slice(1).join(' ') || themeItem.label}
                 </button>
               ))}
             </div>
