@@ -30,6 +30,8 @@ export default function AdminPage() {
   // Search and filters
   const [userSearch, setUserSearch] = useState('');
   const [avatarSearch, setAvatarSearch] = useState('');
+  const [feedbackSearch, setFeedbackSearch] = useState('');
+  const [feedbackCategoryFilter, setFeedbackCategoryFilter] = useState('all');
 
   // Modals state
   const [editUser, setEditUser] = useState(null);
@@ -305,6 +307,24 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteFeedback = async (id) => {
+    if (!confirm('Kya aap is feedback / contact submission ko delete karna chahte hain?')) return;
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ feedbackId: id })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Delete failed');
+
+      setFeedback(prev => prev.filter(f => f.id !== id));
+      fetchData(); // Reload stats
+    } catch (err) {
+      alert('Error deleting feedback: ' + err.message);
+    }
+  };
+
   // ─── RENDERING SECTIONS ─────────────────────────────────────────────────────
 
   if (loading) {
@@ -346,6 +366,16 @@ export default function AdminPage() {
       owner?.full_name?.toLowerCase().includes(avatarSearch.toLowerCase()) ||
       owner?.email?.toLowerCase().includes(avatarSearch.toLowerCase())
     );
+  });
+
+  const filteredFeedback = feedback.filter(item => {
+    const matchesCategory = feedbackCategoryFilter === 'all' || item.category === feedbackCategoryFilter;
+    const matchesSearch = !feedbackSearch ||
+      item.name?.toLowerCase().includes(feedbackSearch.toLowerCase()) ||
+      item.email?.toLowerCase().includes(feedbackSearch.toLowerCase()) ||
+      item.message?.toLowerCase().includes(feedbackSearch.toLowerCase()) ||
+      item.category?.toLowerCase().includes(feedbackSearch.toLowerCase());
+    return matchesCategory && matchesSearch;
   });
 
   const selectedAvatar = avatars.find(av => av.id === selectedAvatarId);
@@ -875,14 +905,14 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* ─── TAB 5: USER FEEDBACK ───────────────────────────────────────────── */}
+        {/* ─── TAB 5: USER FEEDBACK & CONTACT SUBMISSIONS ───────────────────────── */}
         {activeTab === 'feedback' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
               <div>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0 }}>💌 User Submitted Feedback</h2>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0 }}>📩 Contact Us & Feedback Submissions</h2>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>
-                  Feedback messages, feature requests, and bug reports submitted from Homepage
+                  View messages, questions, and feedback submitted via Contact Us page and Feedback Form
                 </p>
               </div>
               <div style={{ background: 'var(--bg-glass)', padding: '6px 14px', borderRadius: 'var(--radius-md)', fontSize: '0.88rem', fontWeight: 600 }}>
@@ -890,9 +920,34 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {feedback.length > 0 ? (
+            {/* Search & Category Filter Controls */}
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                className="input-field"
+                placeholder="🔍 Search messages by name, email, or content..."
+                value={feedbackSearch}
+                onChange={e => setFeedbackSearch(e.target.value)}
+                style={{ flex: 1, minWidth: '220px' }}
+              />
+              <select
+                className="input-field"
+                value={feedbackCategoryFilter}
+                onChange={e => setFeedbackCategoryFilter(e.target.value)}
+                style={{ width: 'auto', minWidth: '160px', background: 'var(--bg-card)' }}
+              >
+                <option value="all">All Categories ({feedback.length})</option>
+                <option value="general">💬 General</option>
+                <option value="feature">✨ Feature Request</option>
+                <option value="bug">🐛 Bug Report</option>
+                <option value="account">👤 Account & Privacy</option>
+                <option value="other">❓ Other</option>
+              </select>
+            </div>
+
+            {filteredFeedback.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
-                {feedback.map((item) => (
+                {filteredFeedback.map((item) => (
                   <div
                     key={item.id}
                     style={{
@@ -904,44 +959,60 @@ export default function AdminPage() {
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '12px',
+                      position: 'relative',
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '1.1rem' }}>
                         {'⭐'.repeat(item.rating || 5)}
                       </span>
-                      <span style={{
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        padding: '3px 8px',
-                        borderRadius: '10px',
-                        background: 'rgba(255, 77, 141, 0.12)',
-                        color: 'var(--brand-pink)',
-                        textTransform: 'uppercase',
-                      }}>
-                        {item.category || 'General'}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          padding: '3px 10px',
+                          borderRadius: '12px',
+                          background: item.category === 'bug' ? 'rgba(255, 107, 107, 0.15)' : 'rgba(255, 77, 141, 0.12)',
+                          color: item.category === 'bug' ? '#ff6b6b' : 'var(--brand-pink)',
+                          textTransform: 'uppercase',
+                        }}>
+                          {item.category || 'General'}
+                        </span>
+                        <button
+                          onClick={() => handleDeleteFeedback(item.id)}
+                          style={{ background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer', fontSize: '0.9rem', opacity: 0.7 }}
+                          title="Delete submission"
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     </div>
 
-                    <p style={{ fontSize: '0.92rem', color: 'var(--text-primary)', margin: 0, lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                    <p style={{ fontSize: '0.92rem', color: 'var(--text-primary)', margin: 0, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                       &quot;{item.message}&quot;
                     </p>
 
                     <div style={{
                       marginTop: 'auto',
-                      paddingTop: '10px',
+                      paddingTop: '12px',
                       borderTop: '1px solid var(--border-color)',
-                      fontSize: '0.78rem',
+                      fontSize: '0.82rem',
                       color: 'var(--text-secondary)',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                     }}>
                       <div>
-                        <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{item.name || 'Anonymous User'}</div>
-                        {item.email && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.email}</div>}
+                        <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{item.name || 'Anonymous User'}</div>
+                        {item.email ? (
+                          <a href={`mailto:${item.email}`} style={{ fontSize: '0.75rem', color: 'var(--brand-pink)', textDecoration: 'underline' }}>
+                            {item.email}
+                          </a>
+                        ) : (
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>No Email Provided</div>
+                        )}
                       </div>
-                      <div style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                      <div style={{ color: 'var(--text-muted)', fontSize: '0.72rem', textAlign: 'right' }}>
                         {new Date(item.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </div>
                     </div>
@@ -950,9 +1021,13 @@ export default function AdminPage() {
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border-color)' }}>
-                <span style={{ fontSize: '3rem', display: 'block', marginBottom: '8px' }}>💬</span>
-                <p style={{ fontWeight: 600, fontSize: '1rem', margin: 0 }}>Abhi tak koi feedback submit nahi hua hai.</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>Homepage se submit hone wale saare feedback yahan dikhenge.</p>
+                <span style={{ fontSize: '3rem', display: 'block', marginBottom: '8px' }}>📬</span>
+                <p style={{ fontWeight: 600, fontSize: '1rem', margin: 0 }}>No submissions found.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
+                  {feedback.length === 0
+                    ? 'Messages submitted from Contact Us page and Feedback Form will appear here.'
+                    : 'No messages match your search filter.'}
+                </p>
               </div>
             )}
           </div>

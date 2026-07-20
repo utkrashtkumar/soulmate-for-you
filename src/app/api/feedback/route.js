@@ -68,3 +68,23 @@ export async function GET() {
     return Response.json({ feedback: [], error: err.message });
   }
 }
+
+// DELETE: Delete feedback item (Admin)
+export async function DELETE(request) {
+  try {
+    const { feedbackId } = await request.json();
+    if (!feedbackId) {
+      return Response.json({ error: 'Feedback ID required' }, { status: 400 });
+    }
+
+    const supabase = getSupabaseClient();
+    if (!supabase) return Response.json({ error: 'Supabase client missing' }, { status: 500 });
+
+    const { error } = await supabase.from('feedback').delete().eq('id', feedbackId);
+    if (error) throw error;
+
+    return Response.json({ success: true });
+  } catch (err) {
+    return Response.json({ error: err.message }, { status: 500 });
+  }
+}
