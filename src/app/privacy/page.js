@@ -93,7 +93,11 @@ export default function PrivacyPolicyPage() {
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
+          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
+          <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>Privacy Policy</Link>
+          <span>•</span>
+          <Link href="/terms" style={{ color: 'var(--text-secondary)' }}>Terms of Service</Link>
         </div>
         <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
         <p style={{ marginTop: '2px' }}>Made with love • All free, always 🌸</p>
