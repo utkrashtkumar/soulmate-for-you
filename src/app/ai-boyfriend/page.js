@@ -124,7 +124,7 @@ export default function AIBoyfriendPage() {
           Build Your Ideal Relationship Today
         </h2>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto 28px', fontSize: '0.95rem' }}>
-          100% free forever. No credit card required.
+          100% free forever. Instant access for everyone. 🌸
         </p>
         <Link href="/create-avatar">
           <button className="btn-primary" style={{ padding: '14px 36px', fontSize: '1rem' }}>

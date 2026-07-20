@@ -58,7 +58,7 @@ export default function AboutPage() {
                 <li><strong>🎁 Virtual Gifts & Synthesized Audio:</strong> Send Red Roses 🌹, Chocolates 🍫, Teddy Bears 🧸 with Web Audio synthesized chimes and 3D heart bursts.</li>
                 <li><strong>🔮 3D Daily Love Tarot & Secret Diary:</strong> Flip 3D Tarot cards for daily fortunes and read private diary entries written by your companion.</li>
                 <li><strong>📱 Native PWA App Installation:</strong> Add Soulmate directly to your Android, iOS, or Desktop home screen in 1 tap.</li>
-                <li><strong>100% Free Forever:</strong> Complete access without credit cards, subscriptions, or paywalls.</li>
+                <li><strong>100% Free Forever:</strong> Complete access with no hidden fees, subscriptions, or paywalls.</li>
               </ul>
             </section>
 
