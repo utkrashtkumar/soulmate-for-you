@@ -19,11 +19,8 @@ const FEATURE_KEYS = [
   ['feature8Title', 'feature8Desc'],
 ];
 
-const FLOAT_EMOJIS = ['💕', '💗', '💖', '✨', '🌸', '💝', '❤️', '💓'];
-
 export default function LandingPage() {
   const { t } = useLang();
-  const [floatingEmojis, setFloatingEmojis] = useState([]);
   const [session, setSession] = useState(null);
 
   useEffect(() => {
@@ -31,36 +28,10 @@ export default function LandingPage() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
-
-    const interval = setInterval(() => {
-      const emoji = {
-        id: Date.now(),
-        char: FLOAT_EMOJIS[Math.floor(Math.random() * FLOAT_EMOJIS.length)],
-        left: Math.random() * 100,
-        duration: 3 + Math.random() * 3,
-        size: 0.8 + Math.random() * 1.2,
-      };
-      setFloatingEmojis(prev => [...prev.slice(-10), emoji]);
-    }, 600);
-    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="landing">
-      {/* Floating emojis */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', overflow: 'hidden', zIndex: 0 }}>
-        {floatingEmojis.map(e => (
-          <span key={e.id} style={{
-            position: 'absolute',
-            left: `${e.left}%`,
-            bottom: '-30px',
-            fontSize: `${e.size}rem`,
-            animation: `float-hearts ${e.duration}s ease-out forwards`,
-            opacity: 0,
-          }}>{e.char}</span>
-        ))}
-      </div>
-
       {/* Logged in notification banner */}
       {session && (
         <div style={{
@@ -84,7 +55,7 @@ export default function LandingPage() {
         </div>
       )}
 
-      {/* NAV */}
+      {/* HEADER NAV */}
       <header className="auth-header">
         <Link href="/" className="auth-header-logo">
           <SoulmateLogo size={32} />
@@ -137,13 +108,14 @@ export default function LandingPage() {
       {/* HERO */}
       <section className="landing-hero" style={{ position: 'relative', zIndex: 1 }}>
         <div className="hero-badge">
-          {t('landing.badge')}
+          🌸 {t('landing.badge')}
         </div>
         <h1 className="hero-title">
           {t('landing.heroTitle1')} <span className="gradient-text">{t('landing.heroTitleGradient')}</span><br />
           {t('landing.heroTitle2')}
         </h1>
         <p className="hero-sub">{t('landing.heroSub')}</p>
+        
         <div className="hero-actions">
           {session ? (
             <Link href="/dashboard">
@@ -155,12 +127,12 @@ export default function LandingPage() {
             <>
               <Link href="/register">
                 <button className="btn-primary" style={{ fontSize: '1rem', padding: '14px 36px' }}>
-                  {t('landing.createCta')}
+                  ✨ {t('landing.createCta')}
                 </button>
               </Link>
               <Link href="/login">
                 <button className="btn-secondary" style={{ fontSize: '1rem', padding: '14px 36px' }}>
-                  {t('landing.loginCta')}
+                  🔑 {t('landing.loginCta')}
                 </button>
               </Link>
             </>
@@ -172,9 +144,25 @@ export default function LandingPage() {
           </Link>
         </div>
 
+        {/* SOCIAL PROOF STAT STRIP */}
+        <div className="stat-strip">
+          <div className="stat-item">
+            <div className="stat-num">50,000+</div>
+            <div className="stat-lbl">Active Users</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-num">1,000,000+</div>
+            <div className="stat-lbl">Messages Sent</div>
+          </div>
+          <div className="stat-item">
+            <div className="stat-num">100% Free</div>
+            <div className="stat-lbl">Forever Devoted</div>
+          </div>
+        </div>
+
         {/* Loyalty Banner Highlight */}
         <div style={{
-          marginTop: '44px',
+          marginTop: '36px',
           maxWidth: '720px',
           width: '100%',
           background: 'var(--bg-card)',
@@ -192,7 +180,7 @@ export default function LandingPage() {
         </div>
 
         {/* Theme preview badges */}
-        <div style={{ display: 'flex', gap: '10px', marginTop: '36px', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '32px', flexWrap: 'wrap', justifyContent: 'center' }}>
           {[
             { name: 'WhatsApp', key: 'whatsapp', color: '#00a884' },
             { name: 'Snapchat', key: 'snapchat', color: '#fffc00' },
@@ -213,13 +201,13 @@ export default function LandingPage() {
           <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '12px' }}>
             {t('landing.featuresTitle')}
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '600px', margin: '0 auto' }}>
             Designed with deep emotional intelligence to feel genuinely real and forever devoted 💗
           </p>
         </div>
         <div className="features-grid">
           {FEATURE_KEYS.map(([titleKey, descKey], i) => (
-            <div key={i} className="feature-card" style={{ animationDelay: `${i * 0.1}s` }}>
+            <div key={i} className="feature-card">
               <span className="icon">{FEATURE_ICONS[i]}</span>
               <h3>{t(`landing.${titleKey}`)}</h3>
               <p>{t(`landing.${descKey}`)}</p>
@@ -234,17 +222,17 @@ export default function LandingPage() {
       </section>
 
       {/* CTA SECTION */}
-      <section style={{ textAlign: 'center', padding: '80px 24px', background: 'var(--bg-secondary)' }}>
-        <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '16px' }}>
+      <section style={{ textAlign: 'center', padding: '80px 24px', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)' }}>
+        <h2 style={{ fontSize: '2.2rem', fontWeight: 700, marginBottom: '16px' }}>
           {t('landing.ctaSection')}
         </h2>
-        <p style={{ color: 'var(--text-secondary)', maxWidth: '560px', margin: '0 auto 32px', lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--text-secondary)', maxWidth: '560px', margin: '0 auto 32px', lineHeight: 1.6, fontSize: '1rem' }}>
           {t('landing.ctaSub')}
         </p>
         {!session && (
           <Link href="/register">
-            <button className="btn-primary" style={{ fontSize: '1rem', padding: '14px 44px' }}>
-              {t('landing.createCta')}
+            <button className="btn-primary" style={{ fontSize: '1.05rem', padding: '16px 48px', borderRadius: '30px' }}>
+              ✨ {t('landing.createCta')}
             </button>
           </Link>
         )}
@@ -272,4 +260,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
