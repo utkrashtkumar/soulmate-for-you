@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import { useLang } from '@/context/LanguageContext';
 
 function Sidebar({ user, onLogout }) {
@@ -98,6 +99,7 @@ export default function UpgradePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <LanguageToggle compact />
             <ThemeToggle compact />
+            <HeaderUserAvatar />
           </div>
         </header>
 

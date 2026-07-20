@@ -5,6 +5,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import FeedbackForm from '@/components/FeedbackForm';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/context/LanguageContext';
 
@@ -89,6 +90,7 @@ export default function LandingPage() {
           )}
           <LanguageToggle compact />
           <ThemeToggle compact />
+          <HeaderUserAvatar />
           {session ? (
             <Link href="/dashboard">
               <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>

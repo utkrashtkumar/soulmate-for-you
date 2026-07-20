@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import { useLang } from '@/context/LanguageContext';
 import { supabase } from '@/lib/supabase';
 
@@ -122,6 +123,7 @@ export default function FeaturesPage() {
           </Link>
           <LanguageToggle compact />
           <ThemeToggle compact />
+          <HeaderUserAvatar />
           {session ? (
             <Link href="/dashboard">
               <button className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>

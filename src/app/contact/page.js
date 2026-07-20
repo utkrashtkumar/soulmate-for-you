@@ -4,6 +4,7 @@ import Link from 'next/link';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import { useLang } from '@/context/LanguageContext';
 
 export default function ContactPage() {
@@ -65,6 +66,7 @@ export default function ContactPage() {
           </Link>
           <LanguageToggle compact />
           <ThemeToggle compact />
+          <HeaderUserAvatar />
         </div>
       </header>
 

@@ -6,6 +6,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import DatePicker from '@/components/DatePicker';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import { useLang } from '@/context/LanguageContext';
 
 const PRESET_AVATARS_FEMALE = [
@@ -203,6 +204,7 @@ export default function CreateAvatarPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <LanguageToggle compact />
             <ThemeToggle compact />
+            <HeaderUserAvatar />
           </div>
         </header>
 

@@ -19,6 +19,7 @@ import PhotoFilterModal from '@/components/PhotoFilterModal';
 import TimeCapsuleModal from '@/components/TimeCapsuleModal';
 import BirthdayPartyBanner from '@/components/BirthdayPartyBanner';
 import QuickActionsModal from '@/components/QuickActionsModal';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import { useLang } from '@/context/LanguageContext';
 
 
@@ -816,6 +817,7 @@ ${idleInstruction}${screenshotInstruction}`;
               )}
               <button className="header-btn" onClick={() => setShowThemePicker(p => !p)} title="Change Chat Theme" style={{ position: 'relative' }}>🎨</button>
               <ThemeToggle compact />
+              <HeaderUserAvatar />
             </div>
 
             <button className="header-btn" onClick={() => setShowSidebar(!showSidebar)} title="Toggle info">ℹ️</button>

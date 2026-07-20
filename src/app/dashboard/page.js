@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import UpdatePhotoModal from '@/components/UpdatePhotoModal';
+import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import InstallAppPrompt from '@/components/InstallAppPrompt';
 import { useLang } from '@/context/LanguageContext';
 
@@ -163,6 +164,7 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <LanguageToggle compact />
             <ThemeToggle compact />
+            <HeaderUserAvatar />
           </div>
         </header>
 
