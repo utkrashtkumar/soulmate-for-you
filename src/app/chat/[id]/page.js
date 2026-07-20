@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, use } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -59,9 +59,10 @@ const getMoodFromContext = (text) => {
   return 'happy';
 };
 
-export default function ChatPage({ params: paramsPromise }) {
-  const params = use(paramsPromise);
-  const avatarId = params.id;
+export default function ChatPage({ params: paramsProp }) {
+  const nextParams = useParams();
+  const params = typeof paramsProp?.then === 'function' ? use(paramsProp) : (paramsProp || nextParams);
+  const avatarId = params?.id || nextParams?.id;
   const router = useRouter();
 
   const [avatar, setAvatar] = useState(null);
@@ -81,6 +82,16 @@ export default function ChatPage({ params: paramsPromise }) {
   const [editingAvatar, setEditingAvatar] = useState(false);
   const [editForm, setEditForm] = useState({ name: '', personality: '', mood: 'happy', dob: '', companion_gender: 'female' });
   const [savingEdit, setSavingEdit] = useState(false);
+
+  // Missing theme & notification states
+  const [likedMessages, setLikedMessages] = useState({});
+  const [savedSnapchatMessages, setSavedSnapchatMessages] = useState({});
+  const [disappearingTimer, setDisappearingTimer] = useState(0);
+  const [newMsgAlert, setNewMsgAlert] = useState(null);
+  const [showThemePicker, setShowThemePicker] = useState(false);
+  const [showSafetyModal, setShowSafetyModal] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [activeFilterStyle, setActiveFilterStyle] = useState('');
 
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showDiaryModal, setShowDiaryModal] = useState(false);
