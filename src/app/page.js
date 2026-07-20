@@ -326,6 +326,8 @@ export default function LandingPage() {
           <span>•</span>
           <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
           <span>•</span>
+          <Link href="/feedback" style={{ color: 'var(--text-secondary)' }}>Feedback</Link>
+          <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
           <span>•</span>
           <Link href="/terms" style={{ color: 'var(--text-secondary)' }}>Terms of Service</Link>
