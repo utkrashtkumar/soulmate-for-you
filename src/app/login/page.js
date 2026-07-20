@@ -119,8 +119,6 @@ export default function LoginPage() {
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-          <span>•</span>
-          <Link href="/forgot-password" style={{ color: 'var(--text-secondary)' }}>Reset Password</Link>
         </div>
         <p>{t('landing.footerTagline')}</p>
         <p style={{ marginTop: '2px' }}>{t('landing.footerSub')}</p>

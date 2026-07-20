@@ -339,8 +339,6 @@ export default function RegisterPage() {
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-          <span>•</span>
-          <Link href="/forgot-password" style={{ color: 'var(--text-secondary)' }}>Reset Password</Link>
         </div>
         <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
         <p style={{ marginTop: '2px' }}>Made with love • All free, always 🌸</p>
