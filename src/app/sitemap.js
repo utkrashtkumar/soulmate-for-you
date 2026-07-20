@@ -12,6 +12,18 @@ export default async function sitemap() {
       priority: 1.0,
     },
     {
+      url: `${baseUrl}/ai-girlfriend`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/ai-boyfriend`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/features`,
       lastModified: new Date(),
       changeFrequency: 'weekly',

@@ -7,6 +7,37 @@ import SoulmateLogo from '@/components/SoulmateLogo';
 import { useLang } from '@/context/LanguageContext';
 import { supabase } from '@/lib/supabase';
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is Soulmate AI Companion free to use?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes! Soulmate is 100% free to register and chat. You can create up to 2 companions with no fees.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I change my companion photo or name?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Open your chat screen, tap on your companion portrait in the top header, and click Update Photo.'
+      }
+    },
+    {
+      '@type': 'Question',
+      name: 'Are my chats private and secure?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes! All conversations are encrypted and secured with Row-Level Security database rules.'
+      }
+    }
+  ]
+};
+
 export default function HowToUsePage() {
   const { t, lang } = useLang();
   const [openFaq, setOpenFaq] = useState(null);
@@ -184,6 +215,10 @@ export default function HowToUsePage() {
 
   return (
     <div className="landing" style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* NAV */}
       <header className="auth-header" style={{ position: 'sticky', top: 0, zIndex: 1000 }}>
         <Link href="/" className="auth-header-logo">
