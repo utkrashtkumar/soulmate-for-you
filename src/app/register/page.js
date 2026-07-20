@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import DatePicker from '@/components/DatePicker';
+import TurnstileWidget from '@/components/TurnstileWidget';
 import { useLang } from '@/context/LanguageContext';
 
 const COUNTRY_CODES = [
@@ -92,6 +93,7 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const handleDobInput = (e) => {
     let raw = e.target.value.replace(/\D/g, '').slice(0, 8);
@@ -152,6 +154,21 @@ const DISPOSABLE_EMAIL_DOMAINS = new Set([
     const fullMobile = `${countryCode}${form.mobile}`;
 
     try {
+      // Verify Cloudflare Turnstile CAPTCHA token
+      if (turnstileToken) {
+        const verifyRes = await fetch('/api/verify-turnstile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: turnstileToken }),
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success) {
+          setError(verifyData.error || 'Security verification failed. Please complete the CAPTCHA check.');
+          setLoading(false);
+          return;
+        }
+      }
+
       // Check if mobile number is already in use
       const checkRes = await fetch('/api/check-mobile', {
         method: 'POST',
@@ -331,6 +348,13 @@ const DISPOSABLE_EMAIL_DOMAINS = new Set([
               <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} style={{ marginTop: '2px', accentColor: 'var(--brand-pink)' }} />
               <span>{t('register.termsText')}</span>
             </label>
+
+            {/* Cloudflare Turnstile CAPTCHA Widget */}
+            <TurnstileWidget
+              onVerify={(token) => setTurnstileToken(token)}
+              onError={() => setTurnstileToken('')}
+              onExpire={() => setTurnstileToken('')}
+            />
 
             {error && <div className="error-msg">⚠️ {error}</div>}
             {success && <div className="success-msg">✅ {success}</div>}
