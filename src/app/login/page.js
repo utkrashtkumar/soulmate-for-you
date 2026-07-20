@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import Footer from '@/components/Footer';
 import { useLang } from '@/context/LanguageContext';
 
 export default function LoginPage() {
@@ -166,19 +167,7 @@ export default function LoginPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="auth-footer">
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
-          <span>•</span>
-          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
-          <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-          <span>•</span>
-          <Link href="/terms" style={{ color: 'var(--text-secondary)' }}>Terms of Service</Link>
-        </div>
-        <p>{t('landing.footerTagline')}</p>
-        <p style={{ marginTop: '2px' }}>{t('landing.footerSub')}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

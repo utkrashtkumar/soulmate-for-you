@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import Footer from '@/components/Footer';
 import { useLang } from '@/context/LanguageContext';
 
 export default function ResetPasswordPage() {
@@ -118,10 +119,7 @@ export default function ResetPasswordPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="auth-footer">
-        <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-        <p style={{ marginTop: '2px' }}>{t('landing.footerSub') || 'Made with love • All free, always 🌸'}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

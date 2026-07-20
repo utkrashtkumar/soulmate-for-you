@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
+import Footer from '@/components/Footer';
 import { useLang } from '@/context/LanguageContext';
 
 export default function ForgotPasswordPage() {
@@ -100,17 +101,7 @@ export default function ForgotPasswordPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="auth-footer">
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>{t('nav.about')}</Link>
-          <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>{t('nav.privacy')}</Link>
-          <span>•</span>
-          <Link href="/forgot-password" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>{t('login.forgotPasswordTitle')}</Link>
-        </div>
-        <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-        <p style={{ marginTop: '2px' }}>{t('landing.footerSub') || 'Made with love • All free, always 🌸'}</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
