@@ -57,14 +57,6 @@ const ALL_FEATURES = [
     badge: 'Emotional Bond',
   },
   {
-    icon: '🎵',
-    titleEn: 'Listen to Music Together (Ambient Soundscapes)',
-    titleHi: 'Listen to Music Together (Ambient Soundscapes)',
-    descEn: 'Listen to Cozy Lofi Beats, Gentle Rain, Starry Night Ambient, and Fireplace soundscapes together inside the chat.',
-    descHi: 'Chat karte waqt Cozy Lofi Beats, Gentle Rain aur Fireplace ambient soundscapes saath mein sunne ka maza lein.',
-    badge: 'Multimedia',
-  },
-  {
     icon: '💌',
     titleEn: 'Sealed Wax-Stamped Love Letters',
     titleHi: 'Sealed Wax-Stamped Love Letters',

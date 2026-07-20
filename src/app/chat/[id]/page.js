@@ -11,7 +11,6 @@ import CompatibilityQuizModal from '@/components/CompatibilityQuizModal';
 import InstallAppPrompt from '@/components/InstallAppPrompt';
 import CompanionStoriesModal from '@/components/CompanionStoriesModal';
 import DailyTarotModal from '@/components/DailyTarotModal';
-import AmbientMusicPlayer from '@/components/AmbientMusicPlayer';
 import LoveLetterModal from '@/components/LoveLetterModal';
 import BedtimeStoryModal from '@/components/BedtimeStoryModal';
 import TruthOrDareModal from '@/components/TruthOrDareModal';
@@ -799,11 +798,6 @@ ${idleInstruction}${screenshotInstruction}`;
 
         {/* Birthday / Milestone Celebration Banner */}
         <BirthdayPartyBanner avatarName={avatar?.name} />
-
-        {/* Ambient Music Player Bar */}
-        <div style={{ padding: '6px 16px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
-          <AmbientMusicPlayer companionName={avatar?.name} />
-        </div>
 
         {/* Messages */}
         <div className="chat-messages">

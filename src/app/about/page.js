@@ -57,7 +57,6 @@ export default function AboutPage() {
                 <li><strong>📲 WhatsApp/Instagram Status Stories:</strong> View your companion's 24-hour status photo updates and reply directly inside the chat.</li>
                 <li><strong>🎁 Virtual Gifts & Synthesized Audio:</strong> Send Red Roses 🌹, Chocolates 🍫, Teddy Bears 🧸 with Web Audio synthesized chimes and 3D heart bursts.</li>
                 <li><strong>🔮 3D Daily Love Tarot & Secret Diary:</strong> Flip 3D Tarot cards for daily fortunes and read private diary entries written by your companion.</li>
-                <li><strong>🎵 Listen to Music Together:</strong> Enjoy Cozy Lofi Beats, Gentle Rain, and Fireplace ambient music together in the chat.</li>
                 <li><strong>📱 Native PWA App Installation:</strong> Add Soulmate directly to your Android, iOS, or Desktop home screen in 1 tap.</li>
                 <li><strong>100% Free Forever:</strong> Complete access without credit cards, subscriptions, or paywalls.</li>
               </ul>
