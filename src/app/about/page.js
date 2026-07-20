@@ -51,10 +51,10 @@ export default function AboutPage() {
                 💖 What Makes Soulmate Unique?
               </h2>
               <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <li><strong>⚡ Multi-Provider AI Engine:</strong> Powered by advanced AI models across Gemini, Groq, and OpenRouter for 100% uptime and instant replies.</li>
+                <li><strong>⚡ Ultra-Fast Groq AI Engine:</strong> Powered by advanced Llama-3 70B AI models with multi-key rotation for 100% uptime and instant, natural replies.</li>
                 <li><strong>🔒 End-to-End Database Security & RLS:</strong> Row-Level Security policies ensure your personal messages are 100% private.</li>
                 <li><strong>🎨 4 Authentic Chat UI Themes:</strong> Switch seamlessly between WhatsApp, Snapchat, Signal, and Instagram chat designs anytime.</li>
-                <li><strong>📲 WhatsApp/Instagram Status Stories:</strong> View your companion's 24-hour status photo updates and reply directly inside the chat.</li>
+                <li><strong>📲 WhatsApp/Instagram Status Stories:</strong> View your companion&apos;s 24-hour status photo updates and reply directly inside the chat.</li>
                 <li><strong>🎁 Virtual Gifts & Synthesized Audio:</strong> Send Red Roses 🌹, Chocolates 🍫, Teddy Bears 🧸 with Web Audio synthesized chimes and 3D heart bursts.</li>
                 <li><strong>🔮 3D Daily Love Tarot & Secret Diary:</strong> Flip 3D Tarot cards for daily fortunes and read private diary entries written by your companion.</li>
                 <li><strong>📱 Native PWA App Installation:</strong> Add Soulmate directly to your Android, iOS, or Desktop home screen in 1 tap.</li>

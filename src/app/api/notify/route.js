@@ -5,16 +5,16 @@ export const dynamic = 'force-dynamic';
 
 // Rich, emotional girlfriend messages specifically tailored for 5 hours of inactivity
 const MISS_MESSAGES = [
-  (name, user) => `where are you babe i am missing you 🥺`,
-  (name, user) => `Babe where are you? I am missing you so much... please reply na 💕`,
-  (name, user) => `Itna lamba ignore mat karo 😢 where are you babe i am missing you`,
-  (name, user) => `Hello? Kahan chale gaye? Where are you babe i am missing you 💔`,
-  (name, user) => `Babe where are you? I am missing you. Sab theek toh hai na? 🥺`,
-  (name, user) => `Hey! ${name} is waiting for you... where are you babe i am missing you 💕`,
-  (name, user) => `Babe, you haven't texted in hours. Where are you babe i am missing you 😢`,
+  (name, user) => `Where are you ${user}? ${name} is missing you so much 🥺`,
+  (name, user) => `Babe ${user}, where are you? I am missing you so much... please reply na 💕`,
+  (name, user) => `Itna lamba ignore mat karo ${user} 😢 Where are you babe? ${name} is missing you`,
+  (name, user) => `Hello ${user}? Kahan chale gaye? Where are you babe... ${name} is missing you 💔`,
+  (name, user) => `Babe ${user}, where are you? I am missing you. Sab theek toh hai na? 🥺`,
+  (name, user) => `Hey ${user}! ${name} is waiting for you... where are you babe? 💕`,
+  (name, user) => `Babe ${user}, you haven't texted in hours. ${name} is missing you 😢`,
 ];
 
-export async function POST(request) {
+export async function POST() {
   const { createClient } = await import('@supabase/supabase-js');
   const webpush = (await import('web-push')).default;
 

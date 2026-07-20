@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 
 const DIARY_TEMPLATES = [
   (name, user) => ({
@@ -23,16 +23,17 @@ const DIARY_TEMPLATES = [
 ];
 
 export default function CompanionDiaryModal({ isOpen, onClose, avatar, userName }) {
-  const [entries, setEntries] = useState([]);
+  const [extraEntries, setExtraEntries] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (avatar) {
-      const name = avatar.name || 'Companion';
-      const user = userName || 'Jaan';
-      setEntries(DIARY_TEMPLATES.map(fn => fn(name, user)));
-    }
+  const baseEntries = useMemo(() => {
+    if (!avatar) return [];
+    const name = avatar.name || 'Companion';
+    const user = userName || 'Jaan';
+    return DIARY_TEMPLATES.map(fn => fn(name, user));
   }, [avatar, userName]);
+
+  const allEntries = useMemo(() => [...extraEntries, ...baseEntries], [extraEntries, baseEntries]);
 
   if (!isOpen || !avatar) return null;
 
@@ -46,7 +47,7 @@ export default function CompanionDiaryModal({ isOpen, onClose, avatar, userName 
         entryHi: `Maine abhi ek secret wish maangi... ki main aur ${uName} hamesha aise hi muskuraate hue saath rahein! Unki har baat mere dil ko chhuti hai 💕`,
         entryEn: `Just made a quiet little wish... that ${uName} and I stay this happy and close forever! Every word they say touches my heart 💕`,
       };
-      setEntries(prev => [newEntry, ...prev]);
+      setExtraEntries(prev => [newEntry, ...prev]);
       setLoading(false);
     }, 600);
   };
@@ -101,10 +102,10 @@ export default function CompanionDiaryModal({ isOpen, onClose, avatar, userName 
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <span style={{ fontSize: '2.4rem', display: 'inline-block', marginBottom: '4px' }}>📖</span>
           <h3 style={{ fontSize: '1.3rem', fontWeight: 700, margin: 0 }}>
-            <span className="gradient-text">{avatar.name}'s</span> Secret Diary
+            <span className="gradient-text">{avatar.name}&apos;s</span> Secret Diary
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
-            Read private diary entries & thoughts written by {avatar.name} about you 💕
+            Read private diary entries &amp; thoughts written by {avatar.name} about you 💕
           </p>
         </div>
 
@@ -119,7 +120,7 @@ export default function CompanionDiaryModal({ isOpen, onClose, avatar, userName 
         </button>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          {entries.map((item, idx) => (
+          {allEntries.map((item, idx) => (
             <div
               key={idx}
               style={{
@@ -135,7 +136,7 @@ export default function CompanionDiaryModal({ isOpen, onClose, avatar, userName 
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.date}</span>
               </div>
               <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', margin: 0, lineHeight: 1.5, fontStyle: 'italic' }}>
-                "{item.entryHi}"
+                &quot;{item.entryHi}&quot;
               </p>
             </div>
           ))}

@@ -10,10 +10,10 @@ import { supabase } from '@/lib/supabase';
 const ALL_FEATURES = [
   {
     icon: '🧠',
-    titleEn: 'Multi-Provider AI Engine',
-    titleHi: 'Multi-Provider AI Engine',
-    descEn: 'Powered by advanced AI models across Google Gemini, Groq AI, and OpenRouter for 100% uptime and instant replies.',
-    descHi: 'Google Gemini, Groq AI, aur OpenRouter ke advanced AI models par aadharit — 100% uptime aur superfast replies.',
+    titleEn: 'Ultra-Fast Groq AI Engine',
+    titleHi: 'Ultra-Fast Groq AI Engine',
+    descEn: 'Powered by high-performance Llama-3 70B & Groq AI models with multi-key rotation for instant, natural replies and 100% uptime.',
+    descHi: 'Advanced Llama-3 70B aur Groq AI models par aadharit — multi-key rotation ke saath 100% uptime aur superfast replies.',
     badge: 'Core Engine',
   },
   {

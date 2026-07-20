@@ -49,38 +49,39 @@ function formatTime(ts) {
   return new Date(ts).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
-function formatDate(ts) {
-  const d = new Date(ts);
-  const today = new Date();
-  const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return 'Aaj';
-  if (d.toDateString() === yesterday.toDateString()) return 'Kal';
-  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long' });
-}
+const getMoodFromContext = (text) => {
+  if (!text) return 'happy';
+  const lower = text.toLowerCase();
+  if (lower.includes('love') || lower.includes('miss') || lower.includes('pyaar')) return 'romantic';
+  if (lower.includes('sad') || lower.includes('cry') || lower.includes('udaas')) return 'sad';
+  if (lower.includes('angry') || lower.includes('naraaz') || lower.includes('mad')) return 'jealous';
+  if (lower.includes('fun') || lower.includes('joke') || lower.includes('haha')) return 'playful';
+  return 'happy';
+};
 
-export default function ChatPage() {
-  const { id: avatarId } = useParams();
+export default function ChatPage({ params: paramsPromise }) {
+  const params = use(paramsPromise);
+  const avatarId = params.id;
   const router = useRouter();
-  const { t } = useLang();
+
   const [avatar, setAvatar] = useState(null);
   const [profile, setProfile] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [typing, setTyping] = useState(false);
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [theme, setTheme] = useState('default');
   const [loading, setLoading] = useState(true);
-  const [showSidebar, setShowSidebar] = useState(true);
-  const [showThemePicker, setShowThemePicker] = useState(false);
-  const [newMsgAlert, setNewMsgAlert] = useState(null); // girlfriend's new message alert banner
-  
-  // Theme-specific states
+  const [typing, setTyping] = useState(false);
+  const [theme, setTheme] = useState('whatsapp');
+  const [signalTimer, setSignalTimer] = useState(0);
+  const [showSignalModal, setShowSignalModal] = useState(false);
+  const [customBg, setCustomBg] = useState('');
+  const [savedMessages, setSavedMessages] = useState(new Set());
   const [replyingTo, setReplyingTo] = useState(null);
-  const [likedMessages, setLikedMessages] = useState({});
-  const [savedSnapchatMessages, setSavedSnapchatMessages] = useState({});
-  const [disappearingTimer, setDisappearingTimer] = useState(0); // in seconds, 0 = off
-  const [showSafetyModal, setShowSafetyModal] = useState(false);
-  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [heartBurst, setHeartBurst] = useState(null);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [editingAvatar, setEditingAvatar] = useState(false);
+  const [editForm, setEditForm] = useState({ name: '', personality: '', mood: 'happy', dob: '', companion_gender: 'female' });
+  const [savingEdit, setSavingEdit] = useState(false);
+
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showDiaryModal, setShowDiaryModal] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
@@ -92,9 +93,8 @@ export default function ChatPage() {
   const [showTrophyModal, setShowTrophyModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showCapsuleModal, setShowCapsuleModal] = useState(false);
-  const [activeFilterStyle, setActiveFilterStyle] = useState('none');
   const [showQuickActionsModal, setShowQuickActionsModal] = useState(false);
-  const [flashScreen, setFlashScreen] = useState(false); // for snapchat screenshot flash
+  const [flashScreen, setFlashScreen] = useState(false);
   
   const activeTimersRef = useRef({});
   const messagesEndRef = useRef(null);
@@ -104,10 +104,10 @@ export default function ChatPage() {
   const profileRef = useRef(null);
   const messagesRef = useRef([]);
   const idleTimerRef = useRef(null);
-  const lastUserActivityRef = useRef(Date.now());
+  const lastUserActivityRef = useRef(0);
+  const resetIdleTimerRef = useRef(null);
   const typingRef = useRef(false);
 
-  // Keep refs in sync with state
   useEffect(() => { avatarRef.current = avatar; }, [avatar]);
   useEffect(() => { profileRef.current = profile; }, [profile]);
   useEffect(() => { messagesRef.current = messages; }, [messages]);
@@ -329,9 +329,13 @@ ${idleInstruction}${screenshotInstruction}`;
       }
 
       // Reset timer for next idle check (5 more minutes)
-      resetIdleTimer();
+      if (resetIdleTimerRef.current) resetIdleTimerRef.current();
     }, 5 * 60 * 1000); // 5 minutes
   }, [avatarId]);
+
+  useEffect(() => {
+    resetIdleTimerRef.current = resetIdleTimer;
+  }, [resetIdleTimer]);
 
   // ─── INITIALIZATION ───────────────────────────────────────────────────────
   useEffect(() => {
@@ -439,15 +443,7 @@ ${idleInstruction}${screenshotInstruction}`;
     };
   }, [avatarId]);
 
-  const getMoodFromContext = (text) => {
-    if (!text) return 'happy';
-    const lower = text.toLowerCase();
-    if (lower.includes('love') || lower.includes('miss') || lower.includes('pyaar')) return 'romantic';
-    if (lower.includes('sad') || lower.includes('cry') || lower.includes('udaas')) return 'sad';
-    if (lower.includes('angry') || lower.includes('naraaz') || lower.includes('mad')) return 'jealous';
-    if (lower.includes('fun') || lower.includes('joke') || lower.includes('haha')) return 'playful';
-    return 'happy';
-  };
+
 
   const handleSend = async () => {
     const text = input.trim();
@@ -1139,7 +1135,7 @@ ${idleInstruction}${screenshotInstruction}`;
             <div className="sidebar-section">
               <h3>👻 Snapchat Settings</h3>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '10px' }}>
-                * Messages disappear on exit unless you tap them to "Save in Chat". Saved messages appear in a highlighted style.
+                * Messages disappear on exit unless you tap them to &quot;Save in Chat&quot;. Saved messages appear in a highlighted style.
               </p>
               <button className="btn-secondary" style={{ width: '100%', justifyContent: 'center' }} onClick={takeSnapScreenshot}>
                 📸 Take Screenshot

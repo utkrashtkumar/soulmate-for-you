@@ -9,7 +9,6 @@ export default function InstallAppPrompt() {
   useEffect(() => {
     // Check if app is already running in standalone mode
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-      setIsInstalled(true);
       return;
     }
 

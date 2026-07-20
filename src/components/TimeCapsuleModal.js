@@ -129,7 +129,7 @@ export default function TimeCapsuleModal({ isOpen, onClose, avatar }) {
               >
                 <option value="7_days">🔒 In 7 Days</option>
                 <option value="30_days">🔒 In 30 Days (1 Month)</option>
-                <option value="valentine">🔒 On Valentine's Day 💕</option>
+                <option value="valentine">🔒 On Valentine&apos;s Day 💕</option>
               </select>
             </div>
 

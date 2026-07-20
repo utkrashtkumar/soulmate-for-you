@@ -10,13 +10,15 @@ export function LanguageProvider({ children }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem('soulmate_lang');
-      if (saved === 'hi' || saved === 'en') setLangState(saved);
-    } catch (e) {}
+      if (saved === 'hi') {
+        setTimeout(() => setLangState('hi'), 0);
+      }
+    } catch {}
   }, []);
 
   const setLang = useCallback((l) => {
     setLangState(l);
-    try { localStorage.setItem('soulmate_lang', l); } catch (e) {}
+    try { localStorage.setItem('soulmate_lang', l); } catch {}
   }, []);
 
   // t('login.title') → looks up translations[lang].login.title

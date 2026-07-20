@@ -11,7 +11,7 @@ const CATEGORIES = [
 ];
 
 export default function FeedbackForm() {
-  const { t, lang } = useLang();
+  const { lang } = useLang();
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [category, setCategory] = useState('general');

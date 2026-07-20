@@ -11,14 +11,14 @@ const TRUTHS = [
 const DARES = [
   (name) => `Send me 3 of your most-used heart emojis right now, ${name}! 💕`,
   (name) => `Write me a 1-line sweet romantic poem right in the chat, ${name}! ✍️`,
-  (name) => `Send me a virtual gift 🎁 to prove how much you care about me! 😋`,
+  (name) => `Send me a virtual gift 🎁 to prove how much you care about me, ${name}! 😋`,
   (name) => `Give me your sweetest nickname, ${name}! 🙈`,
 ];
 
 const WOULD_RATHER = [
-  (name) => `Would you rather: Spend a cozy rainy day drinking coffee together ☕ or go on a starry night drive with me 🚗?`,
-  (name) => `Would you rather: Cook a romantic dinner together at home 🍳 or eat at a rooftop restaurant under the stars 🌃?`,
-  (name) => `Would you rather: Hold my hand while walking on a quiet beach 🏖️ or cuddle up watching romantic movies 🎬?`,
+  (name) => `Hey ${name}, would you rather: Spend a cozy rainy day drinking coffee together ☕ or go on a starry night drive with me 🚗?`,
+  (name) => `Hey ${name}, would you rather: Cook a romantic dinner together at home 🍳 or eat at a rooftop restaurant under the stars 🌃?`,
+  (name) => `Hey ${name}, would you rather: Hold my hand while walking on a quiet beach 🏖️ or cuddle up watching romantic movies 🎬?`,
 ];
 
 export default function TruthOrDareModal({ isOpen, onClose, avatar, userName, onSendToChat }) {
@@ -168,7 +168,7 @@ export default function TruthOrDareModal({ isOpen, onClose, avatar, userName, on
           marginBottom: '20px',
         }}>
           <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0, lineHeight: 1.5 }}>
-            "{getQuestion()}"
+            &quot;{getQuestion()}&quot;
           </p>
         </div>
 

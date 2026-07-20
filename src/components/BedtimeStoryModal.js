@@ -86,7 +86,7 @@ export default function BedtimeStoryModal({ isOpen, onClose, avatar }) {
         }}>
           <h4 style={{ color: '#a855f7', marginTop: 0, marginBottom: '8px', fontSize: '0.95rem' }}>{current.title}</h4>
           <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: '#e2e8f0', margin: 0, fontStyle: 'italic' }}>
-            "{current.storyHi}"
+            &quot;{current.storyHi}&quot;
           </p>
         </div>
 

@@ -8,10 +8,10 @@ export default function ThemeToggle({ compact = false }) {
   useEffect(() => {
     const saved = localStorage.getItem('app-mode');
     if (saved === 'light') {
-      setIsLight(true);
-      document.documentElement.setAttribute('data-mode', 'light');
-    } else {
-      document.documentElement.removeAttribute('data-mode');
+      setTimeout(() => {
+        setIsLight(true);
+        document.documentElement.setAttribute('data-mode', 'light');
+      }, 0);
     }
   }, []);
 

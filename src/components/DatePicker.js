@@ -30,39 +30,42 @@ export default function DatePicker({ value = '', onChange, placeholder = 'DD/MM/
 
   // Sync internal display with incoming value
   useEffect(() => {
-    if (!value) {
-      setDisplayText('');
-      return;
-    }
-
-    // If YYYY-MM-DD
-    if (value.includes('-')) {
-      const [y, m, d] = value.split('-');
-      if (y && m && d) {
-        const dd = String(d).padStart(2, '0');
-        const mm = String(m).padStart(2, '0');
-        const raw = `${dd}${mm}${y}`;
-        setDisplayText(`${dd}/${mm}/${y}`);
-        setSelectedYear(parseInt(y));
-        setSelectedMonth(parseInt(m) - 1);
+    const timer = setTimeout(() => {
+      if (!value) {
+        setDisplayText('');
         return;
       }
-    }
 
-    // If DDMMYYYY
-    const digits = value.replace(/\D/g, '').slice(0, 8);
-    let display = digits;
-    if (digits.length > 2) display = digits.slice(0, 2) + '/' + digits.slice(2);
-    if (digits.length > 4) display = digits.slice(0, 2) + '/' + digits.slice(2, 4) + '/' + digits.slice(4);
-    setDisplayText(display);
-
-    if (digits.length === 8) {
-      const ageInfo = calculateAgeFromDdMmYyyy(digits);
-      if (ageInfo) {
-        setSelectedYear(ageInfo.year);
-        setSelectedMonth(ageInfo.month);
+      // If YYYY-MM-DD
+      if (value.includes('-')) {
+        const [y, m, d] = value.split('-');
+        if (y && m && d) {
+          const dd = String(d).padStart(2, '0');
+          const mm = String(m).padStart(2, '0');
+          setDisplayText(`${dd}/${mm}/${y}`);
+          setSelectedYear(parseInt(y));
+          setSelectedMonth(parseInt(m) - 1);
+          return;
+        }
       }
-    }
+
+      // If DDMMYYYY
+      const digits = value.replace(/\D/g, '').slice(0, 8);
+      let display = digits;
+      if (digits.length > 2) display = digits.slice(0, 2) + '/' + digits.slice(2);
+      if (digits.length > 4) display = digits.slice(0, 2) + '/' + digits.slice(2, 4) + '/' + digits.slice(4);
+      setDisplayText(display);
+
+      if (digits.length === 8) {
+        const ageInfo = calculateAgeFromDdMmYyyy(digits);
+        if (ageInfo) {
+          setSelectedYear(ageInfo.year);
+          setSelectedMonth(ageInfo.month);
+        }
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [value]);
 
   // Close popover when clicking outside

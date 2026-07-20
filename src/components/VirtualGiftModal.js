@@ -182,7 +182,9 @@ export default function VirtualGiftModal({ isOpen, onClose, avatar, onGiftSent }
               className="gift-card-btn"
             >
               <span style={{ fontSize: '2rem' }}>{g.icon}</span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>{g.name}</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                {sending && selectedGift?.id === g.id ? 'Sending...' : g.name}
+              </span>
               <span style={{ fontSize: '0.7rem', color: 'var(--brand-pink)', fontWeight: 700 }}>+{g.points}% Love</span>
             </button>
           ))}

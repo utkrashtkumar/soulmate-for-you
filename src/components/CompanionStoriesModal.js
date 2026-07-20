@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const STORY_PRESETS = [
   {
@@ -29,11 +29,7 @@ export default function CompanionStoriesModal({ isOpen, onClose, avatar, onReply
   const [currentIdx, setCurrentIdx] = useState(0);
   const [replyInput, setReplyInput] = useState('');
 
-  useEffect(() => {
-    if (isOpen) {
-      setCurrentIdx(0);
-    }
-  }, [isOpen]);
+
 
   if (!isOpen || !avatar) return null;
 

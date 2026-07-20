@@ -73,7 +73,7 @@ export default function PhotoFilterModal({ isOpen, onClose, avatar, onApplyFilte
             Photo Filter Studio for <span className="gradient-text">{avatar.name}</span>
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
-            Apply aesthetic Web Canvas filters to your companion's avatar!
+            Apply aesthetic Web Canvas filters to your companion&apos;s avatar!
           </p>
         </div>
 

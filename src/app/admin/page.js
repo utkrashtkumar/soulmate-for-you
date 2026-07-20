@@ -41,6 +41,33 @@ export default function AdminPage() {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatLoading, setChatLoading] = useState(false);
 
+  // Fetch all admin data
+  const fetchData = async (tokenOverride) => {
+    let token = tokenOverride;
+    if (!token) {
+      const { data: { session } } = await supabase.auth.getSession();
+      token = session?.access_token;
+    }
+    if (!token) return;
+
+    try {
+      const res = await fetch('/api/admin/data', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Data fetch failed');
+
+      setUsers(data.users || []);
+      setAvatars(data.avatars || []);
+      setFeedback(data.feedback || []);
+      setStats(data.stats || { totalUsers: 0, totalAvatars: 0, totalMessages: 0, totalFeedback: 0 });
+    } catch (err) {
+      setError('Data load karne me error: ' + err.message);
+    }
+  };
+
   // Authenticate user & verify admin email
   useEffect(() => {
     const checkAuth = async () => {
@@ -69,33 +96,6 @@ export default function AdminPage() {
 
     checkAuth();
   }, [router]);
-
-  // Fetch all admin data
-  const fetchData = async (tokenOverride) => {
-    let token = tokenOverride;
-    if (!token) {
-      const { data: { session } } = await supabase.auth.getSession();
-      token = session?.access_token;
-    }
-    if (!token) return;
-
-    try {
-      const res = await fetch('/api/admin/data', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Data fetch failed');
-
-      setUsers(data.users || []);
-      setAvatars(data.avatars || []);
-      setFeedback(data.feedback || []);
-      setStats(data.stats || { totalUsers: 0, totalAvatars: 0, totalMessages: 0, totalFeedback: 0 });
-    } catch (err) {
-      setError('Data load karne me error: ' + err.message);
-    }
-  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -924,7 +924,7 @@ export default function AdminPage() {
                     </div>
 
                     <p style={{ fontSize: '0.92rem', color: 'var(--text-primary)', margin: 0, lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
-                      "{item.message}"
+                      &quot;{item.message}&quot;
                     </p>
 
                     <div style={{

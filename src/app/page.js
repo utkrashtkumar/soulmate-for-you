@@ -5,6 +5,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import FeedbackForm from '@/components/FeedbackForm';
+import { supabase } from '@/lib/supabase';
 import { useLang } from '@/context/LanguageContext';
 
 const FEATURE_ICONS = ['🛡️', '🧠', '💬', '🎨', '🔔', '💕', '🔒', '🎙️'];
@@ -24,7 +25,6 @@ export default function LandingPage() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    const { supabase } = require('@/lib/supabase');
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
