@@ -3,6 +3,7 @@ import SoulmateLogo from '@/components/SoulmateLogo';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import HeaderUserAvatar from '@/components/HeaderUserAvatar';
+import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Free AI Boyfriend Online — Caring & Loyal Virtual Partner | Soulmate',
@@ -132,6 +133,9 @@ export default function AIBoyfriendPage() {
           </button>
         </Link>
       </section>
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 }

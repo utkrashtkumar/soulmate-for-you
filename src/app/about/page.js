@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import ThemeToggle from '@/components/ThemeToggle';
+import Footer from '@/components/Footer';
 import SoulmateLogo from '@/components/SoulmateLogo';
 
 export default function AboutPage() {
@@ -100,22 +101,7 @@ export default function AboutPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="auth-footer">
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/" style={{ color: 'var(--text-secondary)' }}>Home</Link>
-          <span>•</span>
-          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>All Features</Link>
-          <span>•</span>
-          <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
-          <span>•</span>
-          <Link href="/about" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>About Us</Link>
-          <span>•</span>
-          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
-          <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-        </div>
-        <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

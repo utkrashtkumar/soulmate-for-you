@@ -6,6 +6,7 @@ import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import FeedbackForm from '@/components/FeedbackForm';
 import HeaderUserAvatar from '@/components/HeaderUserAvatar';
+import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/context/LanguageContext';
 
@@ -312,24 +313,7 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
-        <div className="footer-nav-buttons">
-          <Link href="/ai-girlfriend" className="footer-btn-chip highlight-pink">💕 AI Girlfriend</Link>
-          <Link href="/ai-boyfriend" className="footer-btn-chip highlight-blue">💙 AI Boyfriend</Link>
-          <Link href="/features" className="footer-btn-chip">🚀 All Features</Link>
-          <Link href="/how-to-use" className="footer-btn-chip">📖 How to Use</Link>
-          <Link href="/about" className="footer-btn-chip">ℹ️ About Us</Link>
-          <Link href="/contact" className="footer-btn-chip">📬 Contact Us</Link>
-          <Link href="/feedback" className="footer-btn-chip">💬 Feedback</Link>
-          <Link href="/privacy" className="footer-btn-chip">🔒 Privacy Policy</Link>
-          <Link href="/terms" className="footer-btn-chip">📜 Terms of Service</Link>
-        </div>
-        <p>{t('landing.footerTagline')}</p>
-        <p style={{ marginTop: '2px' }}>{t('landing.footerSub')}</p>
-        <p style={{ marginTop: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.03em' }}>
-          Made with ❤️ by utkrasht
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

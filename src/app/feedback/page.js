@@ -4,6 +4,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import HeaderUserAvatar from '@/components/HeaderUserAvatar';
 import FeedbackForm from '@/components/FeedbackForm';
+import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Give Feedback & Feature Suggestions | Soulmate AI Companion',
@@ -60,21 +61,7 @@ export default function DedicatedFeedbackPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)', marginTop: 'auto' }}>
-        <div className="footer-nav-buttons">
-          <Link href="/ai-girlfriend" className="footer-btn-chip highlight-pink">💕 AI Girlfriend</Link>
-          <Link href="/ai-boyfriend" className="footer-btn-chip highlight-blue">💙 AI Boyfriend</Link>
-          <Link href="/features" className="footer-btn-chip">🚀 All Features</Link>
-          <Link href="/how-to-use" className="footer-btn-chip">📖 How to Use</Link>
-          <Link href="/about" className="footer-btn-chip">ℹ️ About Us</Link>
-          <Link href="/contact" className="footer-btn-chip">📬 Contact Us</Link>
-          <Link href="/privacy" className="footer-btn-chip">🔒 Privacy Policy</Link>
-          <Link href="/terms" className="footer-btn-chip">📜 Terms of Service</Link>
-        </div>
-        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '8px', textAlign: 'center' }}>
-          © 2026 Soulmate AI. Built with love to keep you happy. 🌸
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

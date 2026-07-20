@@ -5,6 +5,7 @@ import SoulmateLogo from '@/components/SoulmateLogo';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import HeaderUserAvatar from '@/components/HeaderUserAvatar';
+import Footer from '@/components/Footer';
 import { useLang } from '@/context/LanguageContext';
 
 export default function ContactPage() {
@@ -214,21 +215,7 @@ export default function ContactPage() {
       </main>
 
       {/* FOOTER */}
-      <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>All Features</Link>
-          <span>•</span>
-          <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
-          <span>•</span>
-          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
-          <span>•</span>
-          <Link href="/contact" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>Contact Us</Link>
-          <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-        </div>
-        <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-        <p style={{ marginTop: '2px' }}>Made with ❤️ by utkrasht • Official Support: givekisstome@gmail.com</p>
-      </footer>
+      <Footer />
     </div>
   );
 }
