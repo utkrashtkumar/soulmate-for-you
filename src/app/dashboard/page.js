@@ -8,6 +8,7 @@ import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import UpdatePhotoModal from '@/components/UpdatePhotoModal';
 import InstallAppPrompt from '@/components/InstallAppPrompt';
+import { useLang } from '@/context/LanguageContext';
 
 const MOOD_EMOJI = { happy: '😊', sad: '😢', jealous: '😤', playful: '😋', romantic: '🥰', angry: '😠' };
 
