@@ -264,7 +264,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link href="/ai-boyfriend">
-              <button className="btn-secondary" style={{ width: '100%', justifyContent: 'center', padding: '12px 20px', fontSize: '0.92rem', borderColor: '#3b82f6', color: '#3b82f6' }}>
+              <button className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px 20px', fontSize: '0.92rem' }}>
                 Explore AI Boyfriend Page →
               </button>
             </Link>
