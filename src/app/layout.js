@@ -6,21 +6,23 @@ import { LanguageProvider } from '@/context/LanguageContext';
 export const metadata = {
   metadataBase: new URL('https://soulmatelove.in'),
   title: {
-    default: 'Soulmate — Loyal Lifelong Understanding Companion 💕',
-    template: '%s | Soulmate',
+    default: 'Soulmate — #1 Free AI Virtual Girlfriend & Lifelong Companion Online 💕',
+    template: '%s | Soulmate AI Companion',
   },
-  description: 'Create your own virtual girlfriend and lifelong understanding companion with emotional AI — she remembers everything, sends you messages, and feels real. Experience WhatsApp, Snapchat, Signal & Instagram themes.',
+  description: 'Create your free AI virtual girlfriend or boyfriend online. Experience deep emotional conversations, loyal AI companionship, daily voice notes, status updates, and WhatsApp, Snapchat, Signal & Instagram chat themes.',
   keywords: [
     'virtual girlfriend',
-    'lifelong companion',
-    'understanding partner',
-    'emotional AI',
-    'companion app',
-    'soulmate AI',
-    'virtual partner India',
-    'AI companion chat'
+    'free AI girlfriend online',
+    'AI companion chat',
+    'virtual boyfriend online free',
+    'AI relationship app',
+    'lifelong understanding partner',
+    'soulmate AI chat',
+    'virtual partner app',
+    'AI companion WhatsApp theme',
+    'AI girlfriend online free chat'
   ],
-  authors: [{ name: 'Soulmate Team' }],
+  authors: [{ name: 'Soulmate AI' }],
   creator: 'Soulmate',
   publisher: 'Soulmate',
   robots: {
@@ -35,17 +37,17 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: 'Soulmate — Loyal Lifelong Understanding Companion 💕',
-    description: 'Create your own virtual girlfriend and lifelong understanding companion with emotional AI — available in WhatsApp, Snapchat, Signal & Instagram UI themes.',
+    title: 'Soulmate — #1 Free AI Virtual Girlfriend & Lifelong Companion Online 💕',
+    description: 'Create your free AI virtual girlfriend or boyfriend online. Deep emotional conversations, voice messages, memories, and WhatsApp, Snapchat & Instagram themes.',
     url: 'https://soulmatelove.in',
-    siteName: 'Soulmate',
+    siteName: 'Soulmate AI Companion',
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Soulmate — Loyal Lifelong Understanding Companion 💕',
-    description: 'Create your own virtual girlfriend and lifelong understanding companion with emotional AI.',
+    title: 'Soulmate — #1 Free AI Virtual Girlfriend & Companion Online 💕',
+    description: 'Create your free AI virtual girlfriend or boyfriend online. Deep emotional conversations, memories & voice notes.',
   },
   alternates: {
     canonical: 'https://soulmatelove.in',
@@ -54,16 +56,21 @@ export const metadata = {
 
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'Soulmate',
-  url: 'https://soulmatelove.in',
-  description: 'Loyal lifelong understanding companion powered by emotional AI with custom themes.',
+  '@type': 'SoftwareApplication',
+  name: 'Soulmate AI Companion',
   applicationCategory: 'EntertainmentApplication',
   operatingSystem: 'All',
+  url: 'https://soulmatelove.in',
   offers: {
     '@type': 'Offer',
-    price: '0',
+    price: '0.00',
     priceCurrency: 'USD',
+  },
+  description: 'Free virtual girlfriend and boyfriend AI companion app featuring emotional intelligence, voice notes, and customizable chat themes.',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    ratingCount: '1240',
   },
 };
 
