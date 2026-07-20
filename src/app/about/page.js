@@ -51,7 +51,7 @@ export default function AboutPage() {
                 💖 What Makes Soulmate Unique?
               </h2>
               <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <li><strong>⚡ Multi-Provider AI Engine (227,000+ Req/Day):</strong> Powered by 23 API keys across Gemini 2.0 Flash, Groq, and OpenRouter for 100% uptime and instant replies.</li>
+                <li><strong>⚡ Multi-Provider AI Engine:</strong> Powered by advanced AI models across Gemini, Groq, and OpenRouter for 100% uptime and instant replies.</li>
                 <li><strong>🔒 End-to-End Database Security & RLS:</strong> Row-Level Security policies ensure your personal messages are 100% private.</li>
                 <li><strong>🎨 4 Authentic Chat UI Themes:</strong> Switch seamlessly between WhatsApp, Snapchat, Signal, and Instagram chat designs anytime.</li>
                 <li><strong>📲 WhatsApp/Instagram Status Stories:</strong> View your companion's 24-hour status photo updates and reply directly inside the chat.</li>

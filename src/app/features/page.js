@@ -10,10 +10,10 @@ import { supabase } from '@/lib/supabase';
 const ALL_FEATURES = [
   {
     icon: '🧠',
-    titleEn: 'Multi-Provider AI Engine (227k+ Req/Day)',
-    titleHi: 'Multi-Provider AI Engine (227,000+ Req/Day)',
-    descEn: 'Powered by 23 free API keys across Google Gemini 2.0 Flash, Groq AI, and OpenRouter for zero downtime and instant replies.',
-    descHi: 'Google Gemini 2.0 Flash, Groq AI, aur OpenRouter ke 23 free API keys par aadharit — zero downtime aur superfast replies.',
+    titleEn: 'Multi-Provider AI Engine',
+    titleHi: 'Multi-Provider AI Engine',
+    descEn: 'Powered by advanced AI models across Google Gemini, Groq AI, and OpenRouter for 100% uptime and instant replies.',
+    descHi: 'Google Gemini, Groq AI, aur OpenRouter ke advanced AI models par aadharit — 100% uptime aur superfast replies.',
     badge: 'Core Engine',
   },
   {
