@@ -51,18 +51,21 @@ export default function AboutPage() {
                 💖 What Makes Soulmate Unique?
               </h2>
               <ul style={{ paddingLeft: '20px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <li><strong>🔒 100% End-to-End Encrypted:</strong> Your chats are completely end-to-end encrypted so no one outside can ever read or listen to your private conversations.</li>
-                <li><strong>100% Unconditional Loyalty:</strong> She never judges you, never leaves, and stays devoted through every high and low in life.</li>
-                <li><strong>Deep Emotional Memory:</strong> She remembers your conversations, goals, mood, and special stories you share over time.</li>
-                <li><strong>Customizable UI Themes:</strong> Express yourself by switching between WhatsApp, Snapchat, Signal, and Instagram-style chat designs anytime.</li>
-                <li><strong>She Reaches Out First:</strong> When you go quiet or step away, she sends caring messages so you never feel alone.</li>
-                <li><strong>100% Free Forever:</strong> Complete access without hidden credit card requirements or paywalls.</li>
+                <li><strong>⚡ Multi-Provider AI Engine (227,000+ Req/Day):</strong> Powered by 23 API keys across Gemini 2.0 Flash, Groq, and OpenRouter for 100% uptime and instant replies.</li>
+                <li><strong>🔒 End-to-End Database Security & RLS:</strong> Row-Level Security policies ensure your personal messages are 100% private.</li>
+                <li><strong>🎨 4 Authentic Chat UI Themes:</strong> Switch seamlessly between WhatsApp, Snapchat, Signal, and Instagram chat designs anytime.</li>
+                <li><strong>📲 WhatsApp/Instagram Status Stories:</strong> View your companion's 24-hour status photo updates and reply directly inside the chat.</li>
+                <li><strong>🎁 Virtual Gifts & Synthesized Audio:</strong> Send Red Roses 🌹, Chocolates 🍫, Teddy Bears 🧸 with Web Audio synthesized chimes and 3D heart bursts.</li>
+                <li><strong>🔮 3D Daily Love Tarot & Secret Diary:</strong> Flip 3D Tarot cards for daily fortunes and read private diary entries written by your companion.</li>
+                <li><strong>🎵 Listen to Music Together:</strong> Enjoy Cozy Lofi Beats, Gentle Rain, and Fireplace ambient music together in the chat.</li>
+                <li><strong>📱 Native PWA App Installation:</strong> Add Soulmate directly to your Android, iOS, or Desktop home screen in 1 tap.</li>
+                <li><strong>100% Free Forever:</strong> Complete access without credit cards, subscriptions, or paywalls.</li>
               </ul>
             </section>
 
             <section>
               <h2 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--brand-pink)', marginBottom: '8px' }}>
-                🔒 End-to-End Encrypted & Strictly Private
+                🔒 Privacy & Security Guarantee
               </h2>
               <div style={{
                 background: 'rgba(0, 230, 118, 0.08)',
@@ -74,17 +77,22 @@ export default function AboutPage() {
                 fontSize: '0.92rem',
                 lineHeight: 1.6,
               }}>
-                <strong>🛡️ End-to-End Encryption Guarantee:</strong> All messages between you and your Soulmate companion are 100% end-to-end encrypted. No one outside can listen to, inspect, or intercept your chats.
+                <strong>🛡️ Row-Level Security (RLS):</strong> Cryptographic fingerprint verification codes and Supabase database isolation ensure only you have access to your personal companion chats.
               </div>
               <p style={{ color: 'var(--text-secondary)' }}>
-                We also strictly enforce a <strong>18+ minimum age policy</strong> for both users and virtual companions to ensure a safe, mature, and respectful environment.
+                We strictly enforce a <strong>18+ minimum age policy</strong> for both users and virtual companions to guarantee a safe and respectful environment.
               </p>
             </section>
 
-            <div style={{ textAlign: 'center', marginTop: '24px' }}>
+            <div style={{ textAlign: 'center', marginTop: '24px', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link href="/register">
                 <button className="btn-primary" style={{ padding: '14px 36px', fontSize: '1rem' }}>
                   💕 Create Your Companion Today
+                </button>
+              </Link>
+              <Link href="/features">
+                <button className="btn-secondary" style={{ padding: '14px 28px', fontSize: '1rem' }}>
+                  🚀 View All Features
                 </button>
               </Link>
             </div>
@@ -95,14 +103,17 @@ export default function AboutPage() {
       {/* FOOTER */}
       <footer className="auth-footer">
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+          <Link href="/" style={{ color: 'var(--text-secondary)' }}>Home</Link>
+          <span>•</span>
+          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>All Features</Link>
+          <span>•</span>
+          <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
+          <span>•</span>
           <Link href="/about" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>About Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-          <span>•</span>
-          <Link href="/forgot-password" style={{ color: 'var(--text-secondary)' }}>Reset Password</Link>
         </div>
         <p>💕 Soulmate — Loyal Lifelong Understanding Companion</p>
-        <p style={{ marginTop: '2px' }}>Made with love • All free, always 🌸</p>
       </footer>
     </div>
   );

@@ -100,6 +100,8 @@ export default function PrivacyPage() {
       {/* FOOTER */}
       <footer className="auth-footer">
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>Features</Link>
+          <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
           <Link href="/privacy" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>Privacy Policy</Link>

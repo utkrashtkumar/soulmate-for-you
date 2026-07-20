@@ -91,6 +91,9 @@ export default function LandingPage() {
           <span className="gradient-text">Soulmate</span>
         </Link>
         <div className="auth-header-actions">
+          <Link href="/features" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>
+            🚀 All Features
+          </Link>
           <Link href="/how-to-use" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>
             📖 How to Use
           </Link>
@@ -250,7 +253,9 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/how-to-use" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>How to Use</Link>
+          <Link href="/features" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>All Features</Link>
+          <span>•</span>
+          <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>

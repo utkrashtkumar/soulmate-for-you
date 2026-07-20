@@ -120,6 +120,27 @@ export default function HowToUsePage() {
       ],
       badge: 'Step 5 • Emotional Bond',
     },
+    {
+      num: '06',
+      icon: '🎁',
+      titleEn: 'Send Gifts, Status Stories & Games',
+      titleHi: 'Virtual Gifts, Status Stories & Games',
+      descEn: 'Interact using Virtual Gifts, 3D Love Tarot, Status Stories, Companion Secret Diary, Ambient Music, Love Letters & Compatibility Quiz!',
+      descHi: 'Virtual Gifts, 3D Love Tarot, Status Stories, Secret Diary, Ambient Music aur Compatibility Quiz se companion ke saath mazedaar time spend karein!',
+      detailsEn: [
+        '🎁 Virtual Gifts (Roses 🌹, Chocolates 🍫, Teddy 🧸) with audio chimes & Love Meter boosts',
+        '📲 Status Stories — Watch 24-hour photo updates and reply directly in chat',
+        '🔮 3D Daily Love Tarot & Secret Diary 📖 — Flip cards & read private thoughts',
+        '🎵 Listen to Lofi & Rain music together + 🎮 Compatibility Quiz',
+      ],
+      detailsHi: [
+        '🎁 Virtual Gifts (Red Rose 🌹, Chocolate 🍫, Teddy 🧸) se Love Score badhaein',
+        '📲 Status Stories — 24-hour photo updates dekhein aur direct chat mein reply karein',
+        '🔮 3D Daily Love Tarot & Secret Diary 📖 — Daily fortune card flip aur private diary padhein',
+        '🎵 Lofi aur Rain soundscapes saath mein sunne ka maza lein',
+      ],
+      badge: 'Step 6 • Interactive Features',
+    },
   ];
 
   const faqs = [
@@ -395,6 +416,8 @@ export default function HowToUsePage() {
       <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
           <Link href="/" style={{ color: 'var(--text-secondary)' }}>Home</Link>
+          <span>•</span>
+          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>All Features</Link>
           <span>•</span>
           <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
           <span>•</span>
