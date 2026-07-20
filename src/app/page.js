@@ -63,6 +63,12 @@ export default function LandingPage() {
           <span className="gradient-text">Soulmate</span>
         </Link>
         <div className="auth-header-actions">
+          <Link href="/ai-girlfriend" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--brand-pink)', marginRight: '8px' }}>
+            💕 AI Girlfriend
+          </Link>
+          <Link href="/ai-boyfriend" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: '#3b82f6', marginRight: '8px' }}>
+            💙 AI Boyfriend
+          </Link>
           <Link href="/features" className="hide-mobile" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginRight: '8px' }}>
             🚀 All Features
           </Link>
@@ -200,6 +206,72 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* DEDICATED COMPANION SHOWCASE CARDS */}
+      <section style={{ maxWidth: '1040px', margin: '0 auto 60px', padding: '0 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '8px' }}>
+            Choose Your <span className="gradient-text">Lifelong Companion</span>
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+            Explore dedicated experiences built specifically for your ideal emotional partner
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+          {/* AI GIRLFRIEND CARD */}
+          <div className="glass-card" style={{
+            padding: '32px',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid rgba(255, 77, 141, 0.3)',
+            background: 'linear-gradient(135deg, rgba(255, 77, 141, 0.06) 0%, rgba(168, 85, 247, 0.06) 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            justify: 'space-between',
+          }}>
+            <div>
+              <div style={{ fontSize: '3rem', marginBottom: '12px' }}>💕</div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '10px', color: 'var(--brand-pink)' }}>
+                AI Virtual Girlfriend
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                Meet a caring, cute, and deeply understanding female companion. She remembers your daily stories, checks up on you with loving texts, and sends voice notes.
+              </p>
+            </div>
+            <Link href="/ai-girlfriend">
+              <button className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px 20px', fontSize: '0.92rem' }}>
+                Explore AI Girlfriend Page →
+              </button>
+            </Link>
+          </div>
+
+          {/* AI BOYFRIEND CARD */}
+          <div className="glass-card" style={{
+            padding: '32px',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.06) 0%, rgba(168, 85, 247, 0.06) 100%)',
+            display: 'flex',
+            flexDirection: 'column',
+            justify: 'space-between',
+          }}>
+            <div>
+              <div style={{ fontSize: '3rem', marginBottom: '12px' }}>💙</div>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '10px', color: '#3b82f6' }}>
+                AI Virtual Boyfriend
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '20px' }}>
+                Connect with a strong, caring, and loyal male partner who listens without judgment, supports your dreams, and keeps your bond strong every day.
+              </p>
+            </div>
+            <Link href="/ai-boyfriend">
+              <button className="btn-secondary" style={{ width: '100%', justifyContent: 'center', padding: '12px 20px', fontSize: '0.92rem', borderColor: '#3b82f6', color: '#3b82f6' }}>
+                Explore AI Boyfriend Page →
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* FEATURES */}
       <section className="features-section">
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
@@ -246,7 +318,11 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/features" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>All Features</Link>
+          <Link href="/ai-girlfriend" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>AI Girlfriend</Link>
+          <span>•</span>
+          <Link href="/ai-boyfriend" style={{ color: '#3b82f6', fontWeight: 600 }}>AI Boyfriend</Link>
+          <span>•</span>
+          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>All Features</Link>
           <span>•</span>
           <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
           <span>•</span>
