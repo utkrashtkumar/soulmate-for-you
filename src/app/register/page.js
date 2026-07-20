@@ -111,10 +111,23 @@ export default function RegisterPage() {
     }
   };
 
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  'tempmail.com', 'temp-mail.org', 'guerrillamail.com', '10minutemail.com',
+  'mailinator.com', 'trashmail.com', 'yopmail.com', 'dispostable.com',
+  'getnada.com', 'bupmail.com', 'crazymailing.com', 'fakeinbox.com',
+  'maildrop.cc', 'mytemp.email', 'tempail.com', 'throwawaymail.com'
+]);
+
   const validate = () => {
     if (!form.fullName.trim()) return t('register.nameRequired');
     if (!gender) return t('register.genderRequired');
     if (!form.email.includes('@')) return t('register.invalidEmail');
+    
+    const domain = form.email.split('@')[1]?.toLowerCase().trim();
+    if (domain && DISPOSABLE_EMAIL_DOMAINS.has(domain)) {
+      return 'Temporary/disposable email addresses are not allowed. Please use a valid email (Gmail, Yahoo, Outlook, etc.).';
+    }
+
     const mobileDigits = form.mobile.replace(/\D/g, '');
     if (mobileDigits.length < 7 || mobileDigits.length > 15) return t('register.invalidMobile');
     if (form.dob.length !== 8) return t('register.invalidDob');
