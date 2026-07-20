@@ -1277,10 +1277,12 @@ ${idleInstruction}${screenshotInstruction}`;
         isOpen={showGiftModal}
         onClose={() => setShowGiftModal(false)}
         avatar={avatar}
-        onGiftSent={(gift, newMeter, savedReply) => {
+        onGiftSent={async (gift, newMeter, savedReply) => {
           setAvatar(prev => prev ? { ...prev, love_meter: newMeter } : prev);
           if (savedReply) {
-            setMessages(prev => [...prev, savedReply]);
+            const newMessages = [...messagesRef.current, savedReply];
+            setMessages(newMessages);
+            await sendAIMessage(`I sent you a gift: ${gift.icon} ${gift.name}!`, newMessages);
           }
         }}
       />
@@ -1304,23 +1306,12 @@ ${idleInstruction}${screenshotInstruction}`;
         onClose={() => setShowStoriesModal(false)}
         avatar={avatar}
         onReplyToStory={async (story, replyText) => {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user && avatar) {
-            const formattedMsg = `Replying to story "${story.captionHi}": ${replyText}`;
-            await supabase.from('messages').insert({
-              avatar_id: avatar.id,
-              user_id: session.user.id,
-              role: 'user',
-              content: formattedMsg,
-            });
-            const { data: replyMsg } = await supabase.from('messages').insert({
-              avatar_id: avatar.id,
-              user_id: session.user.id,
-              role: 'assistant',
-              content: `Aww! Story reply dekh ke itna achha laga 💕 Thank you jaan!`,
-            }).select().single();
-
-            if (replyMsg) setMessages(prev => [...prev, replyMsg]);
+          const formattedMsg = `Replying to story "${story.captionHi}": ${replyText}`;
+          const savedUserMsg = await saveMessage('user', formattedMsg);
+          if (savedUserMsg) {
+            const newMessages = [...messagesRef.current, savedUserMsg];
+            setMessages(newMessages);
+            await sendAIMessage(formattedMsg, newMessages);
           }
         }}
       />
@@ -1349,22 +1340,11 @@ ${idleInstruction}${screenshotInstruction}`;
         avatar={avatar}
         userName={profile?.full_name?.split(' ')[0] || 'Jaan'}
         onSendToChat={async (gameMsg) => {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user && avatar) {
-            await supabase.from('messages').insert({
-              avatar_id: avatar.id,
-              user_id: session.user.id,
-              role: 'user',
-              content: gameMsg,
-            });
-            const { data: replyMsg } = await supabase.from('messages').insert({
-              avatar_id: avatar.id,
-              user_id: session.user.id,
-              role: 'assistant',
-              content: `Haha! I love playing this with you 😋 My answer/reaction is coming right up!`,
-            }).select().single();
-
-            if (replyMsg) setMessages(prev => [...prev, replyMsg]);
+          const savedUserMsg = await saveMessage('user', gameMsg);
+          if (savedUserMsg) {
+            const newMessages = [...messagesRef.current, savedUserMsg];
+            setMessages(newMessages);
+            await sendAIMessage(gameMsg, newMessages);
           }
         }}
       />
