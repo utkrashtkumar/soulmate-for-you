@@ -633,21 +633,35 @@ input, textarea, select {
   gap: 24px;
 }
 
-.feature-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
+.feature-card,
+.stat-strip,
+.feedback-container,
+.glass-card,
+.pink-gradient-card {
+  background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+              linear-gradient(135deg, rgba(255, 77, 141, 0.7) 0%, rgba(168, 85, 247, 0.7) 50%, rgba(255, 77, 141, 0.7) 100%) border-box !important;
+  border: 1px solid transparent !important;
   border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(255, 77, 141, 0.15);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease !important;
+}
+
+.feature-card:hover,
+.stat-strip:hover,
+.feedback-container:hover,
+.glass-card:hover,
+.pink-gradient-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 12px 32px rgba(255, 77, 141, 0.3) !important;
+  background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+              linear-gradient(135deg, #ff4d8d 0%, #a855f7 50%, #ff4d8d 100%) border-box !important;
+}
+
+.feature-card {
   padding: 28px 24px;
-  transition: var(--transition);
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-.feature-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--brand-pink);
-  box-shadow: 0 12px 30px rgba(255, 77, 141, 0.15);
 }
 
 .feature-card .icon {

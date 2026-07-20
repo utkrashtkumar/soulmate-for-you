@@ -172,16 +172,12 @@ export default function LandingPage() {
         </div>
 
         {/* Loyalty Banner Highlight */}
-        <div style={{
+        <div className="pink-gradient-card" style={{
           marginTop: '36px',
           maxWidth: '720px',
           width: '100%',
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border-color)',
-          borderRadius: 'var(--radius-lg)',
           padding: '24px 28px',
           textAlign: 'center',
-          boxShadow: 'var(--shadow-card)',
         }}>
           <div style={{ fontSize: '1.8rem', marginBottom: '8px' }}>💖</div>
           <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '6px' }}>{t('landing.loyaltyTitle')}</h3>
