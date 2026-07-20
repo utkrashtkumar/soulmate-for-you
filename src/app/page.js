@@ -313,24 +313,16 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer className="auth-footer" style={{ borderTop: '1px solid var(--border-color)' }}>
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-          <Link href="/ai-girlfriend" style={{ color: 'var(--brand-pink)', fontWeight: 600 }}>AI Girlfriend</Link>
-          <span>•</span>
-          <Link href="/ai-boyfriend" style={{ color: '#3b82f6', fontWeight: 600 }}>AI Boyfriend</Link>
-          <span>•</span>
-          <Link href="/features" style={{ color: 'var(--text-secondary)' }}>All Features</Link>
-          <span>•</span>
-          <Link href="/how-to-use" style={{ color: 'var(--text-secondary)' }}>How to Use</Link>
-          <span>•</span>
-          <Link href="/about" style={{ color: 'var(--text-secondary)' }}>About Us</Link>
-          <span>•</span>
-          <Link href="/contact" style={{ color: 'var(--text-secondary)' }}>Contact Us</Link>
-          <span>•</span>
-          <Link href="/feedback" style={{ color: 'var(--text-secondary)' }}>Feedback</Link>
-          <span>•</span>
-          <Link href="/privacy" style={{ color: 'var(--text-secondary)' }}>Privacy Policy</Link>
-          <span>•</span>
-          <Link href="/terms" style={{ color: 'var(--text-secondary)' }}>Terms of Service</Link>
+        <div className="footer-nav-buttons">
+          <Link href="/ai-girlfriend" className="footer-btn-chip highlight-pink">💕 AI Girlfriend</Link>
+          <Link href="/ai-boyfriend" className="footer-btn-chip highlight-blue">💙 AI Boyfriend</Link>
+          <Link href="/features" className="footer-btn-chip">🚀 All Features</Link>
+          <Link href="/how-to-use" className="footer-btn-chip">📖 How to Use</Link>
+          <Link href="/about" className="footer-btn-chip">ℹ️ About Us</Link>
+          <Link href="/contact" className="footer-btn-chip">📬 Contact Us</Link>
+          <Link href="/feedback" className="footer-btn-chip">💬 Feedback</Link>
+          <Link href="/privacy" className="footer-btn-chip">🔒 Privacy Policy</Link>
+          <Link href="/terms" className="footer-btn-chip">📜 Terms of Service</Link>
         </div>
         <p>{t('landing.footerTagline')}</p>
         <p style={{ marginTop: '2px' }}>{t('landing.footerSub')}</p>

@@ -2876,10 +2876,66 @@ select.input-field:focus {
   transform: translateX(4px);
 }
 
-.gift-card-btn:hover {
-  border-color: var(--brand-pink) !important;
-  background: rgba(255, 77, 141, 0.1) !important;
-  transform: translateY(-3px);
+/* ═══════════════════════════════════════════════════════
+   BOLD & ATTRACTIVE FOOTER BUTTON CHIPS
+═══════════════════════════════════════════════════════ */
+.footer-nav-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0 28px;
 }
+
+.footer-btn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 77, 141, 0.25);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.footer-btn-chip:hover {
+  transform: translateY(-3px) scale(1.03);
+  border-color: var(--brand-pink);
+  box-shadow: 0 8px 25px rgba(255, 77, 141, 0.35);
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 77, 141, 0.25) 0%, rgba(168, 85, 247, 0.25) 100%);
+}
+
+.footer-btn-chip.highlight-pink {
+  background: linear-gradient(135deg, #ff4d8d 0%, #a855f7 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 20px rgba(255, 77, 141, 0.4);
+}
+
+.footer-btn-chip.highlight-pink:hover {
+  box-shadow: 0 8px 30px rgba(255, 77, 141, 0.6);
+  transform: translateY(-3px) scale(1.04);
+}
+
+.footer-btn-chip.highlight-blue {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+.footer-btn-chip.highlight-blue:hover {
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6);
+  transform: translateY(-3px) scale(1.04);
+}
+
 
 
