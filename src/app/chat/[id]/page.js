@@ -5,6 +5,10 @@ import { supabase } from '@/lib/supabase';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import UpdatePhotoModal from '@/components/UpdatePhotoModal';
+import VirtualGiftModal from '@/components/VirtualGiftModal';
+import CompanionDiaryModal from '@/components/CompanionDiaryModal';
+import CompatibilityQuizModal from '@/components/CompatibilityQuizModal';
+import InstallAppPrompt from '@/components/InstallAppPrompt';
 import { useLang } from '@/context/LanguageContext';
 
 
@@ -67,6 +71,9 @@ export default function ChatPage() {
   const [disappearingTimer, setDisappearingTimer] = useState(0); // in seconds, 0 = off
   const [showSafetyModal, setShowSafetyModal] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [showGiftModal, setShowGiftModal] = useState(false);
+  const [showDiaryModal, setShowDiaryModal] = useState(false);
+  const [showQuizModal, setShowQuizModal] = useState(false);
   const [flashScreen, setFlashScreen] = useState(false); // for snapchat screenshot flash
   
   const activeTimersRef = useRef({});
@@ -716,7 +723,10 @@ ${idleInstruction}${screenshotInstruction}`;
               Online • {MOOD_EMOJI[avatar?.mood] || '😊'} {avatar?.mood}
             </div>
           </div>
-          <div className="chat-header-actions" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div className="chat-header-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <button className="header-btn" onClick={() => setShowGiftModal(true)} title="Send Virtual Gift">🎁</button>
+            <button className="header-btn" onClick={() => setShowDiaryModal(true)} title="Read Secret Diary">📖</button>
+            <button className="header-btn" onClick={() => setShowQuizModal(true)} title="Compatibility Quiz">🎮</button>
             {theme === 'whatsapp' && (
               <button className="header-btn" onClick={exportChat} title="Export Chat">📥</button>
             )}
@@ -1179,6 +1189,34 @@ ${idleInstruction}${screenshotInstruction}`;
         onClose={() => setShowPhotoModal(false)}
         onSuccess={(newUrl) => setAvatar(prev => prev ? { ...prev, avatar_url: newUrl } : prev)}
       />
+      {/* Virtual Gift Modal */}
+      <VirtualGiftModal
+        isOpen={showGiftModal}
+        onClose={() => setShowGiftModal(false)}
+        avatar={avatar}
+        onGiftSent={(gift, newMeter, savedReply) => {
+          setAvatar(prev => prev ? { ...prev, love_meter: newMeter } : prev);
+          if (savedReply) {
+            setMessages(prev => [...prev, savedReply]);
+          }
+        }}
+      />
+      {/* Companion Diary Modal */}
+      <CompanionDiaryModal
+        isOpen={showDiaryModal}
+        onClose={() => setShowDiaryModal(false)}
+        avatar={avatar}
+        userName={profile?.full_name?.split(' ')[0] || 'Jaan'}
+      />
+      {/* Compatibility Quiz Modal */}
+      <CompatibilityQuizModal
+        isOpen={showQuizModal}
+        onClose={() => setShowQuizModal(false)}
+        avatar={avatar}
+        userName={profile?.full_name?.split(' ')[0] || 'Jaan'}
+      />
+      {/* Install PWA Prompt */}
+      <InstallAppPrompt />
     </div>
   );
 }

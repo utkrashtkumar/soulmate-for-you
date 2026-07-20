@@ -1,0 +1,18 @@
+{
+  "name": "Soulmate — Loyal AI Companion",
+  "short_name": "Soulmate",
+  "description": "Your loyal lifelong understanding companion — someone who never leaves, genuinely listens, and loves you unconditionally.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0e13",
+  "theme_color": "#ff4d8d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23ff4d8d'/><text x='50%' y='68%' font-size='60' text-anchor='middle'>💕</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageToggle from '@/components/LanguageToggle';
 import SoulmateLogo from '@/components/SoulmateLogo';
 import UpdatePhotoModal from '@/components/UpdatePhotoModal';
-import { useLang } from '@/context/LanguageContext';
+import InstallAppPrompt from '@/components/InstallAppPrompt';
 
 const MOOD_EMOJI = { happy: '😊', sad: '😢', jealous: '😤', playful: '😋', romantic: '🥰', angry: '😠' };
 
@@ -313,6 +313,7 @@ export default function DashboardPage() {
           }
         }}
       />
+      <InstallAppPrompt />
     </div>
   );
 }
