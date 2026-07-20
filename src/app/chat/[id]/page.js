@@ -750,18 +750,15 @@ ${idleInstruction}${screenshotInstruction}`;
             <div className="online-dot" />
           </div>
           <div className="chat-header-info">
-            <div className="name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>{avatar?.name || 'Companion'}</span>
-              <span style={{ fontSize: '0.75rem', background: 'rgba(255,77,141,0.15)', color: 'var(--brand-pink)', padding: '2px 6px', borderRadius: '10px', fontWeight: 600 }}>
-                Status 📲
-              </span>
+            <div className="name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {avatar?.name || 'Companion'}
             </div>
-            <div className="status">
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#00e676', display: 'inline-block' }} />
+            <div className="status" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#00e676', display: 'inline-block', flexShrink: 0 }} />
               Online • {MOOD_EMOJI[avatar?.mood] || '😊'} {avatar?.mood}
             </div>
           </div>
-          <div className="chat-header-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <div className="chat-header-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center', flexShrink: 0 }}>
             <button
               onClick={() => setShowQuickActionsModal(true)}
               className="btn-primary"
@@ -774,22 +771,28 @@ ${idleInstruction}${screenshotInstruction}`;
                 alignItems: 'center',
                 gap: '4px',
                 boxShadow: '0 2px 10px rgba(255, 77, 141, 0.3)',
+                whiteSpace: 'nowrap',
               }}
             >
               <span>✨</span>
               <span>Features</span>
             </button>
-            {theme === 'whatsapp' && (
-              <button className="header-btn" onClick={exportChat} title="Export Chat">📥</button>
-            )}
-            {theme === 'snapchat' && (
-              <button className="header-btn" onClick={takeSnapScreenshot} title="Simulate Screenshot">📸</button>
-            )}
-            {theme === 'signal' && (
-              <button className="header-btn" onClick={() => setShowSafetyModal(true)} title="Verify Safety Number">🔒</button>
-            )}
-            <button className="header-btn" onClick={() => setShowThemePicker(p => !p)} title="Change Chat Theme" style={{ position: 'relative' }}>🎨</button>
-            <ThemeToggle compact />
+
+            {/* Shortcut actions for Desktop */}
+            <div className="hide-mobile" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {theme === 'whatsapp' && (
+                <button className="header-btn" onClick={exportChat} title="Export Chat">📥</button>
+              )}
+              {theme === 'snapchat' && (
+                <button className="header-btn" onClick={takeSnapScreenshot} title="Simulate Screenshot">📸</button>
+              )}
+              {theme === 'signal' && (
+                <button className="header-btn" onClick={() => setShowSafetyModal(true)} title="Verify Safety Number">🔒</button>
+              )}
+              <button className="header-btn" onClick={() => setShowThemePicker(p => !p)} title="Change Chat Theme" style={{ position: 'relative' }}>🎨</button>
+              <ThemeToggle compact />
+            </div>
+
             <button className="header-btn" onClick={() => setShowSidebar(!showSidebar)} title="Toggle info">ℹ️</button>
           </div>
         </div>
@@ -1380,6 +1383,10 @@ ${idleInstruction}${screenshotInstruction}`;
         onOpenBedtime={() => setShowBedtimeModal(true)}
         onOpenDiary={() => setShowDiaryModal(true)}
         onOpenQuiz={() => setShowQuizModal(true)}
+        onOpenThemePicker={() => setShowThemePicker(true)}
+        onExportChat={theme === 'whatsapp' ? exportChat : null}
+        onTakeSnap={theme === 'snapchat' ? takeSnapScreenshot : null}
+        onSafetyCheck={theme === 'signal' ? () => setShowSafetyModal(true) : null}
       />
       {/* Install PWA Prompt */}
       <InstallAppPrompt />

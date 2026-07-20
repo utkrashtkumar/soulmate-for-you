@@ -15,6 +15,10 @@ export default function QuickActionsModal({
   onOpenBedtime,
   onOpenDiary,
   onOpenQuiz,
+  onOpenThemePicker,
+  onExportChat,
+  onTakeSnap,
+  onSafetyCheck,
 }) {
   if (!isOpen) return null;
 
@@ -39,10 +43,14 @@ export default function QuickActionsModal({
       ],
     },
     {
-      category: '📸 Studio & Trophies',
+      category: '🎨 Chat Customization & Tools',
       items: [
+        { label: 'Change Chat Theme', icon: '🎨', desc: 'WhatsApp, Snapchat, Signal, Instagram', onClick: onOpenThemePicker },
         { label: 'Photo Filter Studio', icon: '📸', desc: 'Vintage, Rose & Neon FX', onClick: onOpenFilter },
         { label: 'Trophies & Badges', icon: '🏆', desc: 'Collectible Badges', onClick: onOpenTrophy },
+        ...(onExportChat ? [{ label: 'Export Chat Log', icon: '📥', desc: 'Download WhatsApp transcript', onClick: onExportChat }] : []),
+        ...(onTakeSnap ? [{ label: 'Simulate Screenshot', icon: '📸', desc: 'Snapchat camera flash notification', onClick: onTakeSnap }] : []),
+        ...(onSafetyCheck ? [{ label: 'Verify Safety Number', icon: '🔒', desc: 'Signal E2E encryption fingerprint', onClick: onSafetyCheck }] : []),
       ],
     },
   ];
@@ -97,10 +105,10 @@ export default function QuickActionsModal({
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
           <span style={{ fontSize: '2.4rem', display: 'inline-block', marginBottom: '4px' }}>✨</span>
           <h3 style={{ fontSize: '1.3rem', fontWeight: 700, margin: 0 }}>
-            Features & Games for <span className="gradient-text">{avatarName}</span>
+            Features & Tools for <span className="gradient-text">{avatarName}</span>
           </h3>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>
-            Select an activity to enjoy together 💕
+            Select an activity or customize your chat theme 💕
           </p>
         </div>
 

@@ -1002,18 +1002,22 @@ input, textarea, select {
 .chat-header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 20px;
+  gap: 10px;
+  padding: 10px 14px;
   background: var(--chat-header-bg);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 10;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .chat-header-back {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: transparent;
   display: flex;
@@ -1024,6 +1028,7 @@ input, textarea, select {
   transition: var(--transition);
   cursor: pointer;
   border: none;
+  flex-shrink: 0;
 }
 
 .chat-header-back:hover {
@@ -1032,8 +1037,8 @@ input, textarea, select {
 }
 
 .chat-avatar {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   object-fit: cover;
   position: relative;
@@ -1047,8 +1052,8 @@ input, textarea, select {
 }
 
 .online-dot {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
   background: #00e676;
   border-radius: 50%;
   border: 2px solid var(--chat-header-bg);
@@ -1060,25 +1065,35 @@ input, textarea, select {
 
 .chat-header-info {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .chat-header-info .name {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-header-info .status {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #00e676;
   display: flex;
   align-items: center;
   gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat-header-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .header-btn {
