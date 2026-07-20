@@ -3055,6 +3055,106 @@ select.input-field:focus {
   border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
+/* ═══════════════════════════════════════════════════════
+   CHAT SIDEBAR & COMPANION INFO PANEL (i Button)
+═══════════════════════════════════════════════════════ */
+.chat-sidebar {
+  width: 320px;
+  max-width: 85vw;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 900;
+  animation: slide-left 0.25s ease-out;
+}
+
+@keyframes slide-left {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.sidebar-section {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-section h3 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.love-meter-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.love-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff4d8d 0%, #a855f7 100%);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.theme-switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.theme-btn {
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.theme-btn.active {
+  border-color: var(--brand-pink);
+  background: rgba(255,77,141,0.15);
+  color: var(--brand-pink);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .chat-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    z-index: 99999;
+  }
+}
+
+
 
 
 
