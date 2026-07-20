@@ -633,17 +633,69 @@ input, textarea, select {
   gap: 24px;
 }
 
+/* ═══════════════════════════════════════════════════════
+   CHASING GLOWING BORDER ANIMATION (Train on Track Effect)
+═══════════════════════════════════════════════════════ */
+@keyframes border-chase {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .feature-card,
 .stat-strip,
 .feedback-container,
 .glass-card,
 .pink-gradient-card {
-  background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
-              linear-gradient(135deg, rgba(255, 77, 141, 0.7) 0%, rgba(168, 85, 247, 0.7) 50%, rgba(255, 77, 141, 0.7) 100%) border-box !important;
-  border: 1px solid transparent !important;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 20px rgba(255, 77, 141, 0.15);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease !important;
+  position: relative;
+  z-index: 0;
+  border-radius: var(--radius-lg) !important;
+  border: none !important;
+  background: var(--bg-card) !important;
+  box-shadow: 0 4px 20px rgba(255, 77, 141, 0.12);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+/* Spinning conic gradient — the "glowing train" */
+.feature-card::before,
+.stat-strip::before,
+.feedback-container::before,
+.glass-card::before,
+.pink-gradient-card::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 200%;
+  transform-origin: 0 0;
+  transform: rotate(0deg);
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 240deg,
+    #ff4d8d 250deg,
+    #ff85b8 262deg,
+    #ffffff 270deg,
+    #ff85b8 278deg,
+    #a855f7 290deg,
+    transparent 300deg 360deg
+  );
+  animation: border-chase 3s linear infinite;
+}
+
+/* Inner card background — masks the centre so only the border glow shows */
+.feature-card::after,
+.stat-strip::after,
+.feedback-container::after,
+.glass-card::after,
+.pink-gradient-card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 1.5px;
+  background: var(--bg-card);
+  border-radius: calc(var(--radius-lg) - 1.5px);
 }
 
 .feature-card:hover,
@@ -651,10 +703,8 @@ input, textarea, select {
 .feedback-container:hover,
 .glass-card:hover,
 .pink-gradient-card:hover {
-  transform: translateY(-6px) !important;
-  box-shadow: 0 12px 32px rgba(255, 77, 141, 0.3) !important;
-  background: linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
-              linear-gradient(135deg, #ff4d8d 0%, #a855f7 50%, #ff4d8d 100%) border-box !important;
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(255, 77, 141, 0.35);
 }
 
 .feature-card {
