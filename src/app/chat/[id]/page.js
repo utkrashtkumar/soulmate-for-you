@@ -14,6 +14,11 @@ import DailyTarotModal from '@/components/DailyTarotModal';
 import AmbientMusicPlayer from '@/components/AmbientMusicPlayer';
 import LoveLetterModal from '@/components/LoveLetterModal';
 import BedtimeStoryModal from '@/components/BedtimeStoryModal';
+import TruthOrDareModal from '@/components/TruthOrDareModal';
+import AchievementsModal from '@/components/AchievementsModal';
+import PhotoFilterModal from '@/components/PhotoFilterModal';
+import TimeCapsuleModal from '@/components/TimeCapsuleModal';
+import BirthdayPartyBanner from '@/components/BirthdayPartyBanner';
 import { useLang } from '@/context/LanguageContext';
 
 
@@ -83,6 +88,11 @@ export default function ChatPage() {
   const [showTarotModal, setShowTarotModal] = useState(false);
   const [showLetterModal, setShowLetterModal] = useState(false);
   const [showBedtimeModal, setShowBedtimeModal] = useState(false);
+  const [showTruthModal, setShowTruthModal] = useState(false);
+  const [showTrophyModal, setShowTrophyModal] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showCapsuleModal, setShowCapsuleModal] = useState(false);
+  const [activeFilterStyle, setActiveFilterStyle] = useState('none');
   const [flashScreen, setFlashScreen] = useState(false); // for snapchat screenshot flash
   
   const activeTimersRef = useRef({});
@@ -751,6 +761,10 @@ ${idleInstruction}${screenshotInstruction}`;
           </div>
           <div className="chat-header-actions" style={{ display: 'flex', gap: '5px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button className="header-btn" onClick={() => setShowGiftModal(true)} title="Send Virtual Gift">🎁</button>
+            <button className="header-btn" onClick={() => setShowTruthModal(true)} title="Play Truth or Dare">🎯</button>
+            <button className="header-btn" onClick={() => setShowTrophyModal(true)} title="View Trophies & Badges">🏆</button>
+            <button className="header-btn" onClick={() => setShowFilterModal(true)} title="Photo Filter Studio">📸</button>
+            <button className="header-btn" onClick={() => setShowCapsuleModal(true)} title="Love Time-Capsule">⏳</button>
             <button className="header-btn" onClick={() => setShowStoriesModal(true)} title="Watch Status Story">📲</button>
             <button className="header-btn" onClick={() => setShowTarotModal(true)} title="Daily Love Tarot">🔮</button>
             <button className="header-btn" onClick={() => setShowLetterModal(true)} title="Read Love Letter">💌</button>
@@ -771,6 +785,9 @@ ${idleInstruction}${screenshotInstruction}`;
             <button className="header-btn" onClick={() => setShowSidebar(!showSidebar)} title="Toggle info">ℹ️</button>
           </div>
         </div>
+
+        {/* Birthday / Milestone Celebration Banner */}
+        <BirthdayPartyBanner avatarName={avatar?.name} />
 
         {/* Ambient Music Player Bar */}
         <div style={{ padding: '6px 16px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
@@ -1292,6 +1309,51 @@ ${idleInstruction}${screenshotInstruction}`;
       <BedtimeStoryModal
         isOpen={showBedtimeModal}
         onClose={() => setShowBedtimeModal(false)}
+        avatar={avatar}
+      />
+      {/* Truth or Dare Game Modal */}
+      <TruthOrDareModal
+        isOpen={showTruthModal}
+        onClose={() => setShowTruthModal(false)}
+        avatar={avatar}
+        userName={profile?.full_name?.split(' ')[0] || 'Jaan'}
+        onSendToChat={async (gameMsg) => {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user && avatar) {
+            await supabase.from('messages').insert({
+              avatar_id: avatar.id,
+              user_id: session.user.id,
+              role: 'user',
+              content: gameMsg,
+            });
+            const { data: replyMsg } = await supabase.from('messages').insert({
+              avatar_id: avatar.id,
+              user_id: session.user.id,
+              role: 'assistant',
+              content: `Haha! I love playing this with you 😋 My answer/reaction is coming right up!`,
+            }).select().single();
+
+            if (replyMsg) setMessages(prev => [...prev, replyMsg]);
+          }
+        }}
+      />
+      {/* Trophies & Achievements Modal */}
+      <AchievementsModal
+        isOpen={showTrophyModal}
+        onClose={() => setShowTrophyModal(false)}
+        avatar={avatar}
+      />
+      {/* Photo Filter Studio Modal */}
+      <PhotoFilterModal
+        isOpen={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        avatar={avatar}
+        onApplyFilter={(f) => setActiveFilterStyle(f.style)}
+      />
+      {/* Love Time Capsule Modal */}
+      <TimeCapsuleModal
+        isOpen={showCapsuleModal}
+        onClose={() => setShowCapsuleModal(false)}
         avatar={avatar}
       />
       {/* Install PWA Prompt */}
