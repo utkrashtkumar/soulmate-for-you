@@ -9,6 +9,11 @@ import VirtualGiftModal from '@/components/VirtualGiftModal';
 import CompanionDiaryModal from '@/components/CompanionDiaryModal';
 import CompatibilityQuizModal from '@/components/CompatibilityQuizModal';
 import InstallAppPrompt from '@/components/InstallAppPrompt';
+import CompanionStoriesModal from '@/components/CompanionStoriesModal';
+import DailyTarotModal from '@/components/DailyTarotModal';
+import AmbientMusicPlayer from '@/components/AmbientMusicPlayer';
+import LoveLetterModal from '@/components/LoveLetterModal';
+import BedtimeStoryModal from '@/components/BedtimeStoryModal';
 import { useLang } from '@/context/LanguageContext';
 
 
@@ -74,6 +79,10 @@ export default function ChatPage() {
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [showDiaryModal, setShowDiaryModal] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
+  const [showStoriesModal, setShowStoriesModal] = useState(false);
+  const [showTarotModal, setShowTarotModal] = useState(false);
+  const [showLetterModal, setShowLetterModal] = useState(false);
+  const [showBedtimeModal, setShowBedtimeModal] = useState(false);
   const [flashScreen, setFlashScreen] = useState(false); // for snapchat screenshot flash
   
   const activeTimersRef = useRef({});
@@ -712,19 +721,40 @@ ${idleInstruction}${screenshotInstruction}`;
         {/* Header */}
         <div className="chat-header">
           <button className="chat-header-back" onClick={() => router.push('/dashboard')}>←</button>
-          <div className="chat-avatar" style={{ position: 'relative' }}>
+          <div
+            className="chat-avatar"
+            onClick={() => setShowStoriesModal(true)}
+            title="Watch Companion's Status Story 📲"
+            style={{
+              position: 'relative',
+              cursor: 'pointer',
+              border: '2px solid #ff4d8d',
+              padding: '2px',
+              borderRadius: '50%',
+              boxShadow: '0 0 10px rgba(255, 77, 141, 0.4)',
+            }}
+          >
             {avatarDisplay}
             <div className="online-dot" />
           </div>
           <div className="chat-header-info">
-            <div className="name">{avatar?.name || 'Companion'}</div>
+            <div className="name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>{avatar?.name || 'Companion'}</span>
+              <span style={{ fontSize: '0.75rem', background: 'rgba(255,77,141,0.15)', color: 'var(--brand-pink)', padding: '2px 6px', borderRadius: '10px', fontWeight: 600 }}>
+                Status 📲
+              </span>
+            </div>
             <div className="status">
               <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#00e676', display: 'inline-block' }} />
               Online • {MOOD_EMOJI[avatar?.mood] || '😊'} {avatar?.mood}
             </div>
           </div>
-          <div className="chat-header-actions" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+          <div className="chat-header-actions" style={{ display: 'flex', gap: '5px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button className="header-btn" onClick={() => setShowGiftModal(true)} title="Send Virtual Gift">🎁</button>
+            <button className="header-btn" onClick={() => setShowStoriesModal(true)} title="Watch Status Story">📲</button>
+            <button className="header-btn" onClick={() => setShowTarotModal(true)} title="Daily Love Tarot">🔮</button>
+            <button className="header-btn" onClick={() => setShowLetterModal(true)} title="Read Love Letter">💌</button>
+            <button className="header-btn" onClick={() => setShowBedtimeModal(true)} title="Bedtime Story">🌙</button>
             <button className="header-btn" onClick={() => setShowDiaryModal(true)} title="Read Secret Diary">📖</button>
             <button className="header-btn" onClick={() => setShowQuizModal(true)} title="Compatibility Quiz">🎮</button>
             {theme === 'whatsapp' && (
@@ -740,6 +770,11 @@ ${idleInstruction}${screenshotInstruction}`;
             <ThemeToggle compact />
             <button className="header-btn" onClick={() => setShowSidebar(!showSidebar)} title="Toggle info">ℹ️</button>
           </div>
+        </div>
+
+        {/* Ambient Music Player Bar */}
+        <div style={{ padding: '6px 16px', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)' }}>
+          <AmbientMusicPlayer companionName={avatar?.name} />
         </div>
 
         {/* Messages */}
@@ -1214,6 +1249,50 @@ ${idleInstruction}${screenshotInstruction}`;
         onClose={() => setShowQuizModal(false)}
         avatar={avatar}
         userName={profile?.full_name?.split(' ')[0] || 'Jaan'}
+      />
+      {/* Companion Stories Modal */}
+      <CompanionStoriesModal
+        isOpen={showStoriesModal}
+        onClose={() => setShowStoriesModal(false)}
+        avatar={avatar}
+        onReplyToStory={async (story, replyText) => {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user && avatar) {
+            const formattedMsg = `Replying to story "${story.captionHi}": ${replyText}`;
+            await supabase.from('messages').insert({
+              avatar_id: avatar.id,
+              user_id: session.user.id,
+              role: 'user',
+              content: formattedMsg,
+            });
+            const { data: replyMsg } = await supabase.from('messages').insert({
+              avatar_id: avatar.id,
+              user_id: session.user.id,
+              role: 'assistant',
+              content: `Aww! Story reply dekh ke itna achha laga 💕 Thank you jaan!`,
+            }).select().single();
+
+            if (replyMsg) setMessages(prev => [...prev, replyMsg]);
+          }
+        }}
+      />
+      {/* Daily Love Tarot Modal */}
+      <DailyTarotModal
+        isOpen={showTarotModal}
+        onClose={() => setShowTarotModal(false)}
+        avatar={avatar}
+      />
+      {/* Love Letter Modal */}
+      <LoveLetterModal
+        isOpen={showLetterModal}
+        onClose={() => setShowLetterModal(false)}
+        avatar={avatar}
+      />
+      {/* Bedtime Story Modal */}
+      <BedtimeStoryModal
+        isOpen={showBedtimeModal}
+        onClose={() => setShowBedtimeModal(false)}
+        avatar={avatar}
       />
       {/* Install PWA Prompt */}
       <InstallAppPrompt />
