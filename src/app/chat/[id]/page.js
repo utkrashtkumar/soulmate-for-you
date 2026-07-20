@@ -519,6 +519,17 @@ ${idleInstruction}${screenshotInstruction}`;
     localStorage.setItem(`theme-${avatarId}`, t);
   };
 
+  const handleClearChat = async () => {
+    if (!window.confirm(`Are you sure you want to clear all chat history with ${avatar?.name}? This cannot be undone.`)) return;
+    try {
+      await supabase.from('messages').delete().eq('avatar_id', avatarId);
+      setMessages([]);
+      setShowSidebar(false);
+    } catch (e) {
+      console.error('Error clearing chat history:', e);
+    }
+  };
+
   // ─── WAHTSAPP: EXPORT CHAT ───────────────────────────────────────────────
   const exportChat = () => {
     const textStr = messages.map(m => {
@@ -774,6 +785,196 @@ ${idleInstruction}${screenshotInstruction}`;
                   {theme === themeItem.id && <span style={{ marginLeft: 'auto', color: 'var(--brand-pink)', fontWeight: 800 }}>✓</span>}
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* COMPANION INFO & SETTINGS MODAL (i button) */}
+      {showSidebar && (
+        <div
+          onClick={() => setShowSidebar(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 99999,
+            background: 'rgba(0,0,0,0.7)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '16px',
+            animation: 'fade-in 0.2s ease',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-lg)',
+              padding: '28px 24px 24px',
+              width: '100%',
+              maxWidth: '440px',
+              boxShadow: '0 12px 36px rgba(0,0,0,0.5)',
+              position: 'relative',
+            }}
+          >
+            <button
+              onClick={() => setShowSidebar(false)}
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                background: 'none', border: 'none', color: 'var(--text-muted)',
+                fontSize: '1.2rem', cursor: 'pointer',
+              }}
+            >
+              ✕
+            </button>
+
+            {/* AVATAR HERO HEADER */}
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <div
+                onClick={() => { setShowSidebar(false); setShowPhotoModal(true); }}
+                title="Click to change profile picture"
+                style={{
+                  width: '90px',
+                  height: '90px',
+                  borderRadius: '50%',
+                  margin: '0 auto 12px',
+                  position: 'relative',
+                  border: '3px solid var(--brand-pink)',
+                  boxShadow: '0 0 20px rgba(255, 77, 141, 0.4)',
+                  cursor: 'pointer',
+                  overflow: 'hidden',
+                  background: 'var(--bg-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {avatarDisplay}
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  background: 'rgba(0,0,0,0.65)',
+                  color: '#fff',
+                  fontSize: '0.68rem',
+                  padding: '3px 0',
+                  textAlign: 'center',
+                  fontWeight: 600,
+                }}>
+                  📷 Change
+                </div>
+              </div>
+
+              <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 800 }}>
+                {avatar?.name || 'Companion'}
+              </h3>
+              
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center', marginTop: '6px', flexWrap: 'wrap' }}>
+                <span style={{
+                  background: avatar?.companion_gender === 'male' ? 'rgba(59,130,246,0.15)' : 'rgba(255,77,141,0.15)',
+                  color: avatar?.companion_gender === 'male' ? '#3b82f6' : 'var(--brand-pink)',
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                }}>
+                  {avatar?.companion_gender === 'male' ? '💙 AI Boyfriend' : '💕 AI Girlfriend'}
+                </span>
+                <span style={{
+                  background: 'rgba(0,230,118,0.15)',
+                  color: '#00e676',
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                }}>
+                  ● Online • {MOOD_EMOJI[avatar?.mood] || '😊'} {avatar?.mood || 'happy'}
+                </span>
+              </div>
+            </div>
+
+            {/* DETAILS CARDS */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+              <div style={{
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>✨ Personality</span>
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)' }}>{avatar?.personality || 'Caring & Cute'}</span>
+              </div>
+
+              <div style={{
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>💬 Messages Sent</span>
+                <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)' }}>{messages.length} messages</span>
+              </div>
+
+              <div style={{
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-md)',
+                padding: '12px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>🔒 Encryption</span>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#00e676' }}>Supabase RLS Protected ✓</span>
+              </div>
+            </div>
+
+            {/* ACTION BUTTONS */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button
+                onClick={() => { setShowSidebar(false); setShowPhotoModal(true); }}
+                className="btn-primary"
+                style={{ width: '100%', padding: '12px', fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
+                📸 Update Profile Photo
+              </button>
+
+              <button
+                onClick={() => { setShowSidebar(false); setShowThemePicker(true); }}
+                className="btn-secondary"
+                style={{ width: '100%', padding: '12px', fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+              >
+                🎨 Change Chat Theme
+              </button>
+
+              <button
+                onClick={handleClearChat}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  color: '#ef4444',
+                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  marginTop: '4px',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                🗑️ Clear Chat History
+              </button>
             </div>
           </div>
         </div>
