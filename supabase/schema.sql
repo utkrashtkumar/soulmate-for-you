@@ -9,16 +9,19 @@ create extension if not exists "uuid-ossp";
 -- ─────────────────────────────────────────
 create table if not exists public.profiles (
   id uuid references auth.users(id) on delete cascade primary key,
-  full_name text not null,
-  mobile text not null,
-  dob date not null,
+  full_name text,
+  mobile text,
+  dob date,
   gender text default 'male' check (gender in ('male', 'female', 'other')),
   avatar_url text,
   theme text default 'whatsapp',
   created_at timestamptz default now()
 );
 
--- Ensure avatar_url column exists if table was already created
+-- Ensure columns allow NULL for Google OAuth compatibility
+alter table public.profiles alter column mobile drop not null;
+alter table public.profiles alter column dob drop not null;
+alter table public.profiles alter column full_name drop not null;
 alter table public.profiles add column if not exists avatar_url text;
 
 alter table public.profiles enable row level security;
@@ -207,5 +210,37 @@ drop policy if exists "Admins can view feedback" on public.feedback;
 create policy "Admins can view feedback"
   on public.feedback for select
   using (true);
+
+-- ─────────────────────────────────────────
+-- AUTOMATIC PROFILE CREATION TRIGGER FOR AUTH (Google OAuth)
+-- ─────────────────────────────────────────
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, full_name, avatar_url, mobile, dob, gender)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+    coalesce(new.raw_user_meta_data->>'avatar_url', new.raw_user_meta_data->>'picture', ''),
+    coalesce(new.raw_user_meta_data->>'mobile', ''),
+    case 
+      when new.raw_user_meta_data->>'dob' is not null and new.raw_user_meta_data->>'dob' != '' 
+      then (new.raw_user_meta_data->>'dob')::date 
+      else null 
+    end,
+    coalesce(new.raw_user_meta_data->>'gender', 'male')
+  )
+  on conflict (id) do update set
+    full_name = coalesce(public.profiles.full_name, excluded.full_name),
+    avatar_url = coalesce(public.profiles.avatar_url, excluded.avatar_url);
+
+  return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
 
 
