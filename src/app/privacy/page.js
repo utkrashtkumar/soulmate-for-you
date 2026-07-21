@@ -84,6 +84,24 @@ export default function PrivacyPolicyPage() {
               You retain full control over your companion and data. At any time, you can clear chat history, update your companion profile, or request account deletion which permanently erases all associated profiles, companions, and message memory from our database.
             </p>
           </div>
+
+          {/* Card 5 */}
+          <div className="glass-card" style={{ padding: '28px' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--brand-pink)', marginBottom: '12px' }}>
+              5. Security & Bot Protection (Cloudflare Turnstile)
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', lineHeight: 1.7 }}>
+              To protect our platform against automated spam and unauthorized bot activity during user registration, we utilize Cloudflare Turnstile. Turnstile evaluates non-interactive telemetry to verify genuine human visitors without tracking user behavior across websites or harvesting personal data. For more details on Cloudflare&apos;s privacy practices, please review the{' '}
+              <a
+                href="https://www.cloudflare.com/en-gb/turnstile-privacy-policy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--brand-pink)', fontWeight: 600, textDecoration: 'underline' }}
+              >
+                Cloudflare Turnstile Privacy Policy
+              </a>.
+            </p>
+          </div>
         </div>
       </main>
 
