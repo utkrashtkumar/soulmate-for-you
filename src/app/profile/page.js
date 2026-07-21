@@ -71,11 +71,21 @@ export default function ProfilePage() {
       }
 
       if (prof) {
+        let dobVal = '';
+        if (prof.dob) {
+          if (prof.dob.includes('-')) {
+            const [y, m, d] = prof.dob.split('-');
+            dobVal = `${d}${m}${y}`;
+          } else {
+            dobVal = prof.dob;
+          }
+        }
+
         setProfile({ ...prof, email: session.user.email });
         setForm({
           fullName: prof.full_name || '',
           mobile: prof.mobile || '',
-          dob: prof.dob ? prof.dob.replace(/-/g, '') : '',
+          dob: dobVal,
           gender: prof.gender || 'male',
           avatarUrl: prof.avatar_url || '',
         });
@@ -105,7 +115,7 @@ export default function ProfilePage() {
       const base64Data = uploadEvent.target?.result;
       if (base64Data) {
         setForm(prev => ({ ...prev, avatarUrl: base64Data }));
-        setSaveSuccess('Profile photo updated! Click "Save Changes" to apply.');
+        setSaveSuccess('Profile photo updated! Click "Save Profile Changes" to apply.');
       }
     };
     reader.readAsDataURL(file);
@@ -122,46 +132,54 @@ export default function ProfilePage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Session expired. Please log in again.');
 
-      let dobFormatted = form.dob;
-      if (form.dob.length === 8) {
+      let dobFormatted = null;
+      if (form.dob && form.dob.length === 8) {
         const d = form.dob.slice(0, 2);
         const m = form.dob.slice(2, 4);
         const y = form.dob.slice(4, 8);
         dobFormatted = `${y}-${m}-${d}`;
+      } else if (form.dob && form.dob.includes('-')) {
+        dobFormatted = form.dob;
       }
 
       // 1. Update Supabase Auth User Metadata (Always succeeds)
       await supabase.auth.updateUser({
         data: {
+          full_name: form.fullName.trim(),
           avatar_url: form.avatarUrl,
         }
       });
 
-      // 2. Try updating public.profiles table
+      // 2. Update public.profiles table
       const profileUpdateData = {
+        full_name: form.fullName.trim(),
+        mobile: form.mobile.trim(),
+        gender: form.gender,
         avatar_url: form.avatarUrl,
       };
+
+      if (dobFormatted) {
+        profileUpdateData.dob = dobFormatted;
+      }
 
       let { error: updateErr } = await supabase
         .from('profiles')
         .update(profileUpdateData)
         .eq('id', session.user.id);
 
-      // Fallback: If avatar_url column is not added in Supabase DB schema yet
-      if (updateErr && updateErr.message?.includes('avatar_url')) {
-        // Safe to skip database update since auth metadata is updated
-        console.log('Skipped profiles table update since column does not exist yet');
-      } else if (updateErr) {
-        throw updateErr;
-      }
+      if (updateErr) throw updateErr;
 
       setProfile(prev => ({
         ...prev,
+        full_name: form.fullName.trim(),
+        mobile: form.mobile.trim(),
+        gender: form.gender,
+        dob: dobFormatted || prev?.dob,
         avatar_url: form.avatarUrl,
       }));
 
-      setSaveSuccess('Profile picture updated successfully! 💕');
-      // Trigger header refresh
+      setSaveSuccess('Profile details updated successfully! 💕');
+      // Trigger header refresh across app
       window.dispatchEvent(new Event('storage'));
     } catch (err) {
       setSaveError('Failed to update profile: ' + err.message);
@@ -354,9 +372,9 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* PROFILE DETAILS (READ-ONLY / LOCKED) */}
+          {/* PROFILE DETAILS */}
           <div className="settings-card" style={{ gridColumn: '1 / -1' }}>
-            <h3>📋 Personal Details (Locked)</h3>
+            <h3>📋 Personal Details</h3>
             <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                 <div className="form-group">
@@ -365,19 +383,21 @@ export default function ProfilePage() {
                     type="text"
                     className="input-field"
                     value={form.fullName}
-                    disabled
-                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                    onChange={e => setForm(p => ({ ...p, fullName: e.target.value }))}
+                    placeholder="Enter your full name"
+                    required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Email Address (Account ID)</label>
+                  <label>🔒 Email Address (Account ID - Read Only)</label>
                   <input
                     type="email"
                     className="input-field"
                     value={profile?.email || ''}
                     disabled
-                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                    title="Account email cannot be changed"
+                    style={{ opacity: 0.65, cursor: 'not-allowed', background: 'rgba(255,255,255,0.04)' }}
                   />
                 </div>
 
@@ -387,8 +407,8 @@ export default function ProfilePage() {
                     type="tel"
                     className="input-field"
                     value={form.mobile}
-                    disabled
-                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                    onChange={e => setForm(p => ({ ...p, mobile: e.target.value }))}
+                    placeholder="+91 9876543210"
                   />
                 </div>
 
@@ -397,8 +417,8 @@ export default function ProfilePage() {
                   <select
                     className="input-field"
                     value={form.gender}
-                    disabled
-                    style={{ background: 'var(--bg-primary)', opacity: 0.6, cursor: 'not-allowed' }}
+                    onChange={e => setForm(p => ({ ...p, gender: e.target.value }))}
+                    style={{ background: 'var(--bg-primary)' }}
                   >
                     <option value="male">Male 👨</option>
                     <option value="female">Female 👩</option>
@@ -408,12 +428,10 @@ export default function ProfilePage() {
 
                 <div className="form-group">
                   <label>Date of Birth</label>
-                  <input
-                    type="text"
-                    className="input-field"
-                    value={profile?.dob ? new Date(profile.dob).toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}
-                    disabled
-                    style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                  <DatePicker
+                    value={form.dob}
+                    onChange={val => setForm(p => ({ ...p, dob: val }))}
+                    minAge={18}
                   />
                 </div>
               </div>
@@ -425,7 +443,7 @@ export default function ProfilePage() {
                   disabled={saving}
                   style={{ padding: '12px 28px', fontSize: '0.92rem' }}
                 >
-                  {saving ? 'Saving...' : '💾 Save Profile Picture'}
+                  {saving ? 'Saving...' : '💾 Save Profile Changes'}
                 </button>
               </div>
             </form>
