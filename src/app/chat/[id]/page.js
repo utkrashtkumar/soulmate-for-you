@@ -383,8 +383,13 @@ ${idleInstruction}${screenshotInstruction}`;
 
       if (!av) { router.push('/dashboard'); return; }
 
+      const resolvedProf = prof || {
+        id: session.user.id,
+        full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+      };
+
       setAvatar(av);
-      setProfile(prof);
+      setProfile(resolvedProf);
       setLoading(false);
 
       const savedTheme = localStorage.getItem(`theme-${avatarId}`) || 'default';

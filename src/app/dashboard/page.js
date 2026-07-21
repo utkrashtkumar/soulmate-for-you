@@ -98,10 +98,25 @@ export default function DashboardPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { router.push('/login'); return; }
 
-      const { data: prof } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+      let { data: prof } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+
+      if (!prof) {
+        const googleName = session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User';
+        const googlePic = session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || '';
+        
+        const { data: createdProf } = await supabase.from('profiles').upsert({
+          id: session.user.id,
+          full_name: googleName,
+          avatar_url: googlePic,
+          created_at: new Date().toISOString(),
+        }).select().single();
+
+        prof = createdProf || { id: session.user.id, full_name: googleName, avatar_url: googlePic };
+      }
+
       const { data: avs } = await supabase.from('avatars').select('*').eq('user_id', session.user.id).order('created_at');
 
-      setUser(session.user);
+      setUser({ ...session.user, full_name: prof?.full_name || session.user.email });
       setProfile({ ...prof, email: session.user.email });
       setAvatars(avs || []);
       setLoading(false);
