@@ -1369,20 +1369,41 @@ input, textarea, select {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: 100%;
 }
 
 .msg-group.sent { align-items: flex-end; }
 .msg-group.received { align-items: flex-start; }
 
-.msg-bubble {
-  max-width: 76%;
+.msg-row-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 78%;
   width: fit-content;
-  padding: 10px 14px;
+}
+
+.msg-group.sent .msg-row-wrapper {
+  justify-content: flex-end;
+}
+
+.msg-group.received .msg-row-wrapper {
+  justify-content: flex-start;
+}
+
+.msg-bubble {
+  max-width: 100%;
+  width: auto;
+  min-width: 36px;
+  padding: 10px 16px;
   border-radius: 18px;
   font-size: 0.92rem;
-  line-height: 1.5;
+  line-height: 1.45;
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  box-sizing: border-box;
   position: relative;
   animation: bubble-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -1974,13 +1995,21 @@ input, textarea, select {
     gap: 6px;
   }
 
-  .msg-bubble {
+  .msg-row-wrapper {
     max-width: 86%;
-    width: fit-content;
-    padding: 10px 14px;
+  }
+
+  .msg-bubble {
+    max-width: 100%;
+    width: auto;
+    min-width: 36px;
+    padding: 9px 13px;
     font-size: 0.9rem;
     white-space: pre-wrap;
-    word-break: break-word;
+    word-break: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    box-sizing: border-box;
   }
 
   .chat-input-area {
